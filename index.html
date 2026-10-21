@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PROJECT KIHON // Clean Study Odyssey - JWA Japanese Learning System</title>
-  <meta name="description" content="Project Kihon: Clean, modern Japanese learning dashboard. Master Hiragana, Katakana, and the 30 Essential Kanji Radicals through to JLPT N2 and MEXT readiness.">
-  
+  <title>PROJECT KIHON</title>
+  <meta name="description"
+    content="Project Kihon: Clean, modern Japanese learning dashboard. Master Hiragana, Katakana, and the 30 Essential Kanji Radicals.">
+
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -27,7 +29,7 @@
             'purple-plasma': '#8b5cf6',
           },
           fontFamily: {
-            sans: ['Inter', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            sans: ['Inter', -apple - system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             orbitron: ['Orbitron', 'sans-serif'],
             mono: ['Share Tech Mono', 'monospace'],
             jp: ['Noto Sans JP', 'sans-serif'],
@@ -40,23 +42,29 @@
   <!-- Clean Study App Card-List Design System -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#121212] text-slate-100 antialiased selection:bg-blue-600 selection:text-white min-h-screen flex flex-col font-sans">
+
+<body
+  class="bg-[#121212] text-slate-100 antialiased selection:bg-blue-600 selection:text-white min-h-screen flex flex-col font-sans">
 
   <!-- ==========================================================================
        TOP NAVIGATION BAR & HUD TELEMETRY HEADER
        ========================================================================== -->
-  <header class="sticky top-0 z-50 bg-[#18181b]/95 backdrop-blur-md border-b border-zinc-800/80 px-4 lg:px-6 py-2.5 shadow-sm">
+  <header
+    class="sticky top-0 z-50 bg-[#18181b]/95 backdrop-blur-md border-b border-zinc-800/80 px-4 lg:px-6 py-2.5 shadow-sm">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-      
+
       <!-- Left: Logo & Title -->
       <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">
+          <div
+            class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">
             基
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <span class="text-[10px] font-medium tracking-wide uppercase px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60">JWA Protocol</span>
+              <span
+                class="text-[10px] font-medium tracking-wide uppercase px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60">JWA
+                Protocol</span>
               <span class="text-[11px] text-zinc-400 font-mono">v2.5</span>
             </div>
             <h1 class="text-base lg:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
@@ -66,19 +74,22 @@
         </div>
 
         <!-- Mobile XP Summary -->
-        <div class="flex md:hidden items-center gap-1.5 text-xs font-mono bg-[#1e1e24] px-2.5 py-1 rounded-lg border border-zinc-800">
+        <div
+          class="flex md:hidden items-center gap-1.5 text-xs font-mono bg-[#1e1e24] px-2.5 py-1 rounded-lg border border-zinc-800">
           <span class="text-amber-400 font-semibold">XP:</span>
           <span class="text-white font-bold" id="mobile-xp">0</span>
         </div>
       </div>
 
       <!-- Center: Refined Stats Telemetry Bar -->
-      <div class="flex items-center justify-center gap-3 lg:gap-5 bg-[#1e1e24] border border-[#2d2d35] rounded-xl px-4 py-1.5 shadow-sm w-full md:w-auto overflow-x-auto">
-        
+      <div
+        class="flex items-center justify-center gap-3 lg:gap-5 bg-[#1e1e24] border border-[#2d2d35] rounded-xl px-4 py-1.5 shadow-sm w-full md:w-auto overflow-x-auto">
+
         <!-- RANK -->
         <div class="flex items-center gap-2 min-w-max">
           <span class="text-[11px] font-medium tracking-wider text-[#9ca3af]">RANK:</span>
-          <span id="hud-rank" class="text-xs font-semibold text-sky-400 bg-sky-950/40 px-2 py-0.5 rounded-md border border-sky-500/30">
+          <span id="hud-rank"
+            class="text-xs font-semibold text-sky-400 bg-sky-950/40 px-2 py-0.5 rounded-md border border-sky-500/30">
             Cadet (Pre-N5)
           </span>
         </div>
@@ -120,7 +131,9 @@
       </div>
 
       <!-- Right: Segmented Navigation Control -->
-      <nav class="flex items-center gap-1 bg-[#18181b] p-1 rounded-xl border border-zinc-800/80 w-full md:w-auto overflow-x-auto pb-1 md:pb-1" aria-label="Module Tabs">
+      <nav
+        class="flex items-center gap-1 bg-[#18181b] p-1 rounded-xl border border-zinc-800/80 w-full md:w-auto overflow-x-auto pb-1 md:pb-1"
+        aria-label="Module Tabs">
         <button id="tab-roadmap" onclick="switchTab('roadmap')" class="nav-tab-btn active-tab focus:outline-none">
           Roadmap
         </button>
@@ -151,12 +164,13 @@
          Grouped Card-List Design System
          ======================================================================== -->
     <section id="view-roadmap" class="space-y-6">
-      
+
       <!-- Welcome & Methodology Banner Card -->
       <div class="bg-[#1e1e24] border border-[#2d2d35] p-6 lg:p-7 rounded-xl shadow-sm relative overflow-hidden">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div class="space-y-1.5">
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-400 text-xs font-medium">
+            <div
+              class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-400 text-xs font-medium">
               <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
               JWA Master Flightpath Matrix
             </div>
@@ -164,13 +178,19 @@
               From Zero-Knowledge to JLPT N2 & MEXT Scholar
             </h2>
             <p class="text-[#9ca3af] text-sm max-w-3xl leading-relaxed">
-              Based on authentic <span class="text-white font-medium">Japan With Adi (JWA)</span> methodology: internalize dual phonetic scripts and the 30 core Kanji Radicals before advancing into syntax propulsion, dialogue fluency, and professional research readiness.
+              Based on authentic <span class="text-white font-medium">Japan With Adi (JWA)</span> methodology:
+              internalize dual phonetic scripts and the 30 core Kanji Radicals before advancing into syntax propulsion,
+              dialogue fluency, and professional research readiness.
             </p>
           </div>
           <div class="flex items-center gap-3 shrink-0">
-            <button onclick="switchTab('bootcamp')" class="cyber-btn px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg text-xs tracking-wide shadow-sm flex items-center gap-2 transition-all">
+            <button onclick="switchTab('bootcamp')"
+              class="cyber-btn px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg text-xs tracking-wide shadow-sm flex items-center gap-2 transition-all">
               <span>Quick Start: Holo-Deck</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6">
+                </path>
+              </svg>
             </button>
           </div>
         </div>
@@ -189,14 +209,16 @@
         </div>
 
         <div class="card-list-group">
-          
+
           <!-- Item 1: Holo-Deck & Syllabary Etcher -->
           <div class="list-item-row group" onclick="switchTab('bootcamp')">
             <div class="flex items-center gap-3.5 min-w-0 flex-1">
               <div class="badge-icon-pill pill-blue">
                 <!-- Book / Flashcard Icon SVG -->
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -211,7 +233,8 @@
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge hidden sm:inline-block">122 Glyphs • Est. 15 min</span>
               <span class="list-row-badge active-badge">Study Now</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -223,7 +246,8 @@
               <div class="badge-icon-pill pill-emerald">
                 <!-- Sparks / Fusion Icon SVG -->
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -238,7 +262,8 @@
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge hidden sm:inline-block">25 Recipes • +50 XP</span>
               <span class="list-row-badge">Open Forge</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -250,7 +275,9 @@
               <div class="badge-icon-pill pill-purple">
                 <!-- Grid / Reference Icon SVG -->
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -264,7 +291,8 @@
             </div>
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge hidden sm:inline-block">Core Library</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -286,15 +314,18 @@
         </div>
 
         <div class="card-list-group">
-          
+
           <!-- Item 1: Kana Blaster Tactical Arcade -->
           <div class="list-item-row group" onclick="switchTab('shooter')">
             <div class="flex items-center gap-3.5 min-w-0 flex-1">
               <div class="badge-icon-pill pill-rose">
                 <!-- Arcade Gamepad Icon SVG -->
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                  </path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -309,7 +340,8 @@
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge hidden sm:inline-block">3 Sortie Modes</span>
               <span class="list-row-badge">Play Arcade</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -321,7 +353,9 @@
               <div class="badge-icon-pill pill-amber">
                 <!-- Microphone / Audio Wave Icon SVG -->
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -336,7 +370,8 @@
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge hidden sm:inline-block">4 Missions • Shadowing</span>
               <span class="list-row-badge">Practice</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -348,8 +383,11 @@
               <div class="badge-icon-pill pill-cyan">
                 <!-- Target / Eye Icon SVG -->
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -364,7 +402,8 @@
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge hidden sm:inline-block">Diagnostic • 10 Challenges</span>
               <span class="list-row-badge">Take Quiz</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -376,7 +415,8 @@
               <div class="badge-icon-pill pill-amber">
                 <!-- Trophy / Quiz Assessment Icon SVG -->
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -391,7 +431,8 @@
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge hidden sm:inline-block">46 Questions • +150 XP</span>
               <span class="list-row-badge active-badge">Start Quiz</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -407,20 +448,22 @@
         <div class="flex items-center justify-between px-1">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <h3 class="text-xs font-semibold tracking-wider text-[#9ca3af] uppercase">Advanced Sectors // JWA Flightpath</h3>
+            <h3 class="text-xs font-semibold tracking-wider text-[#9ca3af] uppercase">Advanced Sectors // JWA Flightpath
+            </h3>
           </div>
           <span class="text-xs text-[#9ca3af]">5 Progression Stages</span>
         </div>
 
         <!-- Dynamic Container for Roadmap Sectors (#roadmap-grid) -->
         <div id="roadmap-grid" class="card-list-group">
-          
+
           <!-- Sector 00: Orbital Dock // The Radical Seed -->
           <div class="list-item-row group bg-zinc-800/40" onclick="switchTab('bootcamp')">
             <div class="flex items-center gap-3.5 min-w-0 flex-1">
               <div class="badge-icon-pill pill-blue">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a6 6 0 110 12 6 6 0 010-12z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a6 6 0 110 12 6 6 0 010-12z"></path>
                   <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
                 </svg>
               </div>
@@ -449,7 +492,8 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
                 Active (30%)
               </span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -460,7 +504,9 @@
             <div class="flex items-center gap-3.5 min-w-0 flex-1">
               <div class="badge-icon-pill pill-amber">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -485,7 +531,8 @@
             </div>
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge locked-badge">Lock: 600 XP</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -496,7 +543,8 @@
             <div class="flex items-center gap-3.5 min-w-0 flex-1">
               <div class="badge-icon-pill pill-purple">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -507,7 +555,8 @@
                   <span class="text-[11px] font-mono text-zinc-500">Sector 02 • Months 4 – 7</span>
                 </div>
                 <p class="list-row-subtitle line-clamp-1">
-                  Expansion to 300 Kanji and 1,500 vocabulary words. Te-form chains, conditionals, and conversational flow.
+                  Expansion to 300 Kanji and 1,500 vocabulary words. Te-form chains, conditionals, and conversational
+                  flow.
                 </p>
                 <div class="flex items-center gap-3 mt-1.5 text-xs text-[#9ca3af]">
                   <span>300 Kanji • 1,500 Vocab</span>
@@ -521,7 +570,8 @@
             </div>
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge locked-badge">Lock: 1,200 XP</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -532,7 +582,9 @@
             <div class="flex items-center gap-3.5 min-w-0 flex-1">
               <div class="badge-icon-pill pill-emerald">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -557,7 +609,8 @@
             </div>
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge locked-badge">Lock: 1,600 XP</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -568,7 +621,9 @@
             <div class="flex items-center gap-3.5 min-w-0 flex-1">
               <div class="badge-icon-pill pill-rose">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                  </path>
                 </svg>
               </div>
               <div class="min-w-0 flex-1">
@@ -579,7 +634,8 @@
                   <span class="text-[11px] font-mono text-zinc-500">Sector 04 • Months 13 – 18+</span>
                 </div>
                 <p class="list-row-subtitle line-clamp-1">
-                  1,000+ Kanji, 6,000+ vocabulary words, nuanced editorials, academic research defense, and MEXT readiness.
+                  1,000+ Kanji, 6,000+ vocabulary words, nuanced editorials, academic research defense, and MEXT
+                  readiness.
                 </p>
                 <div class="flex items-center gap-3 mt-1.5 text-xs text-[#9ca3af]">
                   <span>1,000+ Kanji • 6,000+ Vocab</span>
@@ -593,7 +649,8 @@
             </div>
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="list-row-badge locked-badge">Lock: 2,000 XP</span>
-              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
@@ -608,20 +665,26 @@
          SECTION 2: HOLO-DECK & ETCHER (#view-bootcamp)
          ======================================================================== -->
     <section id="view-bootcamp" class="hidden space-y-5">
-      
+
       <!-- Stage 1 Sequential Kana Learning Progress Bar -->
       <div id="stage1-progress-container" class="bg-[#1e1e24] border border-[#2d2d35] p-4 lg:p-5 rounded-xl shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <div
+              class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                </path>
+              </svg>
             </div>
             <div>
               <div class="flex items-center gap-2">
                 <h3 id="stage-progress-title" class="text-sm font-bold text-white tracking-wide">
                   STAGE 1: HIRAGANA FOUNDATION (0%)
                 </h3>
-                <span id="stage-unlock-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                <span id="stage-unlock-badge"
+                  class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30">
                   In Progress
                 </span>
               </div>
@@ -637,15 +700,18 @@
             </span>
           </div>
         </div>
-        
+
         <!-- Progress Bar Track -->
         <div class="w-full h-2 bg-[#121216] rounded-full overflow-hidden border border-[#2a2a34]">
-          <div id="stage1-progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-sky-400 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(56,189,248,0.5)]" style="width: 0%"></div>
+          <div id="stage1-progress-bar"
+            class="h-full bg-gradient-to-r from-blue-500 to-sky-400 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(56,189,248,0.5)]"
+            style="width: 0%"></div>
         </div>
       </div>
 
       <!-- Category Switcher Buttons -->
-      <div class="bg-[#1e1e24] border border-[#2d2d35] p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div
+        class="bg-[#1e1e24] border border-[#2d2d35] p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-blue-500"></span>
           <span class="font-semibold text-xs text-[#9ca3af] uppercase tracking-wider">Holo-Deck Selection:</span>
@@ -667,14 +733,16 @@
       </div>
 
       <!-- Stage 1 Level Progression Tabs (Level 1: 46 Flashcards | Level 2: 46 Quiz | Level 3: Stroke Etcher) -->
-      <div class="bg-[#1e1e24] border border-[#2d2d35] p-2.5 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm">
+      <div
+        class="bg-[#1e1e24] border border-[#2d2d35] p-2.5 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm">
         <div class="flex items-center gap-2 px-1">
           <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
           <span class="text-xs font-semibold text-[#9ca3af] uppercase tracking-wider">Learning Phase:</span>
         </div>
         <div class="flex flex-wrap items-center gap-1.5">
           <!-- Level 1: 46 Flashcards -->
-          <button id="mode-btn-flashcards" onclick="setLearningMode('flashcards')" class="level-mode-btn active flex items-center gap-2">
+          <button id="mode-btn-flashcards" onclick="setLearningMode('flashcards')"
+            class="level-mode-btn active flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-blue-400"></span>
             <span>Level 1: 46 Flashcards</span>
           </button>
@@ -686,7 +754,8 @@
           </button>
 
           <!-- Level 3: Stroke Practice -->
-          <button id="mode-btn-etcher" onclick="setLearningMode('etcher')" class="level-mode-btn flex items-center gap-2">
+          <button id="mode-btn-etcher" onclick="setLearningMode('etcher')"
+            class="level-mode-btn flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             <span id="level3-btn-label">🔒 Level 3: Stroke Etcher</span>
           </button>
@@ -695,7 +764,7 @@
 
       <!-- DECK STUDY CONTAINER (Level 1 Flashcards & Level 3 Stroke Etcher) -->
       <div id="deck-study-container" class="space-y-5">
-        
+
         <!-- Character Selector Strip (#char-selector) -->
         <div class="bg-[#1e1e24] border border-[#2d2d35] p-3 rounded-xl shadow-sm">
           <div class="flex items-center justify-between text-xs text-[#9ca3af] mb-2 px-1">
@@ -714,9 +783,10 @@
 
         <!-- 2-Column Grid (Left: 3D Flashcard | Right: Laser Etcher Canvas) -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
-          
+
           <!-- LEFT COLUMN: 3D Flashcard & SRS Ratings -->
-          <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col justify-between space-y-4">
+          <div
+            class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col justify-between space-y-4">
             <div class="flex items-center justify-between text-xs">
               <span class="text-white font-medium flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-blue-400"></span>
@@ -728,25 +798,34 @@
             <!-- Flashcard Perspective Container -->
             <div class="flashcard-perspective-container">
               <div id="flashcard" onclick="flipCard()" class="group">
-                
+
                 <!-- CARD FRONT -->
                 <div id="card-front" class="p-6 flex flex-col items-center justify-between text-center relative">
                   <div class="w-full flex items-center justify-between text-xs">
-                    <span id="card-type-badge" class="px-2.5 py-1 rounded-md bg-[#272730] text-[#9ca3af] font-medium text-xs">
+                    <span id="card-type-badge"
+                      class="px-2.5 py-1 rounded-md bg-[#272730] text-[#9ca3af] font-medium text-xs">
                       HIRAGANA // A
                     </span>
                     <div class="flex items-center gap-2">
-                      <span id="card-id-badge" class="text-zinc-400 font-mono text-[11px] px-2 py-0.5 rounded bg-[#18181b] border border-zinc-800">CARD 1 OF 46</span>
+                      <span id="card-id-badge"
+                        class="text-zinc-400 font-mono text-[11px] px-2 py-0.5 rounded bg-[#18181b] border border-zinc-800">CARD
+                        1 OF 46</span>
                       <!-- Native Audio Playback on Front -->
-                      <button onclick="playKanaAudio(event)" title="Listen to native audio (ja-JP)" class="p-1 rounded-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 transition-all">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                      <button onclick="playKanaAudio(event)" title="Listen to native audio (ja-JP)"
+                        class="p-1 rounded-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 transition-all">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                            d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                        </svg>
                       </button>
                     </div>
                   </div>
 
                   <!-- Large Character Glyph & Romaji Subtitle -->
                   <div class="my-auto py-3 flex flex-col items-center">
-                    <div id="card-glyph" class="text-8xl lg:text-9xl font-jp font-black text-white transition-transform duration-300 group-hover:scale-105 select-none">
+                    <div id="card-glyph"
+                      class="text-8xl lg:text-9xl font-jp font-black text-white transition-transform duration-300 group-hover:scale-105 select-none">
                       あ
                     </div>
                     <div class="mt-2 text-xs font-mono text-zinc-400 flex items-center gap-1.5">
@@ -755,9 +834,14 @@
                     </div>
                   </div>
 
-                  <div class="w-full flex items-center justify-between pt-3 border-t border-[#2a2a34] text-xs text-[#9ca3af]">
+                  <div
+                    class="w-full flex items-center justify-between pt-3 border-t border-[#2a2a34] text-xs text-[#9ca3af]">
                     <span class="flex items-center gap-1 text-sky-400 font-medium">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122">
+                        </path>
+                      </svg>
                       Click card to reveal mnemonic lore
                     </span>
                     <span class="text-zinc-500 font-mono">Audio: ja-JP</span>
@@ -767,12 +851,18 @@
                 <!-- CARD BACK -->
                 <div id="card-back" class="p-6 flex flex-col justify-between relative">
                   <div class="flex items-center justify-between text-xs">
-                    <span class="px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 font-medium border border-emerald-500/30">
+                    <span
+                      class="px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 font-medium border border-emerald-500/30">
                       Decrypted System Lore
                     </span>
                     <!-- TTS Audio Playback Button -->
-                    <button id="card-audio-btn" onclick="playKanaAudio(event)" class="px-3 py-1 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white rounded-full text-xs flex items-center gap-1.5 transition-all">
-                      <svg class="w-3.5 h-3.5 text-sky-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <button id="card-audio-btn" onclick="playKanaAudio(event)"
+                      class="px-3 py-1 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white rounded-full text-xs flex items-center gap-1.5 transition-all">
+                      <svg class="w-3.5 h-3.5 text-sky-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                          d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z"
+                          clip-rule="evenodd"></path>
+                      </svg>
                       <span>Pronounce</span>
                     </button>
                   </div>
@@ -786,14 +876,17 @@
                     </div>
 
                     <div class="p-3 bg-[#141418] rounded-lg border border-[#2d2d35]">
-                      <div class="text-[11px] text-sky-400 uppercase tracking-wider font-semibold mb-1">Mnemonic Visual:</div>
+                      <div class="text-[11px] text-sky-400 uppercase tracking-wider font-semibold mb-1">Mnemonic Visual:
+                      </div>
                       <p id="card-mnemonic" class="text-xs text-slate-300 leading-relaxed">
-                        Picture an Apple with an Astronaut's antenna curving through it, or a big 'A' shape being sketched out.
+                        Picture an Apple with an Astronaut's antenna curving through it, or a big 'A' shape being
+                        sketched out.
                       </p>
                     </div>
 
                     <div class="p-3 bg-[#141418] rounded-lg border border-[#2d2d35]">
-                      <div class="text-[11px] text-amber-400 uppercase tracking-wider font-semibold mb-1">Subsystem Lore:</div>
+                      <div class="text-[11px] text-amber-400 uppercase tracking-wider font-semibold mb-1">Subsystem
+                        Lore:</div>
                       <p id="card-system" class="text-xs text-amber-200/90 font-mono">
                         PRIMARY ION DRIVE STABILIZER // BUS 01
                       </p>
@@ -810,21 +903,33 @@
 
             <!-- Card Navigation Controls (Prev, Counter, Audio, Next) -->
             <div class="flex items-center justify-between gap-2 p-2.5 bg-[#141418] rounded-xl border border-[#2d2d35]">
-              <button id="card-prev-btn" onclick="prevCard()" class="px-3.5 py-2 rounded-lg bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-all">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+              <button id="card-prev-btn" onclick="prevCard()"
+                class="px-3.5 py-2 rounded-lg bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
                 <span>Previous</span>
               </button>
               <div class="flex items-center gap-2">
-                <span id="card-counter-display" class="text-xs font-mono font-bold text-white px-2.5 py-1 rounded bg-[#1e1e24] border border-zinc-800">
+                <span id="card-counter-display"
+                  class="text-xs font-mono font-bold text-white px-2.5 py-1 rounded bg-[#1e1e24] border border-zinc-800">
                   1 / 46
                 </span>
-                <button onclick="playKanaAudio(event)" title="Listen again (ja-JP audio)" class="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 transition-all">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <button onclick="playKanaAudio(event)" title="Listen again (ja-JP audio)"
+                  class="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 transition-all">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z"
+                      clip-rule="evenodd"></path>
+                  </svg>
                 </button>
               </div>
-              <button id="card-next-btn" onclick="nextCard()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all">
+              <button id="card-next-btn" onclick="nextCard()"
+                class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all">
                 <span>Next</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
               </button>
             </div>
 
@@ -835,21 +940,26 @@
                 <span class="text-sky-400 font-medium">SRS Engine Active</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
-                <button onclick="rateSRS('retry')" class="cyber-btn py-2.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition-all">
+                <button onclick="rateSRS('retry')"
+                  class="cyber-btn py-2.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition-all">
                   Again [1m]
                 </button>
-                <button onclick="rateSRS('good')" class="cyber-btn py-2.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-semibold transition-all">
+                <button onclick="rateSRS('good')"
+                  class="cyber-btn py-2.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-semibold transition-all">
                   Good [10m]
                 </button>
-                <button onclick="rateSRS('mastered')" class="cyber-btn py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-all">
+                <button onclick="rateSRS('mastered')"
+                  class="cyber-btn py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-all">
                   Mastered [4d]
                 </button>
               </div>
             </div>
 
             <!-- Keyboard Shortcuts Legend -->
-            <div class="flex items-center justify-between text-[11px] text-zinc-500 pt-1 px-1 border-t border-[#262630]">
-              <span>Hotkeys: <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">→</kbd> Nav</span>
+            <div
+              class="flex items-center justify-between text-[11px] text-zinc-500 pt-1 px-1 border-t border-[#262630]">
+              <span>Hotkeys: <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">←</kbd> <kbd
+                  class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">→</kbd> Nav</span>
               <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">Space</kbd> Flip</span>
               <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">1-3</kbd> Rate SRS</span>
             </div>
@@ -857,10 +967,12 @@
           </div>
 
           <!-- RIGHT COLUMN: Laser Etcher Stroke Canvas -->
-          <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col items-center space-y-4">
-            
+          <div
+            class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col items-center space-y-4">
+
             <!-- Status Bar -->
-            <div class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#2a2a34]">
+            <div
+              class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#2a2a34]">
               <div>
                 <div class="text-xs font-medium text-white">Stroke Order Guidance (Level 3)</div>
                 <div id="stroke-status" class="text-xs text-[#9ca3af]">
@@ -869,27 +981,35 @@
               </div>
               <!-- Stroke Termination Badges -->
               <div class="flex items-center gap-1.5 text-[10px]">
-                <span id="badge-tome" class="px-2 py-0.5 rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 font-medium">Tome (Stop)</span>
-                <span id="badge-hane" class="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400">Hane (Hook)</span>
-                <span id="badge-harai" class="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400">Harai (Sweep)</span>
+                <span id="badge-tome"
+                  class="px-2 py-0.5 rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 font-medium">Tome
+                  (Stop)</span>
+                <span id="badge-hane" class="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400">Hane
+                  (Hook)</span>
+                <span id="badge-harai"
+                  class="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400">Harai (Sweep)</span>
               </div>
             </div>
 
             <!-- HTML5 Canvas 320x320 with touch-action: none -->
-            <div class="relative flex items-center justify-center p-2 rounded-xl bg-[#141418] border border-[#2d2d35] shadow-inner">
+            <div
+              class="relative flex items-center justify-center p-2 rounded-xl bg-[#141418] border border-[#2d2d35] shadow-inner">
               <canvas id="stroke-canvas" width="320" height="320" class="cursor-crosshair"></canvas>
               <div id="canvas-laser-line" class="laser-sweep-line hidden"></div>
             </div>
 
             <!-- Canvas Action Controls -->
             <div class="w-full grid grid-cols-3 gap-2 pt-1">
-              <button onclick="animateGuideStrokes()" class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-white border border-zinc-700 text-xs font-medium flex items-center justify-center gap-1 transition-all">
+              <button onclick="animateGuideStrokes()"
+                class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-white border border-zinc-700 text-xs font-medium flex items-center justify-center gap-1 transition-all">
                 <span>▶ Guide Pulse</span>
               </button>
-              <button onclick="toggleGhostGuide()" class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-[#9ca3af] hover:text-white border border-zinc-700 text-xs font-medium flex items-center justify-center gap-1 transition-all">
+              <button onclick="toggleGhostGuide()"
+                class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-[#9ca3af] hover:text-white border border-zinc-700 text-xs font-medium flex items-center justify-center gap-1 transition-all">
                 <span>Ghost Toggle</span>
               </button>
-              <button onclick="clearEtcher()" class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-amber-300 border border-amber-500/30 text-xs font-medium flex items-center justify-center gap-1 transition-all">
+              <button onclick="clearEtcher()"
+                class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-amber-300 border border-amber-500/30 text-xs font-medium flex items-center justify-center gap-1 transition-all">
                 <span>↺ Reset</span>
               </button>
             </div>
@@ -906,12 +1026,13 @@
 
       <!-- LEVEL 2: COMPREHENSIVE 46-CHARACTER QUIZ ENGINE (#quiz-engine-container) -->
       <div id="quiz-engine-container" class="hidden space-y-4">
-        
+
         <!-- Quiz Control & Live Telemetry Card -->
         <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-3.5">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
+              <div
+                class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
                 Q
               </div>
               <div>
@@ -919,7 +1040,8 @@
                   <h3 id="quiz-title" class="text-sm font-bold text-white tracking-wide">
                     LEVEL 2: COMPREHENSIVE HIRAGANA QUIZ (46 QUESTIONS)
                   </h3>
-                  <span id="quiz-mode-pill" class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                  <span id="quiz-mode-pill"
+                    class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30">
                     Dual Recall
                   </span>
                 </div>
@@ -931,19 +1053,23 @@
 
             <!-- Realtime Metrics Pill Badges -->
             <div class="flex items-center gap-2 flex-wrap text-xs font-mono">
-              <div class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-zinc-300">
+              <div
+                class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-zinc-300">
                 <span class="text-zinc-500">Progress:</span>
                 <span id="quiz-progress-text" class="text-white font-bold">1 / 46</span>
               </div>
-              <div class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-emerald-400">
+              <div
+                class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-emerald-400">
                 <span>Score:</span>
                 <span id="quiz-score-correct" class="font-bold">0</span>
               </div>
-              <div class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-rose-400">
+              <div
+                class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-rose-400">
                 <span>Errors:</span>
                 <span id="quiz-score-mistakes" class="font-bold">0</span>
               </div>
-              <div class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-1">
+              <div
+                class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-1">
                 <span>🔥</span>
                 <span id="quiz-streak-display">0 Streak</span>
               </div>
@@ -953,7 +1079,8 @@
           <!-- Realtime Visual Progress Bar Track with Segment Markers -->
           <div class="space-y-1">
             <div class="w-full h-2.5 bg-[#141418] rounded-full overflow-hidden border border-[#2a2a34] flex">
-              <div id="quiz-bar-correct" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+              <div id="quiz-bar-correct" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%">
+              </div>
               <div id="quiz-bar-wrong" class="h-full bg-rose-500 transition-all duration-300" style="width: 0%"></div>
             </div>
             <div class="flex items-center justify-between text-[11px] text-zinc-500 font-mono px-0.5">
@@ -964,16 +1091,23 @@
         </div>
 
         <!-- Active Question Card Area (#quiz-card) -->
-        <div id="quiz-card" class="bg-[#1e1e24] border border-[#2d2d35] p-6 lg:p-8 rounded-xl shadow-sm text-center relative overflow-hidden space-y-6">
-          
+        <div id="quiz-card"
+          class="bg-[#1e1e24] border border-[#2d2d35] p-6 lg:p-8 rounded-xl shadow-sm text-center relative overflow-hidden space-y-6">
+
           <!-- Question Type Header & Audio Trigger -->
           <div class="flex items-center justify-between text-xs">
-            <span id="quiz-type-badge" class="px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 font-medium border border-blue-500/30 flex items-center gap-1.5">
+            <span id="quiz-type-badge"
+              class="px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 font-medium border border-blue-500/30 flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
               Visual Kana Identification
             </span>
-            <button id="quiz-audio-repeat-btn" onclick="playQuizPromptAudio()" class="px-3 py-1.5 rounded-full bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white flex items-center gap-1.5 transition-all">
-              <svg class="w-4 h-4 text-sky-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            <button id="quiz-audio-repeat-btn" onclick="playQuizPromptAudio()"
+              class="px-3 py-1.5 rounded-full bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white flex items-center gap-1.5 transition-all">
+              <svg class="w-4 h-4 text-sky-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
               <span>Replay Audio (ja-JP)</span>
             </button>
           </div>
@@ -984,11 +1118,13 @@
               Select the matching Romaji pronunciation:
             </div>
             <!-- Giant Glyph or Romaji -->
-            <div id="quiz-prompt-display" class="text-8xl lg:text-9xl font-jp font-black text-white drop-shadow-[0_0_25px_rgba(56,189,248,0.3)] transition-transform duration-200">
+            <div id="quiz-prompt-display"
+              class="text-8xl lg:text-9xl font-jp font-black text-white drop-shadow-[0_0_25px_rgba(56,189,248,0.3)] transition-transform duration-200">
               あ
             </div>
             <!-- Auditory Pulse Indicator (shown for auditory questions) -->
-            <div id="quiz-audio-indicator" class="hidden mt-3 items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-300 text-xs font-mono">
+            <div id="quiz-audio-indicator"
+              class="hidden mt-3 items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-300 text-xs font-mono">
               <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
               <span>Audio recognition challenge playing...</span>
             </div>
@@ -997,30 +1133,39 @@
           <!-- 4 Multiple-Choice Options Grid -->
           <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto w-full">
             <!-- Populated dynamically via JS: 4 option buttons -->
-            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
-              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">1</span>
+            <button
+              class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span
+                class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">1</span>
               <span>a</span>
               <span class="w-6"></span>
             </button>
-            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
-              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">2</span>
+            <button
+              class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span
+                class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">2</span>
               <span>i</span>
               <span class="w-6"></span>
             </button>
-            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
-              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">3</span>
+            <button
+              class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span
+                class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">3</span>
               <span>u</span>
               <span class="w-6"></span>
             </button>
-            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
-              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">4</span>
+            <button
+              class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span
+                class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">4</span>
               <span>e</span>
               <span class="w-6"></span>
             </button>
           </div>
 
           <!-- Mnemonic & Explanation Callout on Mistake -->
-          <div id="quiz-feedback-box" class="hidden max-w-xl mx-auto p-4 rounded-xl bg-[#16161c] border border-rose-500/40 text-left space-y-2">
+          <div id="quiz-feedback-box"
+            class="hidden max-w-xl mx-auto p-4 rounded-xl bg-[#16161c] border border-rose-500/40 text-left space-y-2">
             <div class="flex items-center justify-between text-xs font-semibold text-rose-400">
               <span id="quiz-feedback-title">Incorrect Selection</span>
               <span class="text-zinc-400">Mnemonic Reinforcement</span>
@@ -1029,7 +1174,8 @@
               Mnemonic: Picture an Apple with an Astronaut's antenna curving through it.
             </p>
             <div class="pt-1 flex justify-end">
-              <button onclick="advanceQuizQuestion()" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all">
+              <button onclick="advanceQuizQuestion()"
+                class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all">
                 Next Question [Space] ▶
               </button>
             </div>
@@ -1037,7 +1183,10 @@
 
           <!-- Quiz Hotkey Footer -->
           <div class="text-xs text-zinc-500 flex items-center justify-center gap-4 pt-2 border-t border-[#262630]">
-            <span>Hotkeys: <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">4</kbd> Choose Option</span>
+            <span>Hotkeys: <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">1</kbd> <kbd
+                class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">2</kbd> <kbd
+                class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">3</kbd> <kbd
+                class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">4</kbd> Choose Option</span>
             <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">R</kbd> Replay Audio</span>
             <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">Space</kbd> Continue</span>
           </div>
@@ -1045,12 +1194,15 @@
         </div>
 
         <!-- Quiz Summary & Completion Screen (#quiz-summary-card) -->
-        <div id="quiz-summary-card" class="hidden bg-[#1e1e24] border-2 border-emerald-500/50 p-6 lg:p-8 rounded-xl shadow-[0_0_40px_rgba(16,185,129,0.2)] text-center space-y-5">
-          <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/15 border border-emerald-400/40 flex items-center justify-center text-3xl">
+        <div id="quiz-summary-card"
+          class="hidden bg-[#1e1e24] border-2 border-emerald-500/50 p-6 lg:p-8 rounded-xl shadow-[0_0_40px_rgba(16,185,129,0.2)] text-center space-y-5">
+          <div
+            class="w-16 h-16 mx-auto rounded-full bg-emerald-500/15 border border-emerald-400/40 flex items-center justify-center text-3xl">
             🏆
           </div>
           <div>
-            <span id="quiz-results-pill" class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-mono font-semibold uppercase tracking-wider">
+            <span id="quiz-results-pill"
+              class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-mono font-semibold uppercase tracking-wider">
               Level 2 Assessment Completed
             </span>
             <h2 id="quiz-results-title" class="text-2xl lg:text-3xl font-extrabold text-white mt-2 tracking-tight">
@@ -1085,13 +1237,16 @@
           </div>
 
           <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <button id="quiz-proceed-lvl3-btn" onclick="setLearningMode('etcher')" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-xl text-xs tracking-wider shadow-lg transition-all flex items-center justify-center gap-2">
+            <button id="quiz-proceed-lvl3-btn" onclick="setLearningMode('etcher')"
+              class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-xl text-xs tracking-wider shadow-lg transition-all flex items-center justify-center gap-2">
               <span>Proceed to Level 3: Stroke Practice ▶</span>
             </button>
-            <button onclick="restartQuiz()" class="w-full sm:w-auto px-5 py-2.5 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-zinc-300 hover:text-white rounded-xl text-xs font-semibold transition-all">
+            <button onclick="restartQuiz()"
+              class="w-full sm:w-auto px-5 py-2.5 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-zinc-300 hover:text-white rounded-xl text-xs font-semibold transition-all">
               Retake Quiz ↺
             </button>
-            <button onclick="setLearningMode('flashcards')" class="w-full sm:w-auto px-5 py-2.5 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-zinc-400 hover:text-white rounded-xl text-xs transition-all">
+            <button onclick="setLearningMode('flashcards')"
+              class="w-full sm:w-auto px-5 py-2.5 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-zinc-400 hover:text-white rounded-xl text-xs transition-all">
               Review Level 1 Flashcards
             </button>
           </div>
@@ -1104,9 +1259,10 @@
          SECTION 3: RADICAL FORGE (#view-forge)
          ======================================================================== -->
     <section id="view-forge" class="hidden space-y-5">
-      
+
       <!-- Forge Header -->
-      <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div
+        class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium mb-1">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
@@ -1116,7 +1272,8 @@
             The 30 Core Radicals // Kanji Synthesis Chamber
           </h2>
           <p class="text-[#9ca3af] text-xs mt-1 max-w-2xl leading-relaxed">
-            In JWA methodology, Kanji are modular semantic machines. Fuse basic radicals in the Reaction Chamber to synthesize compound Kanji characters and ship modules.
+            In JWA methodology, Kanji are modular semantic machines. Fuse basic radicals in the Reaction Chamber to
+            synthesize compound Kanji characters and ship modules.
           </p>
         </div>
         <div class="flex items-center gap-2 text-xs bg-[#18181b] px-3.5 py-2 rounded-lg border border-zinc-700">
@@ -1127,7 +1284,7 @@
 
       <!-- 2-Column Forge Layout -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        
+
         <!-- Left: Radical Inventory [5 Cols] -->
         <div class="lg:col-span-5 bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-4">
           <div class="flex items-center justify-between">
@@ -1138,36 +1295,45 @@
           </div>
 
           <!-- Inventory Grid Container -->
-          <div id="radical-inventory" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-[500px] overflow-y-auto pr-1">
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="日" data-meaning="Sun/Day" onclick="selectRadicalForForge(this, '日', 'Sun/Day')">
+          <div id="radical-inventory"
+            class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-[500px] overflow-y-auto pr-1">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="日" data-meaning="Sun/Day"
+              onclick="selectRadicalForForge(this, '日', 'Sun/Day')">
               <div class="text-2xl font-jp font-bold text-white">日</div>
               <div class="text-[11px] text-[#9ca3af]">Sun / Day</div>
             </div>
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="月" data-meaning="Moon" onclick="selectRadicalForForge(this, '月', 'Moon')">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="月" data-meaning="Moon"
+              onclick="selectRadicalForForge(this, '月', 'Moon')">
               <div class="text-2xl font-jp font-bold text-white">月</div>
               <div class="text-[11px] text-[#9ca3af]">Moon</div>
             </div>
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="木" data-meaning="Tree" onclick="selectRadicalForForge(this, '木', 'Tree')">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="木" data-meaning="Tree"
+              onclick="selectRadicalForForge(this, '木', 'Tree')">
               <div class="text-2xl font-jp font-bold text-white">木</div>
               <div class="text-[11px] text-[#9ca3af]">Tree</div>
             </div>
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="人" data-meaning="Person" onclick="selectRadicalForForge(this, '人', 'Person')">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="人" data-meaning="Person"
+              onclick="selectRadicalForForge(this, '人', 'Person')">
               <div class="text-2xl font-jp font-bold text-white">人</div>
               <div class="text-[11px] text-[#9ca3af]">Person</div>
             </div>
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="水" data-meaning="Water" onclick="selectRadicalForForge(this, '水', 'Water')">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="水" data-meaning="Water"
+              onclick="selectRadicalForForge(this, '水', 'Water')">
               <div class="text-2xl font-jp font-bold text-white">水</div>
               <div class="text-[11px] text-[#9ca3af]">Water</div>
             </div>
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="火" data-meaning="Fire" onclick="selectRadicalForForge(this, '火', 'Fire')">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="火" data-meaning="Fire"
+              onclick="selectRadicalForForge(this, '火', 'Fire')">
               <div class="text-2xl font-jp font-bold text-white">火</div>
               <div class="text-[11px] text-[#9ca3af]">Fire</div>
             </div>
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="口" data-meaning="Mouth" onclick="selectRadicalForForge(this, '口', 'Mouth')">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="口" data-meaning="Mouth"
+              onclick="selectRadicalForForge(this, '口', 'Mouth')">
               <div class="text-2xl font-jp font-bold text-white">口</div>
               <div class="text-[11px] text-[#9ca3af]">Mouth</div>
             </div>
-            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="心" data-meaning="Heart" onclick="selectRadicalForForge(this, '心', 'Heart')">
+            <div class="radical-card p-2.5 rounded-lg text-center" data-radical="心" data-meaning="Heart"
+              onclick="selectRadicalForForge(this, '心', 'Heart')">
               <div class="text-2xl font-jp font-bold text-white">心</div>
               <div class="text-[11px] text-[#9ca3af]">Heart</div>
             </div>
@@ -1176,7 +1342,7 @@
 
         <!-- Right: Reaction Chamber & Unlocked Arsenal [7 Cols] -->
         <div class="lg:col-span-7 space-y-5">
-          
+
           <!-- Reaction Chamber Container -->
           <div class="bg-[#1e1e24] border border-[#2d2d35] p-6 rounded-xl shadow-sm relative overflow-hidden">
             <div class="flex items-center justify-between text-xs text-[#9ca3af] mb-4">
@@ -1186,9 +1352,10 @@
 
             <!-- Slots Reaction Row -->
             <div class="flex items-center justify-center gap-3 sm:gap-6 py-4">
-              
+
               <!-- Slot 1 -->
-              <div id="slot-1" class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center">
+              <div id="slot-1"
+                class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center">
                 <span class="text-[11px] text-[#9ca3af] mb-1">Slot 01</span>
                 <span class="slot-char text-4xl font-jp font-black text-white">-</span>
                 <span class="slot-label text-[11px] text-[#9ca3af] mt-1">Empty</span>
@@ -1200,7 +1367,8 @@
               </div>
 
               <!-- Slot 2 -->
-              <div id="slot-2" class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center">
+              <div id="slot-2"
+                class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center">
                 <span class="text-[11px] text-[#9ca3af] mb-1">Slot 02</span>
                 <span class="slot-char text-4xl font-jp font-black text-white">-</span>
                 <span class="slot-label text-[11px] text-[#9ca3af] mt-1">Empty</span>
@@ -1212,7 +1380,8 @@
               </div>
 
               <!-- Forge Output Slot -->
-              <div id="forge-output" class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center border-emerald-500/40 bg-emerald-500/10">
+              <div id="forge-output"
+                class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center border-emerald-500/40 bg-emerald-500/10">
                 <span class="text-[11px] text-emerald-400 mb-1">Output</span>
                 <span class="output-char text-4xl font-jp font-black text-emerald-300">?</span>
                 <span class="output-label text-[11px] text-[#9ca3af] mt-1">Awaiting</span>
@@ -1222,14 +1391,17 @@
 
             <!-- Fusion Trigger Button -->
             <div class="pt-3">
-              <button id="btn-fuse" onclick="fuseRadicals()" class="cyber-btn w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-lg shadow-sm transition-all">
+              <button id="btn-fuse" onclick="fuseRadicals()"
+                class="cyber-btn w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-lg shadow-sm transition-all">
                 ⚡ Initiate Kanji Fusion Reaction
               </button>
             </div>
 
             <!-- Forge Result Lore Text -->
-            <div id="forge-result-text" class="mt-4 p-3.5 rounded-lg bg-[#141418] border border-[#2d2d35] text-xs text-[#9ca3af] leading-relaxed min-h-[56px] flex items-center justify-center text-center">
-              Select two compatible radicals from your inventory and ignite the fusion chamber to synthesize compound Kanji.
+            <div id="forge-result-text"
+              class="mt-4 p-3.5 rounded-lg bg-[#141418] border border-[#2d2d35] text-xs text-[#9ca3af] leading-relaxed min-h-[56px] flex items-center justify-center text-center">
+              Select two compatible radicals from your inventory and ignite the fusion chamber to synthesize compound
+              Kanji.
             </div>
 
           </div>
@@ -1240,7 +1412,7 @@
               <span class="font-semibold text-white">Unlocked Arsenal & Compound Modules:</span>
               <span class="text-emerald-400 font-medium">Ready</span>
             </div>
-            
+
             <div id="unlocked-arsenal" class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
               <div class="p-3 rounded-lg bg-[#18181b] border border-[#2d2d35] flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -1279,9 +1451,10 @@
          SECTION 4: KANA BLASTER SHOOTER (#view-shooter)
          ======================================================================== -->
     <section id="view-shooter" class="hidden space-y-5">
-      
+
       <!-- Shooter Header & Difficulty Selector -->
-      <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div
+        class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-2 text-rose-400 text-xs font-medium mb-1">
             <span class="w-2 h-2 rounded-full bg-rose-500"></span>
@@ -1291,25 +1464,30 @@
             Kana Blaster // Speed Typing Interceptor
           </h2>
           <p class="text-[#9ca3af] text-xs mt-1 max-w-xl leading-relaxed">
-            Hostile glyph drones are descending. Type the correct Romaji reading into the targeting array to fire defensive lasers before hull impact!
+            Hostile glyph drones are descending. Type the correct Romaji reading into the targeting array to fire
+            defensive lasers before hull impact!
           </p>
         </div>
 
         <!-- Difficulty Selector & Sortie Launch -->
         <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
           <div class="flex items-center gap-1 bg-[#18181b] p-1 rounded-lg border border-zinc-700">
-            <button id="diff-aka" onclick="selectShooterDifficulty('aka')" class="px-2.5 py-1 rounded-md text-xs font-medium bg-zinc-700 text-white shadow-sm">
+            <button id="diff-aka" onclick="selectShooterDifficulty('aka')"
+              class="px-2.5 py-1 rounded-md text-xs font-medium bg-zinc-700 text-white shadow-sm">
               Row A-Ka
             </button>
-            <button id="diff-lookalike" onclick="selectShooterDifficulty('lookalikes')" class="px-2.5 py-1 rounded-md text-xs font-medium text-[#9ca3af] hover:text-white">
+            <button id="diff-lookalike" onclick="selectShooterDifficulty('lookalikes')"
+              class="px-2.5 py-1 rounded-md text-xs font-medium text-[#9ca3af] hover:text-white">
               Lookalikes シ/ツ/ソ/ン
             </button>
-            <button id="diff-full" onclick="selectShooterDifficulty('full')" class="px-2.5 py-1 rounded-md text-xs font-medium text-[#9ca3af] hover:text-white">
+            <button id="diff-full" onclick="selectShooterDifficulty('full')"
+              class="px-2.5 py-1 rounded-md text-xs font-medium text-[#9ca3af] hover:text-white">
               Full Kana + Radicals
             </button>
           </div>
 
-          <button id="btn-launch-shooter" onclick="startShooterGame()" class="cyber-btn px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs tracking-wide rounded-lg shadow-sm">
+          <button id="btn-launch-shooter" onclick="startShooterGame()"
+            class="cyber-btn px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs tracking-wide rounded-lg shadow-sm">
             🚀 Launch Sortie
           </button>
         </div>
@@ -1317,15 +1495,16 @@
 
       <!-- Tactical Shooter Canvas Viewport (#shooter-canvas) -->
       <div class="bg-[#1e1e24] border border-[#2d2d35] p-4 rounded-xl shadow-sm flex flex-col items-center">
-        
+
         <!-- Canvas Frame (850x440) -->
         <div class="relative w-full max-w-[850px] overflow-hidden rounded-lg">
           <canvas id="shooter-canvas" width="850" height="440" class="w-full h-auto mx-auto"></canvas>
         </div>
 
         <!-- Shooter HUD Bar: Hull Integrity | Targeting Input | Score -->
-        <div class="w-full max-w-[850px] mt-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-[#18181b] p-4 rounded-xl border border-zinc-700/80">
-          
+        <div
+          class="w-full max-w-[850px] mt-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-[#18181b] p-4 rounded-xl border border-zinc-700/80">
+
           <!-- Hull Integrity -->
           <div class="md:col-span-4 space-y-1.5">
             <div class="flex justify-between text-xs">
@@ -1340,14 +1519,8 @@
           <!-- Targeting Laser Input -->
           <div class="md:col-span-5 relative">
             <label for="laser-input" class="sr-only">Targeting Input</label>
-            <input 
-              type="text" 
-              id="laser-input" 
-              autocomplete="off" 
-              spellcheck="false" 
-              placeholder="Enter Romaji to fire" 
-              class="w-full py-2 px-3.5 rounded-lg bg-[#141418] border border-zinc-700 text-white placeholder-zinc-500 text-sm font-semibold tracking-wider uppercase text-center focus:outline-none focus:border-blue-500 transition-all"
-            >
+            <input type="text" id="laser-input" autocomplete="off" spellcheck="false" placeholder="Enter Romaji to fire"
+              class="w-full py-2 px-3.5 rounded-lg bg-[#141418] border border-zinc-700 text-white placeholder-zinc-500 text-sm font-semibold tracking-wider uppercase text-center focus:outline-none focus:border-blue-500 transition-all">
             <span class="absolute right-3 top-2.5 text-xs text-zinc-500">⏎</span>
           </div>
 
@@ -1376,9 +1549,10 @@
          SECTION 5: KAIWA COMMS (#view-kaiwa)
          ======================================================================== -->
     <section id="view-kaiwa" class="hidden space-y-5">
-      
+
       <!-- Kaiwa Header -->
-      <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div
+        class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-2 text-purple-400 text-xs font-medium mb-1">
             <span class="w-2 h-2 rounded-full bg-purple-400"></span>
@@ -1388,14 +1562,16 @@
             Kaiwa Comms // N5 - N2 Dialogue Transmissions
           </h2>
           <p class="text-[#9ca3af] text-xs mt-1 max-w-2xl leading-relaxed">
-            Master Subject - Object - Verb (SOV) particle clamping and natural intonation through tactical voice shadowing drills across Tokyo missions.
+            Master Subject - Object - Verb (SOV) particle clamping and natural intonation through tactical voice
+            shadowing drills across Tokyo missions.
           </p>
         </div>
 
         <!-- Scenario Mission Selector -->
         <div class="flex items-center gap-2">
           <label for="kaiwa-scenario" class="text-xs text-[#9ca3af] whitespace-nowrap">Mission:</label>
-          <select id="kaiwa-scenario" onchange="changeKaiwaMission(this.value)" class="bg-[#18181b] border border-zinc-700 text-white text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500">
+          <select id="kaiwa-scenario" onchange="changeKaiwaMission(this.value)"
+            class="bg-[#18181b] border border-zinc-700 text-white text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500">
             <option value="akihabara">01. Akihabara Market [N5 Survival]</option>
             <option value="shinjuku">02. Shinjuku Spaceport [N4 Navigation]</option>
             <option value="shibuya">03. Shibuya AI Lab [N3 Business]</option>
@@ -1406,7 +1582,7 @@
 
       <!-- Kaiwa Terminal Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        
+
         <!-- Left: SOV Particle Thrusters [5 Cols] -->
         <div class="lg:col-span-5 bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-4">
           <div class="flex items-center justify-between">
@@ -1417,7 +1593,8 @@
           </div>
 
           <p class="text-xs text-[#9ca3af] leading-relaxed">
-            Japanese follows Subject-Object-Verb syntax. Particles act as magnetic clamps specifying the function of each word block:
+            Japanese follows Subject-Object-Verb syntax. Particles act as magnetic clamps specifying the function of
+            each word block:
           </p>
 
           <div class="card-list-group">
@@ -1469,7 +1646,7 @@
 
         <!-- Right: Interactive Conversation Terminal [7 Cols] -->
         <div class="lg:col-span-7 bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-4">
-          
+
           <div class="flex items-center justify-between pb-2 border-b border-[#2a2a34] text-xs">
             <span class="text-white font-medium flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-blue-400"></span>
@@ -1480,7 +1657,7 @@
 
           <!-- Dialogue Transmission Box -->
           <div id="kaiwa-dialogue-box" class="space-y-4 p-4 rounded-xl bg-[#141418] border border-[#2d2d35]">
-            
+
             <!-- Transmission Line 1 -->
             <div class="space-y-1">
               <div class="flex items-center gap-2 text-xs text-blue-400 font-medium">
@@ -1488,7 +1665,8 @@
                 <span class="text-[10px] text-zinc-500">[NATIVE AUDIO]</span>
               </div>
               <div class="text-lg lg:text-xl font-jp font-bold text-white tracking-wide">
-                すみません、秋葉原駅<span class="text-sky-400 font-black">は</span>どこです<span class="text-amber-400 font-black">か</span>？
+                すみません、秋葉原駅<span class="text-sky-400 font-black">は</span>どこです<span
+                  class="text-amber-400 font-black">か</span>？
               </div>
               <div class="text-xs font-mono text-zinc-400">
                 Sumimasen, Akihabara-eki wa doko desu ka?
@@ -1506,7 +1684,8 @@
                 <span>RECEPTIONIST:</span>
               </div>
               <div class="text-lg lg:text-xl font-jp font-bold text-slate-200 tracking-wide">
-                あそこ<span class="text-purple-400 font-black">に</span>大き<span class="text-sky-400 font-black">な</span>タワー<span class="text-emerald-400 font-black">が</span>あります。
+                あそこ<span class="text-purple-400 font-black">に</span>大き<span
+                  class="text-sky-400 font-black">な</span>タワー<span class="text-emerald-400 font-black">が</span>あります。
               </div>
               <div class="text-xs font-mono text-zinc-400">
                 Asoko ni ookina tawaa ga arimasu.
@@ -1520,13 +1699,23 @@
 
           <!-- Voice Shadowing Audio Controls -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <button id="kaiwa-play-btn" onclick="playKaiwaDialogue()" class="cyber-btn py-3 px-4 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-300 border border-blue-500/30 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+            <button id="kaiwa-play-btn" onclick="playKaiwaDialogue()"
+              class="cyber-btn py-3 px-4 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-300 border border-blue-500/30 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clip-rule="evenodd"></path>
+              </svg>
               <span>Listen to Native Audio</span>
             </button>
 
-            <button id="kaiwa-mic-btn" onclick="toggleKaiwaShadowing()" class="cyber-btn py-3 px-4 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
+            <button id="kaiwa-mic-btn" onclick="toggleKaiwaShadowing()"
+              class="cyber-btn py-3 px-4 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
+                  clip-rule="evenodd"></path>
+              </svg>
               <span>Start Voice Shadowing</span>
             </button>
           </div>
@@ -1643,7 +1832,7 @@
       }
     }
 
-    function toggleGhostGuide() {}
+    function toggleGhostGuide() { }
 
     function clearEtcher() {
       const canvas = document.getElementById('stroke-canvas');
@@ -1714,7 +1903,7 @@
       const pair = [forgeSelectedSlot1.radical, forgeSelectedSlot2.radical].sort().join('+');
       const out = document.getElementById('forge-output');
       const txt = document.getElementById('forge-result-text');
-      
+
       const recipes = {
         '日+月': { kanji: '明', meaning: 'Bright / Solar Laser', romaji: 'MEI / akarui', lore: 'Sun (日) + Moon (月) synthesize the brightest celestial radiance.' },
         '人+木': { kanji: '休', meaning: 'Rest / Cryo Chamber', romaji: 'KYUU / yasu', lore: 'A Person (人) resting alongside a Tree (木).' },
@@ -1743,12 +1932,12 @@
       }
     }
 
-    function selectShooterDifficulty(diff) {}
+    function selectShooterDifficulty(diff) { }
     function startShooterGame() {
       const btn = document.getElementById('btn-launch-shooter');
       if (btn) btn.innerText = 'Sortie Active 🚀';
     }
-    function changeKaiwaMission(mission) {}
+    function changeKaiwaMission(mission) { }
     function playKaiwaDialogue() {
       if ('speechSynthesis' in window) {
         const u = new SpeechSynthesisUtterance('すみません、秋葉原駅はどこですか？');
@@ -1779,4 +1968,5 @@
   <script src="kaiwa.js"></script>
 
 </body>
+
 </html>

@@ -153,7 +153,15 @@
 
     // Special lifecycle triggers per view
     if (tabId === 'bootcamp') {
-      setTimeout(() => LaserEtcher.redraw(), 50);
+      setTimeout(() => {
+        if (typeof LaserEtcher !== 'undefined' && LaserEtcher) {
+          if (!LaserEtcher.currentChar && currentChar) {
+            LaserEtcher.loadCharacter(currentChar);
+          } else {
+            LaserEtcher.redraw();
+          }
+        }
+      }, 50);
       if (window.PlayerState) window.PlayerState.updateHUD();
     } else if (tabId === 'shooter') {
       if (window.ShooterGame && typeof window.ShooterGame.resize === 'function') {
@@ -496,6 +504,20 @@
     currentIndex = index;
     currentChar = currentList[index];
 
+    // Single Source of Truth hydration: ensure exact char, romaji, and strokes array from KIHON_DATA
+    if (currentChar && window.KIHON_DATA) {
+      if (!currentChar.strokes || !currentChar.strokes.length) {
+        const canonical = (typeof window.KIHON_DATA.getCharacter === 'function')
+          ? window.KIHON_DATA.getCharacter(currentChar.char || currentChar.id)
+          : [...(window.KIHON_DATA.hiragana || []), ...(window.KIHON_DATA.katakana || [])].find(c => c.char === currentChar.char || c.id === currentChar.id);
+        if (canonical && canonical.strokes) {
+          currentChar.strokes = canonical.strokes;
+          if (!currentChar.romaji && canonical.romaji) currentChar.romaji = canonical.romaji;
+          if (!currentChar.termination && canonical.termination) currentChar.termination = canonical.termination;
+        }
+      }
+    }
+
     // Reset card flip to front face
     const flashcard = document.getElementById('flashcard');
     if (flashcard) {
@@ -569,7 +591,7 @@
     }
 
     // Reset Laser Etcher Canvas for new character
-    if (window.LaserEtcher) {
+    if (typeof LaserEtcher !== 'undefined' && typeof LaserEtcher.loadCharacter === 'function') {
       LaserEtcher.loadCharacter(currentChar);
     }
 
@@ -745,15 +767,28 @@
       if (quizContainer) quizContainer.classList.add('hidden');
       if (deckContainer) deckContainer.classList.remove('hidden');
 
+      // Dynamically resolve active character from Flashcards / Single Source of Truth
+      const activeChar = currentChar || (currentList && currentList[currentIndex]) || (window.KIHON_DATA && window.KIHON_DATA[activeScript] && window.KIHON_DATA[activeScript][0]);
+      if (activeChar) {
+        currentChar = activeChar;
+      }
+
+      // Sync active character into Laser Etcher canvas
+      if (typeof LaserEtcher !== 'undefined' && typeof LaserEtcher.loadCharacter === 'function') {
+        if (!LaserEtcher.currentChar || LaserEtcher.currentChar.char !== (currentChar && currentChar.char)) {
+          LaserEtcher.loadCharacter(currentChar);
+        } else {
+          LaserEtcher.redraw();
+          LaserEtcher.updateStatus();
+        }
+      }
+
       if (mode === 'etcher') {
         const etcherCanvas = document.getElementById('stroke-canvas');
         if (etcherCanvas) {
           etcherCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        LaserEtcher.redraw();
-        updateStatusNotice(`[LEVEL 3 ACTIVE] 4-Quadrant Laser Stroke Order Guide ready for ${currentChar ? currentChar.char : ''}.`);
-      } else {
-        LaserEtcher.redraw();
+        updateStatusNotice(`[LEVEL 3 ACTIVE] 4-Quadrant Laser Stroke Order Guide ready for ${currentChar ? currentChar.char + ' (' + currentChar.romaji + ')' : ''}.`);
       }
     }
 
@@ -1227,10 +1262,45 @@
       this.canvas.addEventListener('pointercancel', this.onPointerUp.bind(this));
       this.canvas.addEventListener('pointerleave', this.onPointerUp.bind(this));
 
-      this.redraw();
+      // Resolve initial character dynamically from active flashcard or KIHON_DATA SSOT
+      const initial = (typeof currentChar !== 'undefined' && currentChar)
+        ? currentChar
+        : (typeof currentList !== 'undefined' && currentList && currentList.length ? currentList[0] : (window.KIHON_DATA && window.KIHON_DATA.hiragana ? window.KIHON_DATA.hiragana[0] : null));
+      if (initial) {
+        this.loadCharacter(initial);
+      } else {
+        this.redraw();
+      }
     },
 
     loadCharacter: function (charObj) {
+      if (!charObj) {
+        charObj = (typeof currentChar !== 'undefined' && currentChar)
+          ? currentChar
+          : (window.KIHON_DATA && window.KIHON_DATA.hiragana ? window.KIHON_DATA.hiragana[0] : null);
+      }
+      if (!charObj) return;
+
+      // If string/id passed, lookup canonical character from KIHON_DATA SSOT
+      if (typeof charObj === 'string' && window.KIHON_DATA) {
+        const canonical = (typeof window.KIHON_DATA.getCharacter === 'function')
+          ? window.KIHON_DATA.getCharacter(charObj)
+          : [...(window.KIHON_DATA.hiragana || []), ...(window.KIHON_DATA.katakana || [])].find(c => c.char === charObj || c.id === charObj);
+        if (canonical) charObj = canonical;
+      }
+
+      // Single source of truth enforcement: ensure exact strokes array from KIHON_DATA
+      if ((!charObj.strokes || !charObj.strokes.length) && window.KIHON_DATA) {
+        const canonical = (typeof window.KIHON_DATA.getCharacter === 'function')
+          ? window.KIHON_DATA.getCharacter(charObj.char || charObj.id)
+          : [...(window.KIHON_DATA.hiragana || []), ...(window.KIHON_DATA.katakana || [])].find(c => c.char === charObj.char || c.id === charObj.id);
+        if (canonical && canonical.strokes) {
+          charObj.strokes = canonical.strokes;
+          if (!charObj.romaji && canonical.romaji) charObj.romaji = canonical.romaji;
+          if (!charObj.termination && canonical.termination) charObj.termination = canonical.termination;
+        }
+      }
+
       this.currentChar = charObj;
       this.currentStrokeIndex = 0;
       this.completedStrokes = [];
@@ -1241,6 +1311,7 @@
       }
       this.redraw();
       this.updateStatus();
+      this.updateTerminationBadges();
     },
 
     updateStatus: function (customMsg) {
@@ -1252,16 +1323,37 @@
         return;
       }
 
-      if (!this.currentChar || !this.currentChar.strokes) {
+      if (!this.currentChar || !this.currentChar.strokes || !this.currentChar.strokes.length) {
         statusEl.innerText = 'Ready: Standby for Glyph Selection';
         return;
       }
 
       const total = this.currentChar.strokes.length;
+      const charName = `${this.currentChar.char} (${this.currentChar.romaji ? this.currentChar.romaji.toUpperCase() : ''})`;
       if (this.currentStrokeIndex >= total) {
-        statusEl.innerHTML = `<span class="text-emerald-400 font-bold">✨ ALL ${total} STROKES VERIFIED! +25 XP AWARDED!</span>`;
+        statusEl.innerHTML = `<span class="text-emerald-400 font-bold">✨ ALL ${total} STROKES VERIFIED FOR ${charName}! +25 XP AWARDED!</span>`;
       } else {
-        statusEl.innerText = `Ready: Trace Vector Stroke ${this.currentStrokeIndex + 1}/${total}`;
+        statusEl.innerHTML = `Ready: Trace Vector Stroke <span class="text-cyan-400 font-bold font-mono">${this.currentStrokeIndex + 1}/${total}</span> for <span class="text-white font-bold">${charName}</span>`;
+      }
+    },
+
+    updateTerminationBadges: function () {
+      if (!this.currentChar) return;
+      const tomeBadge = document.getElementById('badge-tome');
+      const haneBadge = document.getElementById('badge-hane');
+      const haraiBadge = document.getElementById('badge-harai');
+
+      [tomeBadge, haneBadge, haraiBadge].forEach(b => {
+        if (b) b.className = "px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 font-medium";
+      });
+
+      const term = (this.currentChar.termination || '').toLowerCase();
+      if (term.includes('tome') && tomeBadge) {
+        tomeBadge.className = "px-2 py-0.5 rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 font-semibold";
+      } else if (term.includes('hane') && haneBadge) {
+        haneBadge.className = "px-2 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold";
+      } else if (term.includes('harai') && haraiBadge) {
+        haraiBadge.className = "px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-semibold";
       }
     },
 
@@ -1375,9 +1467,10 @@
       }
 
       // 1. POLARITY REVERSED CHECK:
-      // If user drew in reverse (started near end, ended near start) or negative dot product with reversed endpoints
-      const isReversed = (distStartToExpectedEnd < 55 && distEndToExpectedStart < 55) ||
-                         (dotProduct < -0.35 && (distStartToExpectedEnd < distStart || distEndToExpectedStart < distEnd));
+      // True reversal occurs when the user starts near the expected end and finishes near the expected start,
+      // OR draws with opposite vector orientation while starting closer to the expected end.
+      const isReversed = (targetChordDist >= 30 && distStartToExpectedEnd < distStart && distEndToExpectedStart < distEnd && distStartToExpectedEnd < 65 && distEndToExpectedStart < 65) ||
+                         (targetChordDist > 20 && dotProduct < -0.35 && distStartToExpectedEnd < distStart);
 
       if (isReversed) {
         AudioFX.polarityReversedBuzz();
@@ -1390,12 +1483,12 @@
 
       // 2. START & END ANCHOR NODE TOLERANCES
       const isStartValid = distStart < 68;
-      const isEndValid = distEnd < 72 || targetChordDist < 25;
+      const isEndValid = distEnd < 75 || targetChordDist < 25;
 
       if (!isStartValid) {
         AudioFX.polarityReversedBuzz();
         this.flashCanvasBorder('amber');
-        this.updateStatus('Vector deviation: Start at the pulsing amber node (1, 2...)');
+        this.updateStatus(`Vector deviation: Start at the pulsing amber node (${this.currentStrokeIndex + 1})`);
         this.userPoints = [];
         this.redraw();
         return;
@@ -1429,8 +1522,8 @@
             }
           }
 
-          // If user cut straight across and missed this curved waypoint (tolerance: 52px)
-          if (minDistanceToWaypoint > 52) {
+          // If user cut straight across and missed this curved waypoint (tolerance: 60px)
+          if (minDistanceToWaypoint > 60) {
             shapeMismatch = true;
             break;
           }
@@ -1438,9 +1531,7 @@
       }
 
       // Check B: Sinuosity / Curvature Ratio Check
-      // If target requires a significant curve or loop (targetSinuosity >= 1.25)
-      // but user drew a straight line shortcut (userSinuosity < 1.12):
-      if (!shapeMismatch && targetSinuosity >= 1.25 && userSinuosity < 1.12) {
+      if (!shapeMismatch && targetSinuosity >= 1.25 && userSinuosity < 1.10) {
         shapeMismatch = true;
       }
 
@@ -1460,7 +1551,7 @@
         const avgDev = totalDev / sampleCount;
 
         // If average or maximum deviation along the trajectory is too high
-        if (avgDev > 48 || maxDev > 72) {
+        if (avgDev > 50 || maxDev > 75) {
           shapeMismatch = true;
         }
       }
@@ -1584,7 +1675,7 @@
       // 1. Draw 4-Quadrant Genkō Yōshi Grid
       this.drawGenkoYoshiGrid(w, h);
 
-      if (!this.currentChar || !this.currentChar.strokes) return;
+      if (!this.currentChar || !this.currentChar.strokes || !this.currentChar.strokes.length) return;
 
       // 2. Draw Ghost Strokes (faint translucent cyan guide) if ghostMode enabled
       if (this.ghostMode) {
@@ -1594,10 +1685,8 @@
       // 3. Draw Locked/Completed Strokes in Glowing Emerald (#10b981)
       this.drawCompletedStrokes(w, h);
 
-      // 4. Draw Active Stroke Starting Anchor Node (Pulsing Amber Circle with Stroke Number)
-      if (this.currentStrokeIndex < this.currentChar.strokes.length) {
-        this.drawActiveAnchorNode(w, h);
-      }
+      // 4. Draw Sequence Start Nodes ('1', '2', '3'...) dynamically referencing active character
+      this.drawStrokeSequenceNodes(w, h);
     },
 
     drawGenkoYoshiGrid: function (w, h) {
@@ -1645,20 +1734,44 @@
         this.ctx.stroke();
         return;
       }
+      if (pts.length === 3) {
+        this.ctx.moveTo(pts[0].x, pts[0].y);
+        this.ctx.quadraticCurveTo(pts[1].x, pts[1].y, pts[2].x, pts[2].y);
+        this.ctx.stroke();
+        return;
+      }
 
+      // Smooth multi-segment quadratic curve through midpoints
       this.ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length - 1; i++) {
+      for (let i = 1; i < pts.length - 2; i++) {
         const midX = (pts[i].x + pts[i + 1].x) / 2;
         const midY = (pts[i].y + pts[i + 1].y) / 2;
         this.ctx.quadraticCurveTo(pts[i].x, pts[i].y, midX, midY);
       }
-      this.ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+      this.ctx.quadraticCurveTo(
+        pts[pts.length - 2].x,
+        pts[pts.length - 2].y,
+        pts[pts.length - 1].x,
+        pts[pts.length - 1].y
+      );
       this.ctx.stroke();
     },
 
     drawGhostStrokes: function (w, h) {
+      if (!this.currentChar || !this.currentChar.strokes) return;
       const strokes = this.currentChar.strokes;
+
       this.ctx.save();
+
+      // Subtle watermark of active character glyph in center of grid
+      if (this.currentChar.char) {
+        this.ctx.font = 'bold 150px "Noto Sans JP", sans-serif';
+        this.ctx.fillStyle = 'rgba(6, 182, 212, 0.035)';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(this.currentChar.char, w / 2, h / 2 + 8);
+      }
+
       this.ctx.lineWidth = 8.5;
       this.ctx.lineCap = 'round';
       this.ctx.lineJoin = 'round';
@@ -1694,66 +1807,124 @@
       this.ctx.restore();
     },
 
-    drawActiveAnchorNode: function (w, h) {
-      const activeStroke = this.currentChar.strokes[this.currentStrokeIndex];
-      if (!activeStroke || !activeStroke.length) return;
-
-      const startPt = activeStroke[0];
-      const endPt = activeStroke[activeStroke.length - 1];
-
-      const sx = startPt[0] * w;
-      const sy = startPt[1] * h;
-      const ex = endPt[0] * w;
-      const ey = endPt[1] * h;
+    drawStrokeSequenceNodes: function (w, h) {
+      if (!this.currentChar || !this.currentChar.strokes) return;
+      const strokes = this.currentChar.strokes;
+      const total = strokes.length;
 
       this.ctx.save();
 
-      // Outer Pulsing Glow Ring
-      this.ctx.beginPath();
-      this.ctx.arc(sx, sy, 16, 0, Math.PI * 2);
-      this.ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
-      this.ctx.shadowColor = '#f59e0b';
-      this.ctx.shadowBlur = 14;
-      this.ctx.fill();
+      // 1. Draw sequence guide nodes ('1', '2', '3'...) for completed & upcoming strokes
+      if (this.ghostMode) {
+        for (let i = 0; i < total; i++) {
+          if (i === this.currentStrokeIndex) continue; // Active stroke drawn below with full glow
+          const stroke = strokes[i];
+          if (!stroke || !stroke.length) continue;
 
-      // Solid Amber Center Node
-      this.ctx.beginPath();
-      this.ctx.arc(sx, sy, 11, 0, Math.PI * 2);
-      this.ctx.fillStyle = '#f59e0b';
-      this.ctx.fill();
+          const sx = stroke[0][0] * w;
+          const sy = stroke[0][1] * h;
 
-      // Stroke Number (1-indexed)
-      this.ctx.fillStyle = '#020617';
-      this.ctx.font = 'bold 11px sans-serif';
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'middle';
-      this.ctx.fillText((this.currentStrokeIndex + 1).toString(), sx, sy + 0.5);
+          if (i < this.currentStrokeIndex) {
+            // Completed stroke: small emerald verified node
+            this.ctx.beginPath();
+            this.ctx.arc(sx, sy, 7, 0, Math.PI * 2);
+            this.ctx.fillStyle = '#10b981';
+            this.ctx.shadowColor = '#10b981';
+            this.ctx.shadowBlur = 8;
+            this.ctx.fill();
 
-      // Directional Indicator Arrow
-      const angle = Math.atan2(ey - sy, ex - sx);
-      const arrowDist = 24;
-      const ax = sx + Math.cos(angle) * arrowDist;
-      const ay = sy + Math.sin(angle) * arrowDist;
+            // Subtle checkmark
+            this.ctx.strokeStyle = '#020617';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(sx - 3, sy);
+            this.ctx.lineTo(sx - 0.5, sy + 2.5);
+            this.ctx.lineTo(sx + 3, sy - 2);
+            this.ctx.stroke();
+          } else {
+            // Upcoming stroke: numbered guide node ('2', '3'...)
+            this.ctx.beginPath();
+            this.ctx.arc(sx, sy, 10, 0, Math.PI * 2);
+            this.ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+            this.ctx.fill();
 
-      this.ctx.strokeStyle = '#f59e0b';
-      this.ctx.fillStyle = '#f59e0b';
-      this.ctx.lineWidth = 2.5;
+            this.ctx.strokeStyle = 'rgba(6, 182, 212, 0.55)';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.stroke();
 
-      // Small directional arrow head
-      this.ctx.beginPath();
-      this.ctx.moveTo(sx + Math.cos(angle) * 14, sy + Math.sin(angle) * 14);
-      this.ctx.lineTo(ax, ay);
-      this.ctx.stroke();
+            // Stroke number
+            this.ctx.fillStyle = 'rgba(165, 243, 252, 0.9)';
+            this.ctx.font = 'bold 10px monospace';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText((i + 1).toString(), sx, sy + 0.5);
+          }
+        }
+      }
 
-      const headlen = 7;
-      this.ctx.beginPath();
-      this.ctx.moveTo(ax, ay);
-      this.ctx.lineTo(ax - headlen * Math.cos(angle - Math.PI / 6), ay - headlen * Math.sin(angle - Math.PI / 6));
-      this.ctx.lineTo(ax - headlen * Math.cos(angle + Math.PI / 6), ay - headlen * Math.sin(angle + Math.PI / 6));
-      this.ctx.closePath();
-      this.ctx.fill();
+      // 2. Draw ACTIVE stroke starting node (Pulsing Amber Circle with Stroke Number & Vector Direction Arrow)
+      if (this.currentStrokeIndex < total) {
+        const activeStroke = strokes[this.currentStrokeIndex];
+        if (activeStroke && activeStroke.length) {
+          const sx = activeStroke[0][0] * w;
+          const sy = activeStroke[0][1] * h;
+          const endPt = activeStroke[activeStroke.length - 1];
+          const ex = endPt[0] * w;
+          const ey = endPt[1] * h;
+
+          // Outer Pulsing Glow Ring
+          this.ctx.beginPath();
+          this.ctx.arc(sx, sy, 16, 0, Math.PI * 2);
+          this.ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
+          this.ctx.shadowColor = '#f59e0b';
+          this.ctx.shadowBlur = 14;
+          this.ctx.fill();
+
+          // Solid Amber Center Node
+          this.ctx.beginPath();
+          this.ctx.arc(sx, sy, 11, 0, Math.PI * 2);
+          this.ctx.fillStyle = '#f59e0b';
+          this.ctx.fill();
+
+          // Active Stroke Number ('1', '2', '3'...)
+          this.ctx.fillStyle = '#020617';
+          this.ctx.font = 'bold 11px sans-serif';
+          this.ctx.textAlign = 'center';
+          this.ctx.textBaseline = 'middle';
+          this.ctx.fillText((this.currentStrokeIndex + 1).toString(), sx, sy + 0.5);
+
+          // Directional Vector Arrow
+          const angle = Math.atan2(ey - sy, ex - sx);
+          const arrowDist = 24;
+          const ax = sx + Math.cos(angle) * arrowDist;
+          const ay = sy + Math.sin(angle) * arrowDist;
+
+          this.ctx.strokeStyle = '#f59e0b';
+          this.ctx.fillStyle = '#f59e0b';
+          this.ctx.lineWidth = 2.5;
+
+          // Arrow line
+          this.ctx.beginPath();
+          this.ctx.moveTo(sx + Math.cos(angle) * 14, sy + Math.sin(angle) * 14);
+          this.ctx.lineTo(ax, ay);
+          this.ctx.stroke();
+
+          // Arrow head
+          const headlen = 7;
+          this.ctx.beginPath();
+          this.ctx.moveTo(ax, ay);
+          this.ctx.lineTo(ax - headlen * Math.cos(angle - Math.PI / 6), ay - headlen * Math.sin(angle - Math.PI / 6));
+          this.ctx.lineTo(ax - headlen * Math.cos(angle + Math.PI / 6), ay - headlen * Math.sin(angle + Math.PI / 6));
+          this.ctx.closePath();
+          this.ctx.fill();
+        }
+      }
 
       this.ctx.restore();
+    },
+
+    drawActiveAnchorNode: function (w, h) {
+      this.drawStrokeSequenceNodes(w, h);
     },
 
     drawLiveUserStroke: function () {
@@ -1874,6 +2045,9 @@
     },
 
     clearEtcher: function () {
+      if (!this.currentChar && typeof currentChar !== 'undefined' && currentChar) {
+        this.currentChar = currentChar;
+      }
       this.currentStrokeIndex = 0;
       this.completedStrokes = [];
       this.userPoints = [];

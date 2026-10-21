@@ -615,9 +615,9 @@
       { id: 'k-mo', char: 'モ', romaji: 'mo', mnemonic: 'A Monitor screen with dual rails and an upturned base.', system: 'MOMENTUM WHEEL ENCODER', termination: 'Tome (Stop)', strokes: [[[0.30, 0.35], [0.70, 0.35]], [[0.28, 0.50], [0.72, 0.50]], [[0.48, 0.22], [0.48, 0.70], [0.68, 0.70]]] },
 
       // Ya-row
-      { id: 'k-ya', char: 'ヤ', romaji: 'ya', mnemonic: 'A high-tech Yacht sailing past a harbor.', system: 'Y-AXIS VECTOR NOZZLE', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.40], [0.68, 0.35], [0.55, 0.75]], [[0.42, 0.25], [0.45, 0.38]], [[0.68, 0.25], [0.65, 0.78]]] },
+      { id: 'k-ya', char: 'ヤ', romaji: 'ya', mnemonic: 'A high-tech Yacht sailing past a harbor.', system: 'Y-AXIS VECTOR NOZZLE', termination: 'Harai (Sweep)', strokes: [[[0.28, 0.38], [0.68, 0.38], [0.48, 0.75]], [[0.62, 0.22], [0.62, 0.80]]] },
       { id: 'k-yu', char: 'ユ', romaji: 'yu', mnemonic: 'A distinct U-turn sign turned sideways.', system: 'UTILITY POWER BUS', termination: 'Tome (Stop)', strokes: [[[0.35, 0.35], [0.68, 0.35], [0.68, 0.70]], [[0.35, 0.70], [0.78, 0.70]]] },
-      { id: 'k-yo', char: 'ヨ', romaji: 'yo', mnemonic: 'A cyber Yoga rack or Yolk crate with three shelves.', system: 'YOKE STEERING ACTUATOR', termination: 'Tome (Stop)', strokes: [[[0.35, 0.30], [0.70, 0.30], [0.70, 0.75], [0.35, 0.75]], [[0.35, 0.52], [0.68, 0.52]]] },
+      { id: 'k-yo', char: 'ヨ', romaji: 'yo', mnemonic: 'A cyber Yoga rack or Yolk crate with three shelves.', system: 'YOKE STEERING ACTUATOR', termination: 'Tome (Stop)', strokes: [[[0.32, 0.28], [0.68, 0.28], [0.68, 0.75]], [[0.32, 0.52], [0.66, 0.52]], [[0.32, 0.75], [0.68, 0.75]]] },
 
       // Ra-row
       { id: 'k-ra', char: 'ラ', romaji: 'ra', mnemonic: 'A Radio antenna with a right support bracket.', system: 'RADAR ALTIMETER DISH', termination: 'Harai (Sweep)', strokes: [[[0.35, 0.32], [0.65, 0.32]], [[0.42, 0.48], [0.68, 0.48], [0.50, 0.80]]] },
@@ -646,7 +646,30 @@
       { id: 'r-tsuki', char: '月', romaji: 'tsuki / getsu', meaning: 'Moon / Month', mnemonic: 'A glowing lunar crescent with two internal satellite beams.', system: 'LUNAR GRAVITATIONAL RADAR', termination: 'Hane (Hook)', strokes: [[[0.32, 0.20], [0.30, 0.82]], [[0.32, 0.20], [0.68, 0.20], [0.68, 0.82], [0.58, 0.78]], [[0.32, 0.42], [0.68, 0.42]], [[0.32, 0.60], [0.68, 0.60]]] },
       { id: 'r-kane', char: '金', romaji: 'kane / kin', meaning: 'Gold / Metal', mnemonic: 'A mountain sheltering golden alloy nuggets under armor plates.', system: 'TITANIUM-GOLD HULL REINFORCEMENT', termination: 'Tome (Stop)', strokes: [[[0.50, 0.18], [0.28, 0.42]], [[0.50, 0.18], [0.72, 0.42]], [[0.35, 0.46], [0.65, 0.46]], [[0.50, 0.46], [0.50, 0.78]], [[0.40, 0.56], [0.35, 0.64]], [[0.60, 0.56], [0.65, 0.64]], [[0.30, 0.68], [0.70, 0.68]], [[0.22, 0.82], [0.78, 0.82]]] },
       { id: 'r-kokoro', char: '心', romaji: 'kokoro / shin', meaning: 'Heart / Neural Core', mnemonic: 'The neural heart chamber with four biological valve pulses.', system: 'NEURAL BIO-FEEDBACK CORE', termination: 'Hane (Hook)', strokes: [[[0.30, 0.45], [0.26, 0.62]], [[0.38, 0.40], [0.46, 0.75], [0.68, 0.75], [0.74, 0.55]], [[0.48, 0.48], [0.52, 0.56]], [[0.74, 0.38], [0.80, 0.46]]] }
-    ]
+    ],
+
+    /**
+     * Single Source of Truth lookup for any kana/radical character.
+     * Returns full character object with char, romaji, mnemonic, system, termination, and strokes array.
+     */
+    getCharacter: function (charOrId, script) {
+      if (!charOrId) return null;
+      const pools = script ? [this[script] || []] : [this.hiragana, this.katakana, this.radicals];
+      for (const pool of pools) {
+        if (!pool) continue;
+        const found = pool.find(item => item && (item.char === charOrId || item.id === charOrId || item.romaji === charOrId));
+        if (found) return found;
+      }
+      return null;
+    },
+
+    /**
+     * Get validated traditional stroke vectors for a character directly from Single Source of Truth.
+     */
+    getStrokes: function (charOrId, script) {
+      const item = this.getCharacter(charOrId, script);
+      return (item && Array.isArray(item.strokes)) ? item.strokes : [];
+    }
   };
 
 
