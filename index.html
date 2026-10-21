@@ -1823,25 +1823,35 @@
       }
     }
 
-    // Canvas Laser Guides
+    // Canvas Laser Guides (Delegates to LaserEtcher engine)
     function animateGuideStrokes() {
-      const line = document.getElementById('canvas-laser-line');
-      if (line) {
-        line.classList.remove('hidden');
-        setTimeout(() => line.classList.add('hidden'), 2400);
+      if (window.LaserEtcher && typeof window.LaserEtcher.animateGuideStrokes === 'function') {
+        window.LaserEtcher.animateGuideStrokes();
+      } else {
+        const line = document.getElementById('canvas-laser-line');
+        if (line) {
+          line.classList.remove('hidden');
+          setTimeout(() => line.classList.add('hidden'), 2400);
+        }
       }
     }
 
-    function toggleGhostGuide() { }
+    function toggleGhostGuide() {
+      if (window.LaserEtcher && typeof window.LaserEtcher.toggleGhostGuide === 'function') {
+        window.LaserEtcher.toggleGhostGuide();
+      }
+    }
 
     function clearEtcher() {
-      const canvas = document.getElementById('stroke-canvas');
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (window.LaserEtcher && typeof window.LaserEtcher.clearEtcher === 'function') {
+        window.LaserEtcher.clearEtcher();
+      } else {
+        const canvas = document.getElementById('stroke-canvas');
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
       }
-      const status = document.getElementById('stroke-status');
-      if (status) status.innerText = 'Ready: Follow Laser Vector 1/3';
     }
 
     // Radical Forge Slot Management

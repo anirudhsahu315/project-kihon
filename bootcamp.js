@@ -154,12 +154,11 @@
     // Special lifecycle triggers per view
     if (tabId === 'bootcamp') {
       setTimeout(() => {
-        if (typeof LaserEtcher !== 'undefined' && LaserEtcher) {
-          if (!LaserEtcher.currentChar && currentChar) {
-            LaserEtcher.loadCharacter(currentChar);
-          } else {
-            LaserEtcher.redraw();
-          }
+        const active = (typeof currentChar !== 'undefined' && currentChar) ? currentChar : (typeof currentList !== 'undefined' && currentList && currentList[currentIndex]);
+        if (typeof LaserEtcher !== 'undefined' && LaserEtcher && active) {
+          LaserEtcher.loadCharacter(active, currentIndex);
+        } else if (window.LaserEtcher && typeof window.LaserEtcher.loadCharacter === 'function' && active) {
+          window.LaserEtcher.loadCharacter(active, currentIndex);
         }
       }, 50);
       if (window.PlayerState) window.PlayerState.updateHUD();
@@ -461,6 +460,34 @@
   };
 
   /**
+   * Update active selection highlight on character chips in #char-selector
+   */
+  function updateCharSelectorHighlight() {
+    const strip = document.getElementById('char-selector');
+    if (!strip) return;
+    if (!strip.children.length || strip.children.length !== currentList.length) {
+      renderCharSelector();
+      return;
+    }
+
+    Array.from(strip.children).forEach((btn, idx) => {
+      const isSelected = idx === currentIndex;
+      const item = currentList[idx];
+      const isMastered = window.PlayerState && item && (window.PlayerState.isMastered(item.char) || window.PlayerState.isMastered(item.id));
+
+      btn.className = `char-pill px-3.5 py-2 rounded-lg font-jp text-lg font-bold flex-shrink-0 transition-all flex items-center gap-1.5 relative ${
+        isSelected
+          ? 'bg-blue-950/80 border-2 border-blue-400 text-white shadow-[0_0_15px_rgba(56,189,248,0.4)] scale-105'
+          : 'bg-[#18181b] border border-[#2d2d35] text-zinc-300 hover:border-blue-500/50 hover:text-white'
+      } ${isMastered ? 'ring-1 ring-emerald-400/80 border-emerald-500/60' : ''}`;
+    });
+
+    if (strip.children[currentIndex]) {
+      strip.children[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }
+
+  /**
    * Render horizontal character chips in #char-selector
    */
   function renderCharSelector() {
@@ -471,10 +498,11 @@
 
     currentList.forEach((item, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.index = idx.toString();
       const isMastered = window.PlayerState && (window.PlayerState.isMastered(item.char) || window.PlayerState.isMastered(item.id));
       const isSelected = idx === currentIndex;
 
-      // Base chip classes
       btn.className = `char-pill px-3.5 py-2 rounded-lg font-jp text-lg font-bold flex-shrink-0 transition-all flex items-center gap-1.5 relative ${
         isSelected
           ? 'bg-blue-950/80 border-2 border-blue-400 text-white shadow-[0_0_15px_rgba(56,189,248,0.4)] scale-105'
@@ -487,36 +515,90 @@
         ${isMastered ? `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>` : ''}
       `;
 
-      btn.onclick = () => loadCharacter(idx);
+      btn.onclick = (e) => {
+        if (e) e.stopPropagation();
+        loadCharacter(idx);
+      };
       strip.appendChild(btn);
     });
+
+    // Ensure event delegation on strip
+    if (!strip._hasKihonListener) {
+      strip._hasKihonListener = true;
+      strip.addEventListener('click', (e) => {
+        const chip = e.target.closest('button[data-index]');
+        if (chip) {
+          const idx = parseInt(chip.dataset.index, 10);
+          if (!isNaN(idx)) {
+            loadCharacter(idx);
+          }
+        }
+      });
+    }
+
+    if (strip.children[currentIndex]) {
+      strip.children[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
   }
 
   /**
    * Load active character into Flashcard and Laser Etcher
+   * Establishes single source of truth across 3D Deck and Stroke Order Guidance
    * Triggers native audio pronunciation automatically on card load
    */
-  window.loadCharacter = function (index) {
-    if (!currentList.length) return;
-    if (index < 0) index = currentList.length - 1;
-    if (index >= currentList.length) index = 0;
+  function loadCharacter(indexOrChar) {
+    if (!currentList || !currentList.length) {
+      if (window.KIHON_DATA) {
+        currentList = (currentCategory === 'katakana' ? window.KIHON_DATA.katakana : window.KIHON_DATA.hiragana) || [];
+      }
+      if (!currentList || !currentList.length) return;
+    }
 
-    currentIndex = index;
-    currentChar = currentList[index];
+    let targetIndex = null;
+    if (typeof indexOrChar === 'number') {
+      targetIndex = indexOrChar;
+    } else if (typeof indexOrChar === 'string') {
+      targetIndex = currentList.findIndex(item => item && (item.char === indexOrChar || item.id === indexOrChar || item.romaji === indexOrChar));
+      if (targetIndex === -1 && window.KIHON_DATA && typeof window.KIHON_DATA.getCharacter === 'function') {
+        const canonical = window.KIHON_DATA.getCharacter(indexOrChar, currentCategory);
+        if (canonical) {
+          targetIndex = currentList.findIndex(item => item && item.char === canonical.char);
+        }
+      }
+    } else if (indexOrChar && typeof indexOrChar === 'object') {
+      targetIndex = currentList.findIndex(item => item && (item === indexOrChar || item.char === indexOrChar.char || item.id === indexOrChar.id));
+    }
+
+    if (targetIndex === null || isNaN(targetIndex) || targetIndex === -1 && typeof indexOrChar !== 'number') {
+      targetIndex = typeof currentIndex === 'number' ? currentIndex : 0;
+    }
+
+    // Wrap-around navigation for previous/next boundaries
+    if (targetIndex < 0) targetIndex = currentList.length - 1;
+    if (targetIndex >= currentList.length) targetIndex = 0;
+
+    currentIndex = targetIndex;
+    currentChar = currentList[targetIndex];
 
     // Single Source of Truth hydration: ensure exact char, romaji, and strokes array from KIHON_DATA
     if (currentChar && window.KIHON_DATA) {
-      if (!currentChar.strokes || !currentChar.strokes.length) {
-        const canonical = (typeof window.KIHON_DATA.getCharacter === 'function')
-          ? window.KIHON_DATA.getCharacter(currentChar.char || currentChar.id)
-          : [...(window.KIHON_DATA.hiragana || []), ...(window.KIHON_DATA.katakana || [])].find(c => c.char === currentChar.char || c.id === currentChar.id);
-        if (canonical && canonical.strokes) {
-          currentChar.strokes = canonical.strokes;
-          if (!currentChar.romaji && canonical.romaji) currentChar.romaji = canonical.romaji;
-          if (!currentChar.termination && canonical.termination) currentChar.termination = canonical.termination;
-        }
+      const canonical = (typeof window.KIHON_DATA.getCharacter === 'function')
+        ? window.KIHON_DATA.getCharacter(currentChar.char || currentChar.id, currentCategory)
+        : null;
+      if (canonical && canonical.strokes) {
+        currentChar.strokes = canonical.strokes;
+        if (!currentChar.romaji && canonical.romaji) currentChar.romaji = canonical.romaji;
+        if (!currentChar.termination && canonical.termination) currentChar.termination = canonical.termination;
+        if (canonical.mnemonic) currentChar.mnemonic = canonical.mnemonic;
+        if (canonical.system) currentChar.system = canonical.system;
       }
     }
+
+    // Expose active state globally for any caller/inspector
+    window.currentIndex = currentIndex;
+    window.currentChar = currentChar;
+    window.activeCardIndex = currentIndex;
+    window.activeCard = currentChar;
 
     // Reset card flip to front face
     const flashcard = document.getElementById('flashcard');
@@ -524,7 +606,7 @@
       flashcard.classList.remove('flipped');
     }
 
-    // Populate Card Front Face
+    // 1. Populate 3D Flashcard Deck Front Face
     const glyphEl = document.getElementById('card-glyph');
     const badgeEl = document.getElementById('card-type-badge');
     const idBadgeEl = document.getElementById('card-id-badge');
@@ -554,7 +636,7 @@
       cardFrontRomaji.textContent = currentChar.romaji;
     }
 
-    // Populate Card Back Face
+    // 2. Populate 3D Flashcard Deck Back Face
     const romajiEl = document.getElementById('card-romaji');
     const mnemonicEl = document.getElementById('card-mnemonic');
     const systemEl = document.getElementById('card-system');
@@ -563,7 +645,7 @@
     if (mnemonicEl) mnemonicEl.textContent = currentChar.mnemonic;
     if (systemEl) systemEl.textContent = currentChar.system || 'STANDARD VOCAB SYLLABARY';
 
-    // Highlight termination type
+    // 3. Highlight termination type
     const tomeBadge = document.getElementById('badge-tome');
     const haneBadge = document.getElementById('badge-hane');
     const haraiBadge = document.getElementById('badge-harai');
@@ -581,30 +663,28 @@
       haraiBadge.className = "px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-semibold";
     }
 
-    // Re-render character selector active highlight
-    renderCharSelector();
+    // 4. Update Top Symbol Matrix highlight
+    updateCharSelectorHighlight();
 
-    // Scroll active chip into view smoothly
-    const strip = document.getElementById('char-selector');
-    if (strip && strip.children[currentIndex]) {
-      strip.children[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
-
-    // Reset Laser Etcher Canvas for new character
+    // 5. SIMULTANEOUSLY update Stroke Order Guidance (Level 3 Canvas)
     if (typeof LaserEtcher !== 'undefined' && typeof LaserEtcher.loadCharacter === 'function') {
-      LaserEtcher.loadCharacter(currentChar);
+      LaserEtcher.loadCharacter(currentChar, currentIndex);
+    } else if (window.LaserEtcher && typeof window.LaserEtcher.loadCharacter === 'function') {
+      window.LaserEtcher.loadCharacter(currentChar, currentIndex);
     }
 
-    // AUTOMATIC NATIVE AUDIO PRONUNCIATION (ja-JP)
+    // 6. AUTOMATIC NATIVE AUDIO PRONUNCIATION (ja-JP)
     if (window.PlayerState && currentChar) {
       window.PlayerState.playAudio(currentChar.char);
     }
 
-    // Sync HUD status
+    // 7. Sync HUD telemetry
     if (window.PlayerState) {
       window.PlayerState.updateHUD();
     }
-  };
+  }
+
+  window.loadCharacter = loadCharacter;
 
   /**
    * Flip flashcard and trigger native pronunciation
@@ -774,13 +854,11 @@
       }
 
       // Sync active character into Laser Etcher canvas
-      if (typeof LaserEtcher !== 'undefined' && typeof LaserEtcher.loadCharacter === 'function') {
-        if (!LaserEtcher.currentChar || LaserEtcher.currentChar.char !== (currentChar && currentChar.char)) {
-          LaserEtcher.loadCharacter(currentChar);
-        } else {
-          LaserEtcher.redraw();
-          LaserEtcher.updateStatus();
-        }
+      const targetChar = currentChar || (currentList && currentList[currentIndex]);
+      if (typeof LaserEtcher !== 'undefined' && typeof LaserEtcher.loadCharacter === 'function' && targetChar) {
+        LaserEtcher.loadCharacter(targetChar, currentIndex);
+      } else if (window.LaserEtcher && typeof window.LaserEtcher.loadCharacter === 'function' && targetChar) {
+        window.LaserEtcher.loadCharacter(targetChar, currentIndex);
       }
 
       if (mode === 'etcher') {
@@ -1235,10 +1313,13 @@
   // - Realtime Glowing Laser Tracing
   // ==========================================================================
 
-  const LaserEtcher = {
+  var LaserEtcher = {
     canvas: null,
     ctx: null,
     currentChar: null,
+    currentIndex: 0,
+    activeCard: null,
+    activeCardIndex: 0,
     currentStrokeIndex: 0,
     completedStrokes: [],
     userPoints: [],
@@ -1266,49 +1347,83 @@
       const initial = (typeof currentChar !== 'undefined' && currentChar)
         ? currentChar
         : (typeof currentList !== 'undefined' && currentList && currentList.length ? currentList[0] : (window.KIHON_DATA && window.KIHON_DATA.hiragana ? window.KIHON_DATA.hiragana[0] : null));
+      const initialIdx = typeof currentIndex === 'number' ? currentIndex : 0;
       if (initial) {
-        this.loadCharacter(initial);
+        this.loadCharacter(initial, initialIdx);
       } else {
         this.redraw();
       }
     },
 
-    loadCharacter: function (charObj) {
-      if (!charObj) {
-        charObj = (typeof currentChar !== 'undefined' && currentChar)
+    loadCharacter: function (charOrIndex, optIndex) {
+      let resolvedIndex = typeof optIndex === 'number' ? optIndex : (typeof currentIndex === 'number' ? currentIndex : 0);
+      let targetChar = null;
+
+      if (typeof charOrIndex === 'number') {
+        resolvedIndex = charOrIndex;
+        targetChar = (typeof currentList !== 'undefined' && currentList && currentList[resolvedIndex])
+          ? currentList[resolvedIndex]
+          : (window.KIHON_DATA && window.KIHON_DATA.hiragana ? window.KIHON_DATA.hiragana[resolvedIndex] : null);
+      } else if (typeof charOrIndex === 'string') {
+        targetChar = (window.KIHON_DATA && typeof window.KIHON_DATA.getCharacter === 'function')
+          ? window.KIHON_DATA.getCharacter(charOrIndex)
+          : null;
+        if (!targetChar && typeof currentList !== 'undefined' && currentList) {
+          targetChar = currentList.find(c => c && (c.char === charOrIndex || c.id === charOrIndex || c.romaji === charOrIndex));
+        }
+        if (targetChar && typeof currentList !== 'undefined' && currentList) {
+          const foundIdx = currentList.findIndex(c => c && c.char === targetChar.char);
+          if (foundIdx !== -1) resolvedIndex = foundIdx;
+        }
+      } else if (charOrIndex && typeof charOrIndex === 'object') {
+        targetChar = charOrIndex;
+        if (typeof currentList !== 'undefined' && currentList) {
+          const foundIdx = currentList.findIndex(c => c && (c.char === targetChar.char || c.id === targetChar.id));
+          if (foundIdx !== -1) resolvedIndex = foundIdx;
+        }
+      } else {
+        targetChar = (typeof currentChar !== 'undefined' && currentChar)
           ? currentChar
-          : (window.KIHON_DATA && window.KIHON_DATA.hiragana ? window.KIHON_DATA.hiragana[0] : null);
-      }
-      if (!charObj) return;
-
-      // If string/id passed, lookup canonical character from KIHON_DATA SSOT
-      if (typeof charObj === 'string' && window.KIHON_DATA) {
-        const canonical = (typeof window.KIHON_DATA.getCharacter === 'function')
-          ? window.KIHON_DATA.getCharacter(charObj)
-          : [...(window.KIHON_DATA.hiragana || []), ...(window.KIHON_DATA.katakana || [])].find(c => c.char === charObj || c.id === charObj);
-        if (canonical) charObj = canonical;
+          : (typeof currentList !== 'undefined' && currentList && currentList[resolvedIndex])
+            ? currentList[resolvedIndex]
+            : (window.KIHON_DATA && window.KIHON_DATA.hiragana ? window.KIHON_DATA.hiragana[0] : null);
       }
 
-      // Single source of truth enforcement: ensure exact strokes array from KIHON_DATA
-      if ((!charObj.strokes || !charObj.strokes.length) && window.KIHON_DATA) {
-        const canonical = (typeof window.KIHON_DATA.getCharacter === 'function')
-          ? window.KIHON_DATA.getCharacter(charObj.char || charObj.id)
-          : [...(window.KIHON_DATA.hiragana || []), ...(window.KIHON_DATA.katakana || [])].find(c => c.char === charObj.char || c.id === charObj.id);
+      if (!targetChar) return;
+
+      // Ensure exact strokes, romaji, termination from KIHON_DATA single source of truth
+      if (window.KIHON_DATA && typeof window.KIHON_DATA.getCharacter === 'function') {
+        const canonical = window.KIHON_DATA.getCharacter(targetChar.char || targetChar.id);
         if (canonical && canonical.strokes) {
-          charObj.strokes = canonical.strokes;
-          if (!charObj.romaji && canonical.romaji) charObj.romaji = canonical.romaji;
-          if (!charObj.termination && canonical.termination) charObj.termination = canonical.termination;
+          targetChar = canonical;
         }
       }
 
-      this.currentChar = charObj;
+      this.currentChar = targetChar;
+      this.currentIndex = resolvedIndex;
+      this.activeCard = targetChar;
+      this.activeCardIndex = resolvedIndex;
       this.currentStrokeIndex = 0;
       this.completedStrokes = [];
       this.userPoints = [];
+
       if (this.animationId) {
         cancelAnimationFrame(this.animationId);
         this.animationId = null;
       }
+
+      // Ensure canvas element is ready
+      if (!this.canvas) {
+        this.canvas = document.getElementById('stroke-canvas');
+        if (this.canvas) {
+          this.ctx = this.canvas.getContext('2d');
+          if (this.ctx) {
+            this.ctx.lineCap = 'round';
+            this.ctx.lineJoin = 'round';
+          }
+        }
+      }
+
       this.redraw();
       this.updateStatus();
       this.updateTerminationBadges();
@@ -1666,7 +1781,28 @@
     // CANVAS RENDERING PIPELINE
     // ------------------------------------------------------------------------
     redraw: function () {
+      if (!this.canvas) {
+        this.canvas = document.getElementById('stroke-canvas');
+        if (this.canvas) {
+          this.ctx = this.canvas.getContext('2d');
+          if (this.ctx) {
+            this.ctx.lineCap = 'round';
+            this.ctx.lineJoin = 'round';
+          }
+        }
+      }
       if (!this.ctx || !this.canvas) return;
+
+      // Always ensure LaserEtcher is strictly in sync with the active card SSOT
+      const active = (typeof currentChar !== 'undefined' && currentChar) ? currentChar : (typeof window !== 'undefined' && window.currentChar ? window.currentChar : this.currentChar);
+      const activeIdx = (typeof currentIndex === 'number') ? currentIndex : (typeof window !== 'undefined' && typeof window.currentIndex === 'number' ? window.currentIndex : this.currentIndex);
+      if (active && (this.currentChar !== active || this.currentIndex !== activeIdx)) {
+        this.currentChar = active;
+        this.currentIndex = activeIdx;
+        this.activeCard = active;
+        this.activeCardIndex = activeIdx;
+      }
+
       const w = this.canvas.width;
       const h = this.canvas.height;
 
@@ -2045,8 +2181,13 @@
     },
 
     clearEtcher: function () {
-      if (!this.currentChar && typeof currentChar !== 'undefined' && currentChar) {
-        this.currentChar = currentChar;
+      const active = (typeof currentChar !== 'undefined' && currentChar) ? currentChar : (typeof window !== 'undefined' && window.currentChar ? window.currentChar : this.currentChar);
+      const activeIdx = (typeof currentIndex === 'number') ? currentIndex : (typeof window !== 'undefined' && typeof window.currentIndex === 'number' ? window.currentIndex : this.currentIndex);
+      if (active) {
+        this.currentChar = active;
+        this.currentIndex = activeIdx;
+        this.activeCard = active;
+        this.activeCardIndex = activeIdx;
       }
       this.currentStrokeIndex = 0;
       this.completedStrokes = [];
@@ -2057,6 +2198,7 @@
       }
       this.redraw();
       this.updateStatus();
+      this.updateTerminationBadges();
     }
   };
 
@@ -2094,9 +2236,9 @@
 
   // Auto initialize on DOM ready
   function initBootcamp() {
+    setCategory('hiragana');
     LaserEtcher.init();
     renderRoadmap();
-    setCategory('hiragana');
   }
 
   if (document.readyState === 'loading') {
