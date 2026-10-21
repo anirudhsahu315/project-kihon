@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PROJECT KIHON // Neo-Tokyo Odyssey - JWA Japanese Learning System</title>
-  <meta name="description" content="Project Kihon: Neo-Tokyo Odyssey. Master Hiragana, Katakana, and the 30 Essential Kanji Radicals through to JLPT N2 and MEXT readiness via an immersive cyberpunk flight telemetry game.">
+  <title>PROJECT KIHON // Clean Study Odyssey - JWA Japanese Learning System</title>
+  <meta name="description" content="Project Kihon: Clean, modern Japanese learning dashboard. Master Hiragana, Katakana, and the 30 Essential Kanji Radicals through to JLPT N2 and MEXT readiness.">
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,18 +14,21 @@
       theme: {
         extend: {
           colors: {
-            'void-950': '#020617',
-            'panel-900': '#091124',
-            'cyan-neon': '#06b6d4',
+            'void-950': '#121212',
+            'panel-900': '#1e1e24',
+            'surface-dark': '#1e1e24',
+            'surface-elevated': '#272730',
+            'surface-hover': '#26262e',
+            'surface-border': '#2d2d35',
+            'cyan-neon': '#38bdf8',
             'amber-warn': '#f59e0b',
             'emerald-lock': '#10b981',
             'pink-cyber': '#ec4899',
             'purple-plasma': '#8b5cf6',
           },
           fontFamily: {
+            sans: ['Inter', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             orbitron: ['Orbitron', 'sans-serif'],
-            rajdhani: ['Rajdhani', 'sans-serif'],
-            chakra: ['Chakra Petch', 'monospace'],
             mono: ['Share Tech Mono', 'monospace'],
             jp: ['Noto Sans JP', 'sans-serif'],
           }
@@ -34,105 +37,104 @@
     }
   </script>
 
-  <!-- Custom Cyberpunk Design System -->
+  <!-- Clean Study App Card-List Design System -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-void-950 text-slate-200 antialiased selection:bg-cyan-500 selection:text-black min-h-screen flex flex-col">
+<body class="bg-[#121212] text-slate-100 antialiased selection:bg-blue-600 selection:text-white min-h-screen flex flex-col font-sans">
 
   <!-- ==========================================================================
-       TOP COMMAND TELEMETRY HUD (HEADER)
+       TOP NAVIGATION BAR & HUD TELEMETRY HEADER
        ========================================================================== -->
-  <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-cyan-500/30 px-3 lg:px-6 py-2.5 shadow-[0_4px_25px_rgba(6,182,212,0.15)]">
+  <header class="sticky top-0 z-50 bg-[#18181b]/95 backdrop-blur-md border-b border-zinc-800/80 px-4 lg:px-6 py-2.5 shadow-sm">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
       
-      <!-- Left: Blinking LED Status & Odyssey Title -->
+      <!-- Left: Logo & Title -->
       <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
         <div class="flex items-center gap-2.5">
-          <div class="relative flex items-center justify-center">
-            <span class="w-3 h-3 rounded-full bg-emerald-500 status-led-blink"></span>
-            <span class="absolute w-5 h-5 rounded-full bg-emerald-500/30 animate-ping"></span>
+          <div class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">
+            基
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <span class="text-xs px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/40 text-cyan-400 font-mono text-[10px]">VER 2.4.0</span>
-              <span class="text-xs font-mono text-slate-400 tracking-wider">JWA PROTOCOL</span>
+              <span class="text-[10px] font-medium tracking-wide uppercase px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60">JWA Protocol</span>
+              <span class="text-[11px] text-zinc-400 font-mono">v2.5</span>
             </div>
-            <h1 class="text-lg lg:text-xl font-orbitron font-extrabold tracking-wider bg-gradient-to-r from-cyan-400 via-sky-200 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(6,182,212,0.6)]">
-              PROJECT KIHON <span class="text-cyan-400 font-light text-sm">// NEO-TOKYO ODYSSEY</span>
+            <h1 class="text-base lg:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
+              PROJECT KIHON <span class="text-zinc-400 font-normal text-xs">// Study Hub</span>
             </h1>
           </div>
         </div>
 
-        <!-- Mobile Telemetry compact summary -->
-        <div class="flex md:hidden items-center gap-2 text-xs font-mono bg-slate-900/80 px-2 py-1 rounded border border-cyan-500/20">
-          <span class="text-cyan-400">XP:</span>
+        <!-- Mobile XP Summary -->
+        <div class="flex md:hidden items-center gap-1.5 text-xs font-mono bg-[#1e1e24] px-2.5 py-1 rounded-lg border border-zinc-800">
+          <span class="text-amber-400 font-semibold">XP:</span>
           <span class="text-white font-bold" id="mobile-xp">0</span>
         </div>
       </div>
 
-      <!-- Center: Tactical Telemetry Bar -->
-      <div class="flex items-center justify-center gap-3 lg:gap-5 bg-slate-900/70 border border-slate-700/60 rounded-lg px-4 py-1.5 shadow-inner w-full md:w-auto overflow-x-auto">
+      <!-- Center: Refined Stats Telemetry Bar -->
+      <div class="flex items-center justify-center gap-3 lg:gap-5 bg-[#1e1e24] border border-[#2d2d35] rounded-xl px-4 py-1.5 shadow-sm w-full md:w-auto overflow-x-auto">
         
         <!-- RANK -->
         <div class="flex items-center gap-2 min-w-max">
-          <span class="text-[11px] font-mono tracking-widest text-slate-400">RANK:</span>
-          <span id="hud-rank" class="text-xs lg:text-sm font-orbitron font-bold text-cyan-400 drop-shadow-[0_0_6px_rgba(6,182,212,0.5)] bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/30">
-            CADET (Pre-N5)
+          <span class="text-[11px] font-medium tracking-wider text-[#9ca3af]">RANK:</span>
+          <span id="hud-rank" class="text-xs font-semibold text-sky-400 bg-sky-950/40 px-2 py-0.5 rounded-md border border-sky-500/30">
+            Cadet (Pre-N5)
           </span>
         </div>
 
-        <div class="h-4 w-px bg-slate-700"></div>
+        <div class="h-3.5 w-px bg-zinc-700/60"></div>
 
         <!-- XP -->
-        <div class="flex items-center gap-2 min-w-max">
-          <span class="text-[11px] font-mono tracking-widest text-slate-400">XP:</span>
-          <span id="hud-xp" class="text-xs lg:text-sm font-mono font-bold text-amber-400 drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]">
+        <div class="flex items-center gap-1.5 min-w-max">
+          <span class="text-[11px] font-medium tracking-wider text-[#9ca3af]">XP:</span>
+          <span id="hud-xp" class="text-xs font-semibold font-mono text-amber-400">
             0
           </span>
         </div>
 
-        <div class="h-4 w-px bg-slate-700"></div>
+        <div class="h-3.5 w-px bg-zinc-700/60"></div>
 
         <!-- MASTERED -->
-        <div class="flex items-center gap-2 min-w-max">
-          <span class="text-[11px] font-mono tracking-widest text-slate-400">MASTERED:</span>
-          <span id="hud-mastered" class="text-xs lg:text-sm font-mono font-bold text-emerald-400 drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]">
+        <div class="flex items-center gap-1.5 min-w-max">
+          <span class="text-[11px] font-medium tracking-wider text-[#9ca3af]">MASTERED:</span>
+          <span id="hud-mastered" class="text-xs font-semibold font-mono text-emerald-400">
             0/30
           </span>
         </div>
 
-        <div class="h-4 w-px bg-slate-700"></div>
+        <div class="h-3.5 w-px bg-zinc-700/60"></div>
 
         <!-- STREAK -->
-        <div class="flex items-center gap-2 min-w-max">
-          <span class="text-[11px] font-mono tracking-widest text-slate-400">STREAK:</span>
+        <div class="flex items-center gap-1.5 min-w-max">
+          <span class="text-[11px] font-medium tracking-wider text-[#9ca3af]">STREAK:</span>
           <div class="flex items-center gap-1">
-            <span class="text-amber-500 animate-pulse text-xs">⚡</span>
-            <span id="hud-streak" class="text-xs lg:text-sm font-mono font-bold text-amber-300">
+            <span class="text-amber-400 text-xs">⚡</span>
+            <span id="hud-streak" class="text-xs font-semibold font-mono text-amber-300">
               0
             </span>
-            <span class="text-[10px] text-slate-500 font-mono">DAYS</span>
+            <span class="text-[10px] text-zinc-500 font-medium">DAYS</span>
           </div>
         </div>
 
       </div>
 
-      <!-- Right: Module Navigation Bar (5 Tabs) -->
-      <nav class="flex items-center gap-1.5 lg:gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0" aria-label="Flight Module Tabs">
-        <button id="tab-roadmap" onclick="switchTab('roadmap')" class="nav-tab-btn active-tab px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap focus:outline-none">
-          01. Roadmap
+      <!-- Right: Segmented Navigation Control -->
+      <nav class="flex items-center gap-1 bg-[#18181b] p-1 rounded-xl border border-zinc-800/80 w-full md:w-auto overflow-x-auto pb-1 md:pb-1" aria-label="Module Tabs">
+        <button id="tab-roadmap" onclick="switchTab('roadmap')" class="nav-tab-btn active-tab focus:outline-none">
+          Roadmap
         </button>
-        <button id="tab-bootcamp" onclick="switchTab('bootcamp')" class="nav-tab-btn px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap focus:outline-none">
-          02. Holo-Deck & Etcher
+        <button id="tab-bootcamp" onclick="switchTab('bootcamp')" class="nav-tab-btn focus:outline-none">
+          Holo-Deck
         </button>
-        <button id="tab-forge" onclick="switchTab('forge')" class="nav-tab-btn px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap focus:outline-none">
-          03. Radical Forge
+        <button id="tab-forge" onclick="switchTab('forge')" class="nav-tab-btn focus:outline-none">
+          Radical Forge
         </button>
-        <button id="tab-shooter" onclick="switchTab('shooter')" class="nav-tab-btn px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap focus:outline-none">
-          04. Kana Blaster
+        <button id="tab-shooter" onclick="switchTab('shooter')" class="nav-tab-btn focus:outline-none">
+          Kana Blaster
         </button>
-        <button id="tab-kaiwa" onclick="switchTab('kaiwa')" class="nav-tab-btn px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap focus:outline-none">
-          05. Kaiwa Comms
+        <button id="tab-kaiwa" onclick="switchTab('kaiwa')" class="nav-tab-btn focus:outline-none">
+          Kaiwa Comms
         </button>
       </nav>
 
@@ -142,403 +144,957 @@
   <!-- ==========================================================================
        MAIN VIEWPORT CONTAINER (5 SECTIONS)
        ========================================================================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 flex flex-col">
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 flex flex-col space-y-6">
 
     <!-- ========================================================================
-         SECTION 1: ROADMAP (#view-roadmap)
+         SECTION 1: ROADMAP & DASHBOARD (#view-roadmap)
+         Grouped Card-List Design System
          ======================================================================== -->
     <section id="view-roadmap" class="space-y-6">
       
-      <!-- Sector Header -->
-      <div class="cyber-panel p-6 rounded-xl cyber-cut-tr border-cyan-500/40 relative overflow-hidden">
-        <div class="absolute -right-8 -bottom-8 w-48 h-48 rounded-full bg-cyan-500/5 blur-3xl pointer-events-none"></div>
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 font-mono text-xs mb-2">
-              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-              JWA MASTER FLIGHTPATH MATRIX
+      <!-- Welcome & Methodology Banner Card -->
+      <div class="bg-[#1e1e24] border border-[#2d2d35] p-6 lg:p-7 rounded-xl shadow-sm relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div class="space-y-1.5">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-400 text-xs font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+              JWA Master Flightpath Matrix
             </div>
-            <h2 class="text-2xl lg:text-3xl font-orbitron font-bold text-white tracking-wide">
-              FROM ZERO-KNOWLEDGE TO JLPT N2 & MEXT SCHOLAR
+            <h2 class="text-xl lg:text-2xl font-bold text-white tracking-tight">
+              From Zero-Knowledge to JLPT N2 & MEXT Scholar
             </h2>
-            <p class="text-slate-400 text-sm mt-1 max-w-3xl leading-relaxed">
-              Based on the authentic <span class="text-cyan-300 font-medium">Japan With Adi (JWA)</span> methodology: Master fundamental phonetics & the 30 core Kanji Radicals before advancing through grammar structures, conversational fluency, and professional research readiness.
+            <p class="text-[#9ca3af] text-sm max-w-3xl leading-relaxed">
+              Based on authentic <span class="text-white font-medium">Japan With Adi (JWA)</span> methodology: internalize dual phonetic scripts and the 30 core Kanji Radicals before advancing into syntax propulsion, dialogue fluency, and professional research readiness.
             </p>
           </div>
-          <div class="flex items-center gap-3">
-            <button onclick="switchTab('bootcamp')" class="cyber-btn px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-slate-950 font-bold rounded-lg shadow-[0_0_15px_rgba(6,182,212,0.4)] text-xs tracking-wider flex items-center gap-2">
-              <span>ENTER HOLO-DECK</span>
+          <div class="flex items-center gap-3 shrink-0">
+            <button onclick="switchTab('bootcamp')" class="cyber-btn px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg text-xs tracking-wide shadow-sm flex items-center gap-2 transition-all">
+              <span>Quick Start: Holo-Deck</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Roadmap 5-Sector Grid (#roadmap-grid) -->
-      <div id="roadmap-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        
-        <!-- SECTOR 1: Ground Zero -->
-        <div class="sector-card active-sector p-5 rounded-xl relative overflow-hidden flex flex-col justify-between">
-          <div class="absolute top-0 right-0 px-3 py-1 bg-cyan-500/20 text-cyan-300 font-mono text-[11px] rounded-bl-lg border-b border-l border-cyan-500/40 font-bold">
-            CURRENT SECTOR
+      <!-- ====================================================================
+           GROUP 1: CORE MODULES
+           ==================================================================== -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            <h3 class="text-xs font-semibold tracking-wider text-[#9ca3af] uppercase">Core Modules</h3>
           </div>
-          <div>
-            <div class="text-cyan-400 font-mono text-xs tracking-wider mb-1">SECTOR 01 // WEEKS 1 - 4</div>
-            <h3 class="text-xl font-orbitron font-bold text-white mb-2">Ground Zero: The Radical Seed</h3>
-            <p class="text-slate-400 text-xs leading-relaxed mb-4">
-              Master the dual phonetic scripts (Hiragana & Katakana) plus the 30 Essential Kanji Radicals that unlock 80% of Japanese compound semantics. Practice stroke dynamics: Tome, Hane, and Harai.
-            </p>
-            <div class="space-y-2 mb-4">
-              <div class="flex justify-between text-xs font-mono">
-                <span class="text-slate-400">Phonetics & Radicals</span>
-                <span class="text-cyan-400">30% Complete</span>
-              </div>
-              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div class="h-full bg-cyan-400 rounded-full shadow-[0_0_8px_#06b6d4]" style="width: 30%"></div>
-              </div>
-            </div>
-            <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700">Hiragana 46</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700">Katakana 46</span>
-              <span class="px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-500/30">30 Radicals</span>
-            </div>
-          </div>
-          <button onclick="switchTab('bootcamp')" class="w-full py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 hover:text-cyan-200 border border-cyan-500/40 rounded-lg text-xs font-orbitron tracking-wider transition-all">
-            LAUNCH TRAINING MODULE →
-          </button>
+          <span class="text-xs text-[#9ca3af]">Foundation & Kanji Synthesis</span>
         </div>
 
-        <!-- SECTOR 2: The Iron Core (N5) -->
-        <div class="sector-card p-5 rounded-xl relative overflow-hidden flex flex-col justify-between opacity-95">
-          <div class="absolute top-0 right-0 px-3 py-1 bg-amber-500/20 text-amber-300 font-mono text-[11px] rounded-bl-lg border-b border-l border-amber-500/40 font-bold">
-            JLPT N5
-          </div>
-          <div>
-            <div class="text-amber-400 font-mono text-xs tracking-wider mb-1">SECTOR 02 // MONTHS 2 - 4</div>
-            <h3 class="text-xl font-orbitron font-bold text-white mb-2">The Iron Core: N5 Syntax</h3>
-            <p class="text-slate-400 text-xs leading-relaxed mb-4">
-              Ingrain the 100 base Kanji, 800 high-frequency vocabulary words, SOV sentence syntax, and particle propulsion: は, が, を, に, で, と. Build confidence with basic polite conjugations.
-            </p>
-            <div class="space-y-2 mb-4">
-              <div class="flex justify-between text-xs font-mono">
-                <span class="text-slate-400">Core Grammar & Vocab</span>
-                <span class="text-amber-400">Standby</span>
+        <div class="card-list-group">
+          
+          <!-- Item 1: Holo-Deck & Syllabary Etcher -->
+          <div class="list-item-row group" onclick="switchTab('bootcamp')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-blue">
+                <!-- Book / Flashcard Icon SVG -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
               </div>
-              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div class="h-full bg-amber-400 rounded-full" style="width: 5%"></div>
+              <div class="min-w-0 flex-1">
+                <h4 class="list-row-title group-hover:text-blue-400 transition-colors">
+                  Holo-Deck & Syllabary Etcher
+                </h4>
+                <p class="list-row-subtitle line-clamp-1">
+                  Hiragana, Katakana & 30 Radicals • 3D SRS Flashcards • 4-Quadrant Laser Stroke Guidance
+                </p>
               </div>
             </div>
-            <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700">100 Kanji</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700">800 Vocab</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700">SOV Logic</span>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge hidden sm:inline-block">122 Glyphs • Est. 15 min</span>
+              <span class="list-row-badge active-badge">Study Now</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
             </div>
           </div>
-          <button onclick="switchTab('kaiwa')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg text-xs font-orbitron tracking-wider transition-all">
-            PREVIEW N5 COMMS →
-          </button>
-        </div>
 
-        <!-- SECTOR 3: Acceleration Vector (N4) -->
-        <div class="sector-card p-5 rounded-xl relative overflow-hidden flex flex-col justify-between">
-          <div class="absolute top-0 right-0 px-3 py-1 bg-slate-800 text-slate-400 font-mono text-[11px] rounded-bl-lg border-b border-l border-slate-700">
-            JLPT N4
-          </div>
-          <div>
-            <div class="text-slate-400 font-mono text-xs tracking-wider mb-1">SECTOR 03 // MONTHS 5 - 8</div>
-            <h3 class="text-xl font-orbitron font-bold text-white mb-2">Acceleration Vector: N4 Flow</h3>
-            <p class="text-slate-400 text-xs leading-relaxed mb-4">
-              Expansion to 300 Kanji and 1,500 vocabulary words. Master the versatile Te-form chains, conditional (Tara/Ba) structures, potential verbs, and situational survival Japanese across Tokyo.
-            </p>
-            <div class="space-y-2 mb-4">
-              <div class="flex justify-between text-xs font-mono">
-                <span class="text-slate-400">Intermediate Foundations</span>
-                <span class="text-slate-500">Locked</span>
+          <!-- Item 2: Radical Synthesis Forge -->
+          <div class="list-item-row group" onclick="switchTab('forge')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-emerald">
+                <!-- Sparks / Fusion Icon SVG -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
               </div>
-              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div class="h-full bg-slate-600 rounded-full" style="width: 0%"></div>
+              <div class="min-w-0 flex-1">
+                <h4 class="list-row-title group-hover:text-emerald-400 transition-colors">
+                  Radical Synthesis Forge
+                </h4>
+                <p class="list-row-subtitle line-clamp-1">
+                  Modular Kanji Synthesis • Combine 30 Core Radicals into 25+ Compound Characters
+                </p>
               </div>
             </div>
-            <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700">300 Kanji</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700">1,500 Vocab</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700">Te-Form</span>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge hidden sm:inline-block">25 Recipes • +50 XP</span>
+              <span class="list-row-badge">Open Forge</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
             </div>
           </div>
-          <button disabled class="w-full py-2 bg-slate-900/60 text-slate-500 border border-slate-800 rounded-lg text-xs font-orbitron tracking-wider cursor-not-allowed">
-            SECTOR LOCKED 🔒
-          </button>
-        </div>
 
-        <!-- SECTOR 4: Stratospheric Shift (N3) -->
-        <div class="sector-card p-5 rounded-xl relative overflow-hidden flex flex-col justify-between">
-          <div class="absolute top-0 right-0 px-3 py-1 bg-slate-800 text-slate-400 font-mono text-[11px] rounded-bl-lg border-b border-l border-slate-700">
-            JLPT N3
-          </div>
-          <div>
-            <div class="text-purple-400 font-mono text-xs tracking-wider mb-1">SECTOR 04 // MONTHS 9 - 14</div>
-            <h3 class="text-xl font-orbitron font-bold text-white mb-2">Stratospheric Shift: The N3 Bridge</h3>
-            <p class="text-slate-400 text-xs leading-relaxed mb-4">
-              Breach the intermediate barrier. 650 Kanji, 3,750 vocabulary items, transitive vs intransitive verb pairs, Keigo honorifics, and real-time comprehension of natural Japanese broadcasts.
-            </p>
-            <div class="space-y-2 mb-4">
-              <div class="flex justify-between text-xs font-mono">
-                <span class="text-slate-400">Intermediate Fluency</span>
-                <span class="text-slate-500">Locked</span>
+          <!-- Item 3: Full Kana & Radical Reference Matrix -->
+          <div class="list-item-row group" onclick="switchTab('bootcamp'); setCategory('radicals');">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-purple">
+                <!-- Grid / Reference Icon SVG -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                </svg>
               </div>
-              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div class="h-full bg-purple-500/40 rounded-full" style="width: 0%"></div>
+              <div class="min-w-0 flex-1">
+                <h4 class="list-row-title group-hover:text-purple-400 transition-colors">
+                  Kana Syllabary & 30 Radical Matrix
+                </h4>
+                <p class="list-row-subtitle line-clamp-1">
+                  Dual Phonetic Systems (あ/ア) • 30 Foundational Semantic Radicals with Stroke Orders
+                </p>
               </div>
             </div>
-            <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700">650 Kanji</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700">Keigo Polite</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700">Natural Audio</span>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge hidden sm:inline-block">Core Library</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
             </div>
           </div>
-          <button disabled class="w-full py-2 bg-slate-900/60 text-slate-500 border border-slate-800 rounded-lg text-xs font-orbitron tracking-wider cursor-not-allowed">
-            SECTOR LOCKED 🔒
-          </button>
-        </div>
 
-        <!-- SECTOR 5: Orbital Apex (N2 & MEXT) -->
-        <div class="sector-card p-5 rounded-xl relative overflow-hidden flex flex-col justify-between md:col-span-2 lg:col-span-2 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900 border-indigo-500/30">
-          <div class="absolute top-0 right-0 px-3 py-1 bg-emerald-500/20 text-emerald-300 font-mono text-[11px] rounded-bl-lg border-b border-l border-emerald-500/40 font-bold">
-            APEX PINNACLE: N2 & MEXT
-          </div>
-          <div>
-            <div class="text-emerald-400 font-mono text-xs tracking-wider mb-1">SECTOR 05 // MONTHS 15 - 20</div>
-            <h3 class="text-xl font-orbitron font-bold text-white mb-2">Orbital Apex: Professional Mastery & MEXT Readiness</h3>
-            <p class="text-slate-300 text-xs leading-relaxed mb-4 max-w-2xl">
-              1,000+ Kanji, 6,000+ vocabulary words, nuanced news editorials, academic journals, business presentation ethics, and direct qualification for the Japanese Government MEXT Research & Undergraduate Scholarships.
-            </p>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-center font-mono text-xs">
-              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700">
-                <div class="text-emerald-400 font-bold text-base">1,000+</div>
-                <div class="text-slate-400 text-[10px]">KANJI ARSENAL</div>
-              </div>
-              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700">
-                <div class="text-cyan-400 font-bold text-base">6,000+</div>
-                <div class="text-slate-400 text-[10px]">VOCABULARY</div>
-              </div>
-              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700">
-                <div class="text-amber-400 font-bold text-base">MEXT</div>
-                <div class="text-slate-400 text-[10px]">SCHOLARSHIP READY</div>
-              </div>
-              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700">
-                <div class="text-pink-400 font-bold text-base">CAREER</div>
-                <div class="text-slate-400 text-[10px]">TOKYO TECH RECRUIT</div>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-            <span class="text-xs text-slate-400 font-mono">Prerequisite: Clear Sectors 01 through 04</span>
-            <button onclick="switchTab('forge')" class="px-4 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/40 rounded-lg text-xs font-orbitron tracking-wider">
-              EXPLORE RADICAL FORGE MATRIX →
-            </button>
-          </div>
         </div>
-
       </div>
+
+      <!-- ====================================================================
+           GROUP 2: PRACTICE DRILLS
+           ==================================================================== -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            <h3 class="text-xs font-semibold tracking-wider text-[#9ca3af] uppercase">Practice Drills</h3>
+          </div>
+          <span class="text-xs text-[#9ca3af]">Interactive Sorties & Audio</span>
+        </div>
+
+        <div class="card-list-group">
+          
+          <!-- Item 1: Kana Blaster Tactical Arcade -->
+          <div class="list-item-row group" onclick="switchTab('shooter')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-rose">
+                <!-- Arcade Gamepad Icon SVG -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <h4 class="list-row-title group-hover:text-rose-400 transition-colors">
+                  Kana Blaster: Tactical Arcade
+                </h4>
+                <p class="list-row-subtitle line-clamp-1">
+                  Speed Romaji Typing Defense • Intercept descending Kana drones before hull impact
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge hidden sm:inline-block">3 Sortie Modes</span>
+              <span class="list-row-badge">Play Arcade</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Item 2: Kaiwa Comms & Shadowing -->
+          <div class="list-item-row group" onclick="switchTab('kaiwa')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-amber">
+                <!-- Microphone / Audio Wave Icon SVG -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <h4 class="list-row-title group-hover:text-amber-400 transition-colors">
+                  Kaiwa Comms & Voice Shadowing
+                </h4>
+                <p class="list-row-subtitle line-clamp-1">
+                  SOV Particle Thrust Matrix (は, が, を, に) • N5–N2 Dialogue Speech Synthesis & Recording
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge hidden sm:inline-block">4 Missions • Shadowing</span>
+              <span class="list-row-badge">Practice</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Item 3: Lookalike Kana Diagnostic Quiz -->
+          <div class="list-item-row group" onclick="switchTab('bootcamp'); setCategory('lookalike');">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-cyan">
+                <!-- Target / Eye Icon SVG -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <h4 class="list-row-title group-hover:text-sky-300 transition-colors">
+                  Lookalike Kana Diagnostic Quiz
+                </h4>
+                <p class="list-row-subtitle line-clamp-1">
+                  Master high-confusion pairs: シ (Shi) vs ツ (Tsu) & ソ (So) vs ン (N) via stroke vector polarity
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge hidden sm:inline-block">Diagnostic • 10 Challenges</span>
+              <span class="list-row-badge">Take Quiz</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Item 4: Level 2 - Comprehensive 46-Character Syllabary Quiz -->
+          <div class="list-item-row group" onclick="switchTab('bootcamp'); setLearningMode('quiz');">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-amber">
+                <!-- Trophy / Quiz Assessment Icon SVG -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <h4 class="list-row-title group-hover:text-amber-300 transition-colors">
+                  Level 2: 46-Character Comprehensive Quiz
+                </h4>
+                <p class="list-row-subtitle line-clamp-1">
+                  Test visual glyphs, Romaji recall & native audio recognition across all 46 Kana • Unlock Level 3
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge hidden sm:inline-block">46 Questions • +150 XP</span>
+              <span class="list-row-badge active-badge">Start Quiz</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           GROUP 3: ADVANCED SECTORS (ROADMAP FLIGHTPATH)
+           ==================================================================== -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <h3 class="text-xs font-semibold tracking-wider text-[#9ca3af] uppercase">Advanced Sectors // JWA Flightpath</h3>
+          </div>
+          <span class="text-xs text-[#9ca3af]">5 Progression Stages</span>
+        </div>
+
+        <!-- Dynamic Container for Roadmap Sectors (#roadmap-grid) -->
+        <div id="roadmap-grid" class="card-list-group">
+          
+          <!-- Sector 00: Orbital Dock // The Radical Seed -->
+          <div class="list-item-row group bg-zinc-800/40" onclick="switchTab('bootcamp')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-blue">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a6 6 0 110 12 6 6 0 010-12z"></path>
+                  <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="list-row-title group-hover:text-sky-300 transition-colors">
+                    Orbital Dock // The Radical Seed
+                  </h4>
+                  <span class="text-[11px] font-mono text-zinc-500">Sector 00 • Weeks 1 – 3</span>
+                </div>
+                <p class="list-row-subtitle line-clamp-1">
+                  Master the dual phonetic scripts (Hiragana & Katakana) plus the 30 Essential Kanji Radicals.
+                </p>
+                <div class="flex items-center gap-3 mt-1.5 text-xs text-[#9ca3af]">
+                  <span>46 Hiragana • 46 Katakana • 30 Radicals</span>
+                  <span class="hidden sm:inline-block text-zinc-600">•</span>
+                  <span class="hidden sm:inline-block text-zinc-400">Boss: Rosetta Sentinel</span>
+                  <div class="w-20 sm:w-28 h-1.5 bg-zinc-800 rounded-full overflow-hidden ml-auto sm:ml-0">
+                    <div class="h-full bg-sky-400 rounded-full" style="width: 30%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge active-badge flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                Active (30%)
+              </span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sector 01: The Iron Core (N5 Syntax) -->
+          <div class="list-item-row group" onclick="switchTab('kaiwa')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-amber">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="list-row-title group-hover:text-amber-300 transition-colors">
+                    Kihon Outpost // The Iron Core
+                  </h4>
+                  <span class="text-[11px] font-mono text-zinc-500">Sector 01 • Months 1 – 3</span>
+                </div>
+                <p class="list-row-subtitle line-clamp-1">
+                  100 base Kanji, 800 high-frequency vocabulary words, SOV sentence syntax, and particle propulsion.
+                </p>
+                <div class="flex items-center gap-3 mt-1.5 text-xs text-[#9ca3af]">
+                  <span>100 Kanji • 800 Vocab</span>
+                  <span class="hidden sm:inline-block text-zinc-600">•</span>
+                  <span class="hidden sm:inline-block text-zinc-400">Boss: Customs Inspector Kaito</span>
+                  <div class="w-20 sm:w-28 h-1.5 bg-zinc-800 rounded-full overflow-hidden ml-auto sm:ml-0">
+                    <div class="h-full bg-zinc-700 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge locked-badge">Lock: 600 XP</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sector 02: Acceleration Vector (N4 Flow) -->
+          <div class="list-item-row group" onclick="switchTab('shooter')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-purple">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="list-row-title group-hover:text-purple-300 transition-colors">
+                    Neo-Shibuya // Acceleration Vector
+                  </h4>
+                  <span class="text-[11px] font-mono text-zinc-500">Sector 02 • Months 4 – 7</span>
+                </div>
+                <p class="list-row-subtitle line-clamp-1">
+                  Expansion to 300 Kanji and 1,500 vocabulary words. Te-form chains, conditionals, and conversational flow.
+                </p>
+                <div class="flex items-center gap-3 mt-1.5 text-xs text-[#9ca3af]">
+                  <span>300 Kanji • 1,500 Vocab</span>
+                  <span class="hidden sm:inline-block text-zinc-600">•</span>
+                  <span class="hidden sm:inline-block text-zinc-400">Boss: Rogue AI Network</span>
+                  <div class="w-20 sm:w-28 h-1.5 bg-zinc-800 rounded-full overflow-hidden ml-auto sm:ml-0">
+                    <div class="h-full bg-zinc-700 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge locked-badge">Lock: 1,200 XP</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sector 03: Stratospheric Shift (N3 Bridge) -->
+          <div class="list-item-row group" onclick="switchTab('kaiwa')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-emerald">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="list-row-title group-hover:text-emerald-300 transition-colors">
+                    Zaibatsu Spire // Stratospheric Shift
+                  </h4>
+                  <span class="text-[11px] font-mono text-zinc-500">Sector 03 • Months 8 – 12</span>
+                </div>
+                <p class="list-row-subtitle line-clamp-1">
+                  650 Kanji, 3,750 vocabulary items, transitive vs intransitive verb pairs, and Keigo honorifics.
+                </p>
+                <div class="flex items-center gap-3 mt-1.5 text-xs text-[#9ca3af]">
+                  <span>650 Kanji • 3,750 Vocab</span>
+                  <span class="hidden sm:inline-block text-zinc-600">•</span>
+                  <span class="hidden sm:inline-block text-zinc-400">Boss: The Boardroom Gauntlet</span>
+                  <div class="w-20 sm:w-28 h-1.5 bg-zinc-800 rounded-full overflow-hidden ml-auto sm:ml-0">
+                    <div class="h-full bg-zinc-700 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge locked-badge">Lock: 1,600 XP</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sector 04: Orbital Apex (N2 & MEXT) -->
+          <div class="list-item-row group" onclick="switchTab('forge')">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <div class="badge-icon-pill pill-rose">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="list-row-title group-hover:text-rose-300 transition-colors">
+                    MEXT Citadel // Orbital Apex
+                  </h4>
+                  <span class="text-[11px] font-mono text-zinc-500">Sector 04 • Months 13 – 18+</span>
+                </div>
+                <p class="list-row-subtitle line-clamp-1">
+                  1,000+ Kanji, 6,000+ vocabulary words, nuanced editorials, academic research defense, and MEXT readiness.
+                </p>
+                <div class="flex items-center gap-3 mt-1.5 text-xs text-[#9ca3af]">
+                  <span>1,000+ Kanji • 6,000+ Vocab</span>
+                  <span class="hidden sm:inline-block text-zinc-600">•</span>
+                  <span class="hidden sm:inline-block text-zinc-400">Boss: The Grand Panel</span>
+                  <div class="w-20 sm:w-28 h-1.5 bg-zinc-800 rounded-full overflow-hidden ml-auto sm:ml-0">
+                    <div class="h-full bg-zinc-700 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+              <span class="list-row-badge locked-badge">Lock: 2,000 XP</span>
+              <svg class="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </section>
 
     <!-- ========================================================================
          SECTION 2: HOLO-DECK & ETCHER (#view-bootcamp)
          ======================================================================== -->
-    <section id="view-bootcamp" class="hidden space-y-6">
+    <section id="view-bootcamp" class="hidden space-y-5">
       
-      <!-- Category Switcher Buttons -->
-      <div class="cyber-panel p-4 rounded-xl border-cyan-500/30 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-          <span class="font-orbitron font-bold text-sm text-cyan-300 tracking-wider">HOLO-DECK SELECTION PROTOCOL:</span>
+      <!-- Stage 1 Sequential Kana Learning Progress Bar -->
+      <div id="stage1-progress-container" class="bg-[#1e1e24] border border-[#2d2d35] p-4 lg:p-5 rounded-xl shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 id="stage-progress-title" class="text-sm font-bold text-white tracking-wide">
+                  STAGE 1: HIRAGANA FOUNDATION (0%)
+                </h3>
+                <span id="stage-unlock-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                  In Progress
+                </span>
+              </div>
+              <p id="stage-progress-subtitle" class="text-xs text-[#9ca3af] mt-0.5">
+                Complete all 46 Hiragana characters sequentially to unlock Katakana.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center sm:flex-col sm:items-end justify-between gap-1 text-xs">
+            <span class="text-[#9ca3af] font-mono">Sequential Mastered</span>
+            <span id="stage1-progress-count" class="text-white font-bold font-mono text-sm">
+              0 / 46
+            </span>
+          </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <button id="cat-hiragana" onclick="setCategory('hiragana')" class="category-btn active px-3.5 py-1.5 rounded-lg text-xs font-orbitron tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/60 shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-all">
+        
+        <!-- Progress Bar Track -->
+        <div class="w-full h-2 bg-[#121216] rounded-full overflow-hidden border border-[#2a2a34]">
+          <div id="stage1-progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-sky-400 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(56,189,248,0.5)]" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Category Switcher Buttons -->
+      <div class="bg-[#1e1e24] border border-[#2d2d35] p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+          <span class="font-semibold text-xs text-[#9ca3af] uppercase tracking-wider">Holo-Deck Selection:</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button id="cat-hiragana" onclick="setCategory('hiragana')" class="category-btn active">
             Hiragana (平仮名)
           </button>
-          <button id="cat-katakana" onclick="setCategory('katakana')" class="category-btn px-3.5 py-1.5 rounded-lg text-xs font-orbitron tracking-wider bg-slate-900/80 text-slate-400 border border-slate-700 hover:text-cyan-300 hover:border-cyan-500/40 transition-all">
-            Katakana (片仮名)
+          <button id="cat-katakana" onclick="setCategory('katakana')" class="category-btn">
+            🔒 Katakana (片仮名) [0/46]
           </button>
-          <button id="cat-radicals" onclick="setCategory('radicals')" class="category-btn px-3.5 py-1.5 rounded-lg text-xs font-orbitron tracking-wider bg-slate-900/80 text-slate-400 border border-slate-700 hover:text-cyan-300 hover:border-cyan-500/40 transition-all">
-            30 Radicals (部首)
+          <button id="cat-radicals" onclick="setCategory('radicals')" class="category-btn">
+            🔒 30 Radicals (Stage 2)
           </button>
-          <button id="cat-lookalike" onclick="setCategory('lookalike')" class="category-btn px-3.5 py-1.5 rounded-lg text-xs font-orbitron tracking-wider bg-slate-900/80 text-amber-400/80 border border-amber-500/30 hover:text-amber-300 hover:border-amber-500 transition-all">
-            ⚠ Lookalike Quiz (シ/ツ/ソ/ン)
+          <button id="cat-lookalike" onclick="setCategory('lookalike')" class="category-btn">
+            Lookalike Quiz (シ/ツ/ソ/ン)
           </button>
         </div>
       </div>
 
-      <!-- Character Selector Strip (#char-selector) -->
-      <div class="cyber-panel p-3 rounded-xl border-slate-700/60">
-        <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-2 px-1">
-          <span>COGNITIVE MATRIX // SELECT SYMBOL:</span>
-          <span class="text-cyan-400">← SCROLL MATRIX →</span>
+      <!-- Stage 1 Level Progression Tabs (Level 1: 46 Flashcards | Level 2: 46 Quiz | Level 3: Stroke Etcher) -->
+      <div class="bg-[#1e1e24] border border-[#2d2d35] p-2.5 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm">
+        <div class="flex items-center gap-2 px-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+          <span class="text-xs font-semibold text-[#9ca3af] uppercase tracking-wider">Learning Phase:</span>
         </div>
-        <div id="char-selector" class="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scroll-smooth">
-          <!-- Populated dynamically via JS; Initial seed items for preview -->
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-cyan-950/80 border border-cyan-400 text-cyan-200 font-jp text-xl font-bold flex-shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.4)]">あ</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">い</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">う</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">え</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">お</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">か</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">き</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">く</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">け</button>
-          <button class="char-pill px-4 py-2.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 font-jp text-xl font-bold flex-shrink-0 hover:border-cyan-500/50">こ</button>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <!-- Level 1: 46 Flashcards -->
+          <button id="mode-btn-flashcards" onclick="setLearningMode('flashcards')" class="level-mode-btn active flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            <span>Level 1: 46 Flashcards</span>
+          </button>
+
+          <!-- Level 2: 46-Character Quiz -->
+          <button id="mode-btn-quiz" onclick="setLearningMode('quiz')" class="level-mode-btn flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span>Level 2: 46-Character Quiz</span>
+          </button>
+
+          <!-- Level 3: Stroke Practice -->
+          <button id="mode-btn-etcher" onclick="setLearningMode('etcher')" class="level-mode-btn flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span id="level3-btn-label">🔒 Level 3: Stroke Etcher</span>
+          </button>
         </div>
       </div>
 
-      <!-- 2-Column Grid (Left: 3D Holo-Flashcard | Right: Laser Etcher Canvas) -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      <!-- DECK STUDY CONTAINER (Level 1 Flashcards & Level 3 Stroke Etcher) -->
+      <div id="deck-study-container" class="space-y-5">
         
-        <!-- LEFT COLUMN: 3D Holo-Flashcard & SRS Ratings -->
-        <div class="cyber-panel p-5 rounded-xl border-cyan-500/30 flex flex-col justify-between space-y-4">
-          <div class="flex items-center justify-between text-xs font-mono">
-            <span class="text-cyan-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-              3D HOLO-PROJECTION DECK
-            </span>
-            <span class="text-slate-400">[CLICK CARD TO REVEAL DECRYPTED LORE]</span>
+        <!-- Character Selector Strip (#char-selector) -->
+        <div class="bg-[#1e1e24] border border-[#2d2d35] p-3 rounded-xl shadow-sm">
+          <div class="flex items-center justify-between text-xs text-[#9ca3af] mb-2 px-1">
+            <span class="font-medium uppercase tracking-wider">Select Symbol Matrix:</span>
+            <span class="text-xs text-zinc-500">Scroll horizontally (46 characters)</span>
           </div>
+          <div id="char-selector" class="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 scroll-smooth">
+            <!-- Populated dynamically via JS -->
+            <button class="char-pill px-4 py-2 rounded-lg font-jp text-lg font-bold flex-shrink-0">あ</button>
+            <button class="char-pill px-4 py-2 rounded-lg font-jp text-lg font-bold flex-shrink-0">い</button>
+            <button class="char-pill px-4 py-2 rounded-lg font-jp text-lg font-bold flex-shrink-0">う</button>
+            <button class="char-pill px-4 py-2 rounded-lg font-jp text-lg font-bold flex-shrink-0">え</button>
+            <button class="char-pill px-4 py-2 rounded-lg font-jp text-lg font-bold flex-shrink-0">お</button>
+          </div>
+        </div>
 
-          <!-- Flashcard Perspective Container -->
-          <div class="flashcard-perspective-container">
-            <div id="flashcard" onclick="flipCard()" class="group">
-              
-              <!-- CARD FRONT -->
-              <div id="card-front" class="p-6 flex flex-col items-center justify-between text-center relative border border-cyan-500/40">
-                <div class="w-full flex items-center justify-between text-xs font-mono">
-                  <span id="card-type-badge" class="px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 font-bold">
-                    HIRAGANA // BASIC
-                  </span>
-                  <span class="text-slate-500">GLYPH ID: #001</span>
-                </div>
+        <!-- 2-Column Grid (Left: 3D Flashcard | Right: Laser Etcher Canvas) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+          
+          <!-- LEFT COLUMN: 3D Flashcard & SRS Ratings -->
+          <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-white font-medium flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                3D Flashcard Deck
+              </span>
+              <span class="text-[#9ca3af]">[Click card to flip]</span>
+            </div>
 
-                <!-- Large Character Glyph -->
-                <div class="my-auto py-4">
-                  <div id="card-glyph" class="text-8xl lg:text-9xl font-jp font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-400 drop-shadow-[0_0_25px_rgba(6,182,212,0.8)] transition-transform duration-300 group-hover:scale-105">
-                    あ
-                  </div>
-                </div>
-
-                <div class="w-full flex items-center justify-between pt-3 border-t border-slate-800 text-xs font-mono text-slate-400">
-                  <span class="flex items-center gap-1 text-cyan-400">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
-                    CLICK TO FLIP
-                  </span>
-                  <span class="text-slate-500 font-mono">3 STROKES</span>
-                </div>
-              </div>
-
-              <!-- CARD BACK -->
-              <div id="card-back" class="p-6 flex flex-col justify-between relative border border-emerald-500/40">
-                <div class="flex items-center justify-between text-xs font-mono">
-                  <span class="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-bold">
-                    DECRYPTED SYSTEM LORE
-                  </span>
-                  <!-- TTS Audio Playback Button -->
-                  <button id="card-audio-btn" onclick="playKanaAudio(event)" class="px-3 py-1 bg-cyan-950/80 hover:bg-cyan-800/80 border border-cyan-400/50 rounded-full text-cyan-300 text-xs font-mono flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(6,182,212,0.3)]">
-                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    <span>VOICE AUDIO</span>
-                  </button>
-                </div>
-
-                <div class="space-y-3 my-auto">
-                  <div class="flex items-baseline gap-3">
-                    <span class="text-xs font-mono text-slate-400">ROMAJI PHONETIC:</span>
-                    <span id="card-romaji" class="text-3xl font-orbitron font-extrabold text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">
-                      a
+            <!-- Flashcard Perspective Container -->
+            <div class="flashcard-perspective-container">
+              <div id="flashcard" onclick="flipCard()" class="group">
+                
+                <!-- CARD FRONT -->
+                <div id="card-front" class="p-6 flex flex-col items-center justify-between text-center relative">
+                  <div class="w-full flex items-center justify-between text-xs">
+                    <span id="card-type-badge" class="px-2.5 py-1 rounded-md bg-[#272730] text-[#9ca3af] font-medium text-xs">
+                      HIRAGANA // A
                     </span>
+                    <div class="flex items-center gap-2">
+                      <span id="card-id-badge" class="text-zinc-400 font-mono text-[11px] px-2 py-0.5 rounded bg-[#18181b] border border-zinc-800">CARD 1 OF 46</span>
+                      <!-- Native Audio Playback on Front -->
+                      <button onclick="playKanaAudio(event)" title="Listen to native audio (ja-JP)" class="p-1 rounded-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 transition-all">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                      </button>
+                    </div>
                   </div>
 
-                  <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700/80">
-                    <div class="text-[10px] font-mono text-cyan-400 uppercase tracking-widest mb-1">Mnemonic Memory Visual:</div>
-                    <p id="card-mnemonic" class="text-xs text-slate-300 leading-relaxed font-rajdhani text-sm">
-                      Picture an Apple with an Astronaut's antenna curving through it, or a big 'A' shape being sketched out.
-                    </p>
+                  <!-- Large Character Glyph & Romaji Subtitle -->
+                  <div class="my-auto py-3 flex flex-col items-center">
+                    <div id="card-glyph" class="text-8xl lg:text-9xl font-jp font-black text-white transition-transform duration-300 group-hover:scale-105 select-none">
+                      あ
+                    </div>
+                    <div class="mt-2 text-xs font-mono text-zinc-400 flex items-center gap-1.5">
+                      <span>Romaji:</span>
+                      <span id="card-front-romaji" class="text-white font-bold text-sm tracking-widest">a</span>
+                    </div>
                   </div>
 
-                  <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700/80">
-                    <div class="text-[10px] font-mono text-amber-400 uppercase tracking-widest mb-1">Ship Subsystem Lore:</div>
-                    <p id="card-system" class="text-xs text-amber-200/90 font-mono">
-                      PRIMARY ION DRIVE STABILIZER // BUS 01
-                    </p>
+                  <div class="w-full flex items-center justify-between pt-3 border-t border-[#2a2a34] text-xs text-[#9ca3af]">
+                    <span class="flex items-center gap-1 text-sky-400 font-medium">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                      Click card to reveal mnemonic lore
+                    </span>
+                    <span class="text-zinc-500 font-mono">Audio: ja-JP</span>
                   </div>
                 </div>
 
-                <div class="pt-2 text-center text-[11px] font-mono text-slate-500 border-t border-slate-800">
-                  CLICK TO FLIP BACK TO HOLO-GLYPH
+                <!-- CARD BACK -->
+                <div id="card-back" class="p-6 flex flex-col justify-between relative">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 font-medium border border-emerald-500/30">
+                      Decrypted System Lore
+                    </span>
+                    <!-- TTS Audio Playback Button -->
+                    <button id="card-audio-btn" onclick="playKanaAudio(event)" class="px-3 py-1 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white rounded-full text-xs flex items-center gap-1.5 transition-all">
+                      <svg class="w-3.5 h-3.5 text-sky-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                      <span>Pronounce</span>
+                    </button>
+                  </div>
+
+                  <div class="space-y-3 my-auto">
+                    <div class="flex items-baseline gap-3">
+                      <span class="text-xs text-[#9ca3af] uppercase tracking-wider font-medium">Romaji:</span>
+                      <span id="card-romaji" class="text-3xl font-extrabold text-white">
+                        a
+                      </span>
+                    </div>
+
+                    <div class="p-3 bg-[#141418] rounded-lg border border-[#2d2d35]">
+                      <div class="text-[11px] text-sky-400 uppercase tracking-wider font-semibold mb-1">Mnemonic Visual:</div>
+                      <p id="card-mnemonic" class="text-xs text-slate-300 leading-relaxed">
+                        Picture an Apple with an Astronaut's antenna curving through it, or a big 'A' shape being sketched out.
+                      </p>
+                    </div>
+
+                    <div class="p-3 bg-[#141418] rounded-lg border border-[#2d2d35]">
+                      <div class="text-[11px] text-amber-400 uppercase tracking-wider font-semibold mb-1">Subsystem Lore:</div>
+                      <p id="card-system" class="text-xs text-amber-200/90 font-mono">
+                        PRIMARY ION DRIVE STABILIZER // BUS 01
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="pt-2 text-center text-xs text-[#9ca3af] border-t border-[#2a2a34]">
+                    Click to flip back
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Card Navigation Controls (Prev, Counter, Audio, Next) -->
+            <div class="flex items-center justify-between gap-2 p-2.5 bg-[#141418] rounded-xl border border-[#2d2d35]">
+              <button id="card-prev-btn" onclick="prevCard()" class="px-3.5 py-2 rounded-lg bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                <span>Previous</span>
+              </button>
+              <div class="flex items-center gap-2">
+                <span id="card-counter-display" class="text-xs font-mono font-bold text-white px-2.5 py-1 rounded bg-[#1e1e24] border border-zinc-800">
+                  1 / 46
+                </span>
+                <button onclick="playKanaAudio(event)" title="Listen again (ja-JP audio)" class="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 transition-all">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+              </div>
+              <button id="card-next-btn" onclick="nextCard()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all">
+                <span>Next</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+            </div>
+
+            <!-- Spaced Repetition (SRS) Rating Action Bar -->
+            <div class="pt-1">
+              <div class="text-xs text-[#9ca3af] mb-2 flex justify-between">
+                <span class="font-medium">Recall Difficulty:</span>
+                <span class="text-sky-400 font-medium">SRS Engine Active</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="rateSRS('retry')" class="cyber-btn py-2.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition-all">
+                  Again [1m]
+                </button>
+                <button onclick="rateSRS('good')" class="cyber-btn py-2.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-semibold transition-all">
+                  Good [10m]
+                </button>
+                <button onclick="rateSRS('mastered')" class="cyber-btn py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-all">
+                  Mastered [4d]
+                </button>
+              </div>
+            </div>
+
+            <!-- Keyboard Shortcuts Legend -->
+            <div class="flex items-center justify-between text-[11px] text-zinc-500 pt-1 px-1 border-t border-[#262630]">
+              <span>Hotkeys: <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">→</kbd> Nav</span>
+              <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">Space</kbd> Flip</span>
+              <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">1-3</kbd> Rate SRS</span>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: Laser Etcher Stroke Canvas -->
+          <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col items-center space-y-4">
+            
+            <!-- Status Bar -->
+            <div class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#2a2a34]">
+              <div>
+                <div class="text-xs font-medium text-white">Stroke Order Guidance (Level 3)</div>
+                <div id="stroke-status" class="text-xs text-[#9ca3af]">
+                  Ready: Follow Laser Vector 1/3
                 </div>
               </div>
+              <!-- Stroke Termination Badges -->
+              <div class="flex items-center gap-1.5 text-[10px]">
+                <span id="badge-tome" class="px-2 py-0.5 rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 font-medium">Tome (Stop)</span>
+                <span id="badge-hane" class="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400">Hane (Hook)</span>
+                <span id="badge-harai" class="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400">Harai (Sweep)</span>
+              </div>
+            </div>
 
+            <!-- HTML5 Canvas 320x320 with touch-action: none -->
+            <div class="relative flex items-center justify-center p-2 rounded-xl bg-[#141418] border border-[#2d2d35] shadow-inner">
+              <canvas id="stroke-canvas" width="320" height="320" class="cursor-crosshair"></canvas>
+              <div id="canvas-laser-line" class="laser-sweep-line hidden"></div>
+            </div>
+
+            <!-- Canvas Action Controls -->
+            <div class="w-full grid grid-cols-3 gap-2 pt-1">
+              <button onclick="animateGuideStrokes()" class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-white border border-zinc-700 text-xs font-medium flex items-center justify-center gap-1 transition-all">
+                <span>▶ Guide Pulse</span>
+              </button>
+              <button onclick="toggleGhostGuide()" class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-[#9ca3af] hover:text-white border border-zinc-700 text-xs font-medium flex items-center justify-center gap-1 transition-all">
+                <span>Ghost Toggle</span>
+              </button>
+              <button onclick="clearEtcher()" class="cyber-btn py-2 px-2 rounded-lg bg-[#272730] hover:bg-[#32323e] text-amber-300 border border-amber-500/30 text-xs font-medium flex items-center justify-center gap-1 transition-all">
+                <span>↺ Reset</span>
+              </button>
+            </div>
+
+            <!-- Drawing Instructions -->
+            <div class="w-full text-center text-xs text-[#9ca3af] pt-1">
+              Draw with stylus, mouse, or touch • Hitsujun stroke order evaluation
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- LEVEL 2: COMPREHENSIVE 46-CHARACTER QUIZ ENGINE (#quiz-engine-container) -->
+      <div id="quiz-engine-container" class="hidden space-y-4">
+        
+        <!-- Quiz Control & Live Telemetry Card -->
+        <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-3.5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
+                Q
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 id="quiz-title" class="text-sm font-bold text-white tracking-wide">
+                    LEVEL 2: COMPREHENSIVE HIRAGANA QUIZ (46 QUESTIONS)
+                  </h3>
+                  <span id="quiz-mode-pill" class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                    Dual Recall
+                  </span>
+                </div>
+                <p id="quiz-subtitle" class="text-xs text-[#9ca3af] mt-0.5">
+                  Test visual glyph identification, Romaji recall, and auditory native pronunciation recognition.
+                </p>
+              </div>
+            </div>
+
+            <!-- Realtime Metrics Pill Badges -->
+            <div class="flex items-center gap-2 flex-wrap text-xs font-mono">
+              <div class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-zinc-300">
+                <span class="text-zinc-500">Progress:</span>
+                <span id="quiz-progress-text" class="text-white font-bold">1 / 46</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-emerald-400">
+                <span>Score:</span>
+                <span id="quiz-score-correct" class="font-bold">0</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-lg bg-[#141418] border border-[#2d2d35] flex items-center gap-1.5 text-rose-400">
+                <span>Errors:</span>
+                <span id="quiz-score-mistakes" class="font-bold">0</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-1">
+                <span>🔥</span>
+                <span id="quiz-streak-display">0 Streak</span>
+              </div>
             </div>
           </div>
 
-          <!-- Spaced Repetition (SRS) Rating Action Bar -->
-          <div class="pt-2">
-            <div class="text-[11px] font-mono text-slate-400 mb-2 flex justify-between">
-              <span>SPACED REPETITION ENGINE (SRS):</span>
-              <span class="text-cyan-400">SELECT RECALL DIFFICULTY</span>
+          <!-- Realtime Visual Progress Bar Track with Segment Markers -->
+          <div class="space-y-1">
+            <div class="w-full h-2.5 bg-[#141418] rounded-full overflow-hidden border border-[#2a2a34] flex">
+              <div id="quiz-bar-correct" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+              <div id="quiz-bar-wrong" class="h-full bg-rose-500 transition-all duration-300" style="width: 0%"></div>
             </div>
-            <div class="grid grid-cols-3 gap-2.5">
-              <button onclick="rateSRS('retry')" class="cyber-btn py-2.5 rounded-lg bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-500/40 text-xs font-mono font-bold transition-all shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-                RETRY [1m]
-              </button>
-              <button onclick="rateSRS('good')" class="cyber-btn py-2.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/80 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold transition-all shadow-[0_0_10px_rgba(6,182,212,0.2)]">
-                GOOD [10m]
-              </button>
-              <button onclick="rateSRS('mastered')" class="cyber-btn py-2.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold transition-all shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-                MASTERED [4d]
-              </button>
+            <div class="flex items-center justify-between text-[11px] text-zinc-500 font-mono px-0.5">
+              <span>Pass Threshold: 70% (33/46) to unlock Level 3</span>
+              <span id="quiz-accuracy-text">Accuracy: 100%</span>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: Laser Etcher Stroke Canvas -->
-        <div class="cyber-panel p-5 rounded-xl border-cyan-500/30 flex flex-col items-center space-y-4">
+        <!-- Active Question Card Area (#quiz-card) -->
+        <div id="quiz-card" class="bg-[#1e1e24] border border-[#2d2d35] p-6 lg:p-8 rounded-xl shadow-sm text-center relative overflow-hidden space-y-6">
           
-          <!-- Status Bar -->
-          <div class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
-            <div>
-              <div class="text-[10px] font-mono text-cyan-400 tracking-wider">STROKE GUIDANCE TELEMETRY</div>
-              <div id="stroke-status" class="text-xs font-mono text-slate-200">
-                Ready: Follow Laser Vector 1/3
-              </div>
+          <!-- Question Type Header & Audio Trigger -->
+          <div class="flex items-center justify-between text-xs">
+            <span id="quiz-type-badge" class="px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 font-medium border border-blue-500/30 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+              Visual Kana Identification
+            </span>
+            <button id="quiz-audio-repeat-btn" onclick="playQuizPromptAudio()" class="px-3 py-1.5 rounded-full bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-white flex items-center gap-1.5 transition-all">
+              <svg class="w-4 h-4 text-sky-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.76l-4.242-3.182A1 1 0 003.524 13H2a1 1 0 01-1-1V8a1 1 0 011-1h1.524a1 1 0 00.617-.238l4.242-3.182a1 1 0 011-.504zm4.293 2.631a1 1 0 011.414 0 7 7 0 010 9.9 1 1 0 01-1.414-1.414 5 5 0 000-7.072 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+              <span>Replay Audio (ja-JP)</span>
+            </button>
+          </div>
+
+          <!-- Prompt Display Box -->
+          <div class="py-4 flex flex-col items-center justify-center">
+            <div id="quiz-prompt-label" class="text-xs uppercase tracking-wider text-[#9ca3af] mb-2 font-medium">
+              Select the matching Romaji pronunciation:
             </div>
-            <!-- Stroke Termination Badges -->
-            <div class="flex items-center gap-1.5 font-mono text-[10px]">
-              <span id="badge-tome" class="px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/40 text-cyan-300">TOME (Stop)</span>
-              <span id="badge-hane" class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-400">HANE (Hook)</span>
-              <span id="badge-harai" class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-400">HARAI (Sweep)</span>
+            <!-- Giant Glyph or Romaji -->
+            <div id="quiz-prompt-display" class="text-8xl lg:text-9xl font-jp font-black text-white drop-shadow-[0_0_25px_rgba(56,189,248,0.3)] transition-transform duration-200">
+              あ
+            </div>
+            <!-- Auditory Pulse Indicator (shown for auditory questions) -->
+            <div id="quiz-audio-indicator" class="hidden mt-3 items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-300 text-xs font-mono">
+              <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+              <span>Audio recognition challenge playing...</span>
             </div>
           </div>
 
-          <!-- HTML5 Canvas 320x320 with touch-action: none -->
-          <div class="relative flex items-center justify-center p-2 rounded-xl bg-slate-950/80 border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
-            <canvas id="stroke-canvas" width="320" height="320" class="cursor-crosshair"></canvas>
-            <div id="canvas-laser-line" class="laser-sweep-line hidden"></div>
+          <!-- 4 Multiple-Choice Options Grid -->
+          <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto w-full">
+            <!-- Populated dynamically via JS: 4 option buttons -->
+            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">1</span>
+              <span>a</span>
+              <span class="w-6"></span>
+            </button>
+            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">2</span>
+              <span>i</span>
+              <span class="w-6"></span>
+            </button>
+            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">3</span>
+              <span>u</span>
+              <span class="w-6"></span>
+            </button>
+            <button class="quiz-option-btn p-4 rounded-xl bg-[#141418] hover:bg-[#202028] border border-[#2d2d35] text-white font-bold text-lg transition-all flex items-center justify-between">
+              <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs flex items-center justify-center text-zinc-400">4</span>
+              <span>e</span>
+              <span class="w-6"></span>
+            </button>
           </div>
 
-          <!-- Canvas Action Controls -->
-          <div class="w-full grid grid-cols-3 gap-2 pt-1">
-            <button onclick="animateGuideStrokes()" class="cyber-btn py-2 px-2 rounded-lg bg-cyan-950/70 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/50 text-xs font-mono font-bold flex items-center justify-center gap-1 transition-all">
-              <span>▶ Pulse Laser Guide</span>
-            </button>
-            <button onclick="toggleGhostGuide()" class="cyber-btn py-2 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-mono font-bold flex items-center justify-center gap-1 transition-all">
-              <span>Ghost Toggle</span>
-            </button>
-            <button onclick="clearEtcher()" class="cyber-btn py-2 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 text-xs font-mono font-bold flex items-center justify-center gap-1 transition-all">
-              <span>↺ Reset Grid</span>
-            </button>
+          <!-- Mnemonic & Explanation Callout on Mistake -->
+          <div id="quiz-feedback-box" class="hidden max-w-xl mx-auto p-4 rounded-xl bg-[#16161c] border border-rose-500/40 text-left space-y-2">
+            <div class="flex items-center justify-between text-xs font-semibold text-rose-400">
+              <span id="quiz-feedback-title">Incorrect Selection</span>
+              <span class="text-zinc-400">Mnemonic Reinforcement</span>
+            </div>
+            <p id="quiz-feedback-desc" class="text-xs text-zinc-300 leading-relaxed">
+              Mnemonic: Picture an Apple with an Astronaut's antenna curving through it.
+            </p>
+            <div class="pt-1 flex justify-end">
+              <button onclick="advanceQuizQuestion()" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all">
+                Next Question [Space] ▶
+              </button>
+            </div>
           </div>
 
-          <!-- Drawing Instructions -->
-          <div class="w-full text-center text-[11px] font-mono text-slate-400 pt-1">
-            <span>DRAW WITH STYLUS, MOUSE, OR FINGER • ACCURACY EVALUATION ACTIVE</span>
+          <!-- Quiz Hotkey Footer -->
+          <div class="text-xs text-zinc-500 flex items-center justify-center gap-4 pt-2 border-t border-[#262630]">
+            <span>Hotkeys: <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">4</kbd> Choose Option</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">R</kbd> Replay Audio</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">Space</kbd> Continue</span>
           </div>
 
+        </div>
+
+        <!-- Quiz Summary & Completion Screen (#quiz-summary-card) -->
+        <div id="quiz-summary-card" class="hidden bg-[#1e1e24] border-2 border-emerald-500/50 p-6 lg:p-8 rounded-xl shadow-[0_0_40px_rgba(16,185,129,0.2)] text-center space-y-5">
+          <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/15 border border-emerald-400/40 flex items-center justify-center text-3xl">
+            🏆
+          </div>
+          <div>
+            <span id="quiz-results-pill" class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-mono font-semibold uppercase tracking-wider">
+              Level 2 Assessment Completed
+            </span>
+            <h2 id="quiz-results-title" class="text-2xl lg:text-3xl font-extrabold text-white mt-2 tracking-tight">
+              46-CHARACTER QUIZ MASTERED!
+            </h2>
+            <p id="quiz-results-subtitle" class="text-sm text-emerald-400 font-medium mt-1">
+              Final Score: 44 / 46 (96% Accuracy) • S-RANK PILOT
+            </p>
+          </div>
+
+          <div class="max-w-md mx-auto p-4 rounded-xl bg-[#141418] border border-[#2d2d35] space-y-2 text-xs">
+            <div class="flex items-center justify-between text-zinc-400">
+              <span>Total Questions Tested:</span>
+              <span class="text-white font-bold font-mono">46 Glyphs</span>
+            </div>
+            <div class="flex items-center justify-between text-zinc-400">
+              <span>Correct Recall:</span>
+              <span id="summary-correct" class="text-emerald-400 font-bold font-mono">44</span>
+            </div>
+            <div class="flex items-center justify-between text-zinc-400">
+              <span>Mistakes / Reviews:</span>
+              <span id="summary-mistakes" class="text-rose-400 font-bold font-mono">2</span>
+            </div>
+            <div class="flex items-center justify-between text-zinc-400 border-t border-zinc-800 pt-2">
+              <span>Telemetry XP Awarded:</span>
+              <span id="summary-xp-bonus" class="text-sky-400 font-bold font-mono">+150 XP</span>
+            </div>
+            <div class="flex items-center justify-between text-zinc-400">
+              <span>Level 3 (Stroke Practice):</span>
+              <span id="summary-level3-status" class="text-emerald-400 font-bold font-mono">UNLOCKED ✓</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button id="quiz-proceed-lvl3-btn" onclick="setLearningMode('etcher')" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-xl text-xs tracking-wider shadow-lg transition-all flex items-center justify-center gap-2">
+              <span>Proceed to Level 3: Stroke Practice ▶</span>
+            </button>
+            <button onclick="restartQuiz()" class="w-full sm:w-auto px-5 py-2.5 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-zinc-300 hover:text-white rounded-xl text-xs font-semibold transition-all">
+              Retake Quiz ↺
+            </button>
+            <button onclick="setLearningMode('flashcards')" class="w-full sm:w-auto px-5 py-2.5 bg-[#272730] hover:bg-[#32323e] border border-zinc-700 text-zinc-400 hover:text-white rounded-xl text-xs transition-all">
+              Review Level 1 Flashcards
+            </button>
+          </div>
         </div>
 
       </div>
@@ -547,74 +1103,73 @@
     <!-- ========================================================================
          SECTION 3: RADICAL FORGE (#view-forge)
          ======================================================================== -->
-    <section id="view-forge" class="hidden space-y-6">
+    <section id="view-forge" class="hidden space-y-5">
       
       <!-- Forge Header -->
-      <div class="cyber-panel p-5 rounded-xl border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-1">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
-            RADICAL FUSION ACCELERATOR
+          <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium mb-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Radical Fusion Accelerator
           </div>
-          <h2 class="text-xl lg:text-2xl font-orbitron font-bold text-white">
-            THE 30 CORE RADICALS // KANJI SYNTHESIS CHAMBER
+          <h2 class="text-xl lg:text-2xl font-bold text-white tracking-tight">
+            The 30 Core Radicals // Kanji Synthesis Chamber
           </h2>
-          <p class="text-slate-400 text-xs mt-1 max-w-2xl leading-relaxed">
-            In JWA methodology, Kanji are not random scribbles—they are modular semantic machines. Fuse basic radicals in the Reaction Chamber to forge complex Kanji weapons and ship modules.
+          <p class="text-[#9ca3af] text-xs mt-1 max-w-2xl leading-relaxed">
+            In JWA methodology, Kanji are modular semantic machines. Fuse basic radicals in the Reaction Chamber to synthesize compound Kanji characters and ship modules.
           </p>
         </div>
-        <div class="flex items-center gap-2 font-mono text-xs bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700">
-          <span class="text-slate-400">UNLOCKED ARSENAL:</span>
-          <span id="forge-count" class="text-emerald-400 font-bold">0 / 25 FORGED</span>
+        <div class="flex items-center gap-2 text-xs bg-[#18181b] px-3.5 py-2 rounded-lg border border-zinc-700">
+          <span class="text-[#9ca3af]">Unlocked Arsenal:</span>
+          <span id="forge-count" class="text-emerald-400 font-bold">0 / 25 Forged</span>
         </div>
       </div>
 
       <!-- 2-Column Forge Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         
-        <!-- Left: Radical Inventory (#radical-inventory) [5 Cols] -->
-        <div class="lg:col-span-5 cyber-panel p-5 rounded-xl border-cyan-500/30 space-y-4">
+        <!-- Left: Radical Inventory [5 Cols] -->
+        <div class="lg:col-span-5 bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-4">
           <div class="flex items-center justify-between">
-            <h3 class="font-orbitron font-bold text-sm text-cyan-300 tracking-wider">
-              RADICAL INVENTORY [30]
+            <h3 class="font-semibold text-sm text-white">
+              Radical Inventory [30]
             </h3>
-            <span class="text-[11px] font-mono text-slate-400">SELECT 2 TO FUSE</span>
+            <span class="text-xs text-[#9ca3af]">Select 2 to fuse</span>
           </div>
 
           <!-- Inventory Grid Container -->
           <div id="radical-inventory" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-[500px] overflow-y-auto pr-1">
-            <!-- Dynamically populated or default elements -->
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="日" data-meaning="Sun/Day" onclick="selectRadicalForForge(this, '日', 'Sun/Day')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">日</div>
-              <div class="text-[10px] font-mono text-slate-400">Sun / Day</div>
+              <div class="text-2xl font-jp font-bold text-white">日</div>
+              <div class="text-[11px] text-[#9ca3af]">Sun / Day</div>
             </div>
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="月" data-meaning="Moon" onclick="selectRadicalForForge(this, '月', 'Moon')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">月</div>
-              <div class="text-[10px] font-mono text-slate-400">Moon</div>
+              <div class="text-2xl font-jp font-bold text-white">月</div>
+              <div class="text-[11px] text-[#9ca3af]">Moon</div>
             </div>
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="木" data-meaning="Tree" onclick="selectRadicalForForge(this, '木', 'Tree')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">木</div>
-              <div class="text-[10px] font-mono text-slate-400">Tree</div>
+              <div class="text-2xl font-jp font-bold text-white">木</div>
+              <div class="text-[11px] text-[#9ca3af]">Tree</div>
             </div>
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="人" data-meaning="Person" onclick="selectRadicalForForge(this, '人', 'Person')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">人</div>
-              <div class="text-[10px] font-mono text-slate-400">Person</div>
+              <div class="text-2xl font-jp font-bold text-white">人</div>
+              <div class="text-[11px] text-[#9ca3af]">Person</div>
             </div>
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="水" data-meaning="Water" onclick="selectRadicalForForge(this, '水', 'Water')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">水</div>
-              <div class="text-[10px] font-mono text-slate-400">Water</div>
+              <div class="text-2xl font-jp font-bold text-white">水</div>
+              <div class="text-[11px] text-[#9ca3af]">Water</div>
             </div>
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="火" data-meaning="Fire" onclick="selectRadicalForForge(this, '火', 'Fire')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">火</div>
-              <div class="text-[10px] font-mono text-slate-400">Fire</div>
+              <div class="text-2xl font-jp font-bold text-white">火</div>
+              <div class="text-[11px] text-[#9ca3af]">Fire</div>
             </div>
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="口" data-meaning="Mouth" onclick="selectRadicalForForge(this, '口', 'Mouth')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">口</div>
-              <div class="text-[10px] font-mono text-slate-400">Mouth</div>
+              <div class="text-2xl font-jp font-bold text-white">口</div>
+              <div class="text-[11px] text-[#9ca3af]">Mouth</div>
             </div>
             <div class="radical-card p-2.5 rounded-lg text-center" data-radical="心" data-meaning="Heart" onclick="selectRadicalForForge(this, '心', 'Heart')">
-              <div class="text-2xl font-jp font-bold text-cyan-300">心</div>
-              <div class="text-[10px] font-mono text-slate-400">Heart</div>
+              <div class="text-2xl font-jp font-bold text-white">心</div>
+              <div class="text-[11px] text-[#9ca3af]">Heart</div>
             </div>
           </div>
         </div>
@@ -623,10 +1178,10 @@
         <div class="lg:col-span-7 space-y-5">
           
           <!-- Reaction Chamber Container -->
-          <div class="cyber-panel p-6 rounded-xl border-cyan-500/40 relative overflow-hidden">
-            <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-4">
-              <span class="text-cyan-400">FUSION CHAMBER PROTOCOL:</span>
-              <button onclick="resetForgeSlots()" class="hover:text-amber-400 underline">CLEAR SLOTS</button>
+          <div class="bg-[#1e1e24] border border-[#2d2d35] p-6 rounded-xl shadow-sm relative overflow-hidden">
+            <div class="flex items-center justify-between text-xs text-[#9ca3af] mb-4">
+              <span class="font-medium text-white">Fusion Chamber Protocol:</span>
+              <button onclick="resetForgeSlots()" class="hover:text-amber-400 transition-colors">Clear Slots</button>
             </div>
 
             <!-- Slots Reaction Row -->
@@ -634,80 +1189,83 @@
               
               <!-- Slot 1 -->
               <div id="slot-1" class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center">
-                <span class="text-[10px] font-mono text-slate-500 mb-1">SLOT 01</span>
-                <span class="slot-char text-4xl font-jp font-black text-cyan-300">-</span>
-                <span class="slot-label text-[10px] font-mono text-slate-400 mt-1">Empty</span>
+                <span class="text-[11px] text-[#9ca3af] mb-1">Slot 01</span>
+                <span class="slot-char text-4xl font-jp font-black text-white">-</span>
+                <span class="slot-label text-[11px] text-[#9ca3af] mt-1">Empty</span>
               </div>
 
               <!-- Operator Plus -->
-              <div class="text-2xl font-orbitron font-bold text-cyan-400 drop-shadow-[0_0_8px_#06b6d4]">
+              <div class="text-2xl font-bold text-zinc-400">
                 +
               </div>
 
               <!-- Slot 2 -->
               <div id="slot-2" class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center">
-                <span class="text-[10px] font-mono text-slate-500 mb-1">SLOT 02</span>
-                <span class="slot-char text-4xl font-jp font-black text-cyan-300">-</span>
-                <span class="slot-label text-[10px] font-mono text-slate-400 mt-1">Empty</span>
+                <span class="text-[11px] text-[#9ca3af] mb-1">Slot 02</span>
+                <span class="slot-char text-4xl font-jp font-black text-white">-</span>
+                <span class="slot-label text-[11px] text-[#9ca3af] mt-1">Empty</span>
               </div>
 
               <!-- Operator Equals -->
-              <div class="text-2xl font-orbitron font-bold text-emerald-400 drop-shadow-[0_0_8px_#10b981]">
+              <div class="text-2xl font-bold text-zinc-400">
                 =
               </div>
 
               <!-- Forge Output Slot -->
-              <div id="forge-output" class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center border-emerald-500/40 bg-emerald-950/20 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                <span class="text-[10px] font-mono text-emerald-400 mb-1">OUTPUT</span>
+              <div id="forge-output" class="forge-slot w-24 h-28 rounded-xl flex flex-col items-center justify-center p-2 text-center border-emerald-500/40 bg-emerald-500/10">
+                <span class="text-[11px] text-emerald-400 mb-1">Output</span>
                 <span class="output-char text-4xl font-jp font-black text-emerald-300">?</span>
-                <span class="output-label text-[10px] font-mono text-slate-400 mt-1">Awaiting</span>
+                <span class="output-label text-[11px] text-[#9ca3af] mt-1">Awaiting</span>
               </div>
 
             </div>
 
             <!-- Fusion Trigger Button -->
             <div class="pt-3">
-              <button id="btn-fuse" onclick="fuseRadicals()" class="cyber-btn w-full py-3 bg-gradient-to-r from-cyan-600 via-cyan-500 to-emerald-500 hover:from-cyan-500 hover:to-emerald-400 text-slate-950 font-orbitron font-black text-sm tracking-wider rounded-lg shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-                ⚡ INITIATE KANJI FUSION REACTION
+              <button id="btn-fuse" onclick="fuseRadicals()" class="cyber-btn w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-lg shadow-sm transition-all">
+                ⚡ Initiate Kanji Fusion Reaction
               </button>
             </div>
 
-            <!-- Forge Result Lore Text (#forge-result-text) -->
-            <div id="forge-result-text" class="mt-4 p-3.5 rounded-lg bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-300 leading-relaxed min-h-[56px] flex items-center justify-center text-center">
+            <!-- Forge Result Lore Text -->
+            <div id="forge-result-text" class="mt-4 p-3.5 rounded-lg bg-[#141418] border border-[#2d2d35] text-xs text-[#9ca3af] leading-relaxed min-h-[56px] flex items-center justify-center text-center">
               Select two compatible radicals from your inventory and ignite the fusion chamber to synthesize compound Kanji.
             </div>
 
           </div>
 
-          <!-- Unlocked Arsenal List (#unlocked-arsenal) -->
-          <div class="cyber-panel p-5 rounded-xl border-slate-700/60 space-y-3">
-            <div class="flex items-center justify-between text-xs font-mono">
-              <span class="font-orbitron font-bold text-slate-200">UNLOCKED ARSENAL & SUBSYSTEM MODULES:</span>
-              <span class="text-cyan-400 font-bold">ACTIVE DEPLOYMENT</span>
+          <!-- Unlocked Arsenal List -->
+          <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-white">Unlocked Arsenal & Compound Modules:</span>
+              <span class="text-emerald-400 font-medium">Ready</span>
             </div>
             
             <div id="unlocked-arsenal" class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-              <!-- Dynamically populated forged kanji weapons -->
-              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+              <div class="p-3 rounded-lg bg-[#18181b] border border-[#2d2d35] flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                  <span class="text-2xl font-jp font-bold text-amber-300">明</span>
+                  <div class="badge-icon-pill pill-amber">
+                    <span class="text-xl font-jp font-bold">明</span>
+                  </div>
                   <div>
-                    <div class="text-xs font-orbitron font-bold text-slate-200">SOLAR LASER // [BRIGHT] (MEI / AKARUI)</div>
-                    <div class="text-[11px] font-mono text-slate-400">Formed by Sun (日) + Moon (月)</div>
+                    <div class="text-xs font-semibold text-white">Solar Laser // Bright (MEI / akarui)</div>
+                    <div class="text-[11px] text-[#9ca3af]">Formed by Sun (日) + Moon (月)</div>
                   </div>
                 </div>
-                <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/40 text-[10px] font-mono">ONLINE</span>
+                <span class="list-row-badge cleared-badge">Online</span>
               </div>
 
-              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+              <div class="p-3 rounded-lg bg-[#18181b] border border-[#2d2d35] flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                  <span class="text-2xl font-jp font-bold text-cyan-300">休</span>
+                  <div class="badge-icon-pill pill-blue">
+                    <span class="text-xl font-jp font-bold">休</span>
+                  </div>
                   <div>
-                    <div class="text-xs font-orbitron font-bold text-slate-200">CRYO RECHARGE // [REST] (KYUU / YASU)</div>
-                    <div class="text-[11px] font-mono text-slate-400">Formed by Person (人) + Tree (木)</div>
+                    <div class="text-xs font-semibold text-white">Cryo Recharge // Rest (KYUU / yasu)</div>
+                    <div class="text-[11px] text-[#9ca3af]">Formed by Person (人) + Tree (木)</div>
                   </div>
                 </div>
-                <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/40 text-[10px] font-mono">ONLINE</span>
+                <span class="list-row-badge cleared-badge">Online</span>
               </div>
             </div>
           </div>
@@ -720,45 +1278,45 @@
     <!-- ========================================================================
          SECTION 4: KANA BLASTER SHOOTER (#view-shooter)
          ======================================================================== -->
-    <section id="view-shooter" class="hidden space-y-6">
+    <section id="view-shooter" class="hidden space-y-5">
       
       <!-- Shooter Header & Difficulty Selector -->
-      <div class="cyber-panel p-5 rounded-xl border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-1">
-            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
-            NEO-TOKYO AIRSPACE SORTIE
+          <div class="flex items-center gap-2 text-rose-400 text-xs font-medium mb-1">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            Tactical Kana Defense Sortie
           </div>
-          <h2 class="text-xl lg:text-2xl font-orbitron font-bold text-white">
-            KANA BLASTER // TACTICAL INTERCEPTOR
+          <h2 class="text-xl lg:text-2xl font-bold text-white tracking-tight">
+            Kana Blaster // Speed Typing Interceptor
           </h2>
-          <p class="text-slate-400 text-xs mt-1 max-w-xl leading-relaxed">
-            Hostile glyph drones are descending upon the quadrant. Type the correct Romaji reading into the targeting array to fire defensive lasers before hull impact!
+          <p class="text-[#9ca3af] text-xs mt-1 max-w-xl leading-relaxed">
+            Hostile glyph drones are descending. Type the correct Romaji reading into the targeting array to fire defensive lasers before hull impact!
           </p>
         </div>
 
         <!-- Difficulty Selector & Sortie Launch -->
-        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
-          <div class="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-lg border border-slate-700">
-            <button id="diff-aka" onclick="selectShooterDifficulty('aka')" class="px-2.5 py-1 rounded text-xs font-mono bg-cyan-950 text-cyan-300 border border-cyan-500/40 font-bold">
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
+          <div class="flex items-center gap-1 bg-[#18181b] p-1 rounded-lg border border-zinc-700">
+            <button id="diff-aka" onclick="selectShooterDifficulty('aka')" class="px-2.5 py-1 rounded-md text-xs font-medium bg-zinc-700 text-white shadow-sm">
               Row A-Ka
             </button>
-            <button id="diff-lookalike" onclick="selectShooterDifficulty('lookalikes')" class="px-2.5 py-1 rounded text-xs font-mono bg-transparent text-slate-400 hover:text-cyan-300">
+            <button id="diff-lookalike" onclick="selectShooterDifficulty('lookalikes')" class="px-2.5 py-1 rounded-md text-xs font-medium text-[#9ca3af] hover:text-white">
               Lookalikes シ/ツ/ソ/ン
             </button>
-            <button id="diff-full" onclick="selectShooterDifficulty('full')" class="px-2.5 py-1 rounded text-xs font-mono bg-transparent text-slate-400 hover:text-cyan-300">
+            <button id="diff-full" onclick="selectShooterDifficulty('full')" class="px-2.5 py-1 rounded-md text-xs font-medium text-[#9ca3af] hover:text-white">
               Full Kana + Radicals
             </button>
           </div>
 
-          <button id="btn-launch-shooter" onclick="startShooterGame()" class="cyber-btn px-6 py-2.5 bg-gradient-to-r from-red-600 via-amber-500 to-amber-400 hover:from-red-500 hover:to-amber-300 text-slate-950 font-orbitron font-black text-xs tracking-wider rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.5)]">
-            🚀 LAUNCH SORTIE
+          <button id="btn-launch-shooter" onclick="startShooterGame()" class="cyber-btn px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs tracking-wide rounded-lg shadow-sm">
+            🚀 Launch Sortie
           </button>
         </div>
       </div>
 
       <!-- Tactical Shooter Canvas Viewport (#shooter-canvas) -->
-      <div class="cyber-panel p-4 rounded-xl border-cyan-500/40 flex flex-col items-center">
+      <div class="bg-[#1e1e24] border border-[#2d2d35] p-4 rounded-xl shadow-sm flex flex-col items-center">
         
         <!-- Canvas Frame (850x440) -->
         <div class="relative w-full max-w-[850px] overflow-hidden rounded-lg">
@@ -766,20 +1324,20 @@
         </div>
 
         <!-- Shooter HUD Bar: Hull Integrity | Targeting Input | Score -->
-        <div class="w-full max-w-[850px] mt-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-slate-950/90 p-4 rounded-xl border border-cyan-500/30">
+        <div class="w-full max-w-[850px] mt-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-[#18181b] p-4 rounded-xl border border-zinc-700/80">
           
-          <!-- Hull Integrity (#hull-bar) [4 Cols] -->
+          <!-- Hull Integrity -->
           <div class="md:col-span-4 space-y-1.5">
-            <div class="flex justify-between text-xs font-mono">
-              <span class="text-slate-400">HULL INTEGRITY:</span>
+            <div class="flex justify-between text-xs">
+              <span class="text-[#9ca3af] font-medium">Hull Integrity:</span>
               <span id="hull-text" class="text-emerald-400 font-bold">100%</span>
             </div>
-            <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
-              <div id="hull-bar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full shadow-[0_0_10px_#10b981]" style="width: 100%"></div>
+            <div class="w-full h-2.5 bg-zinc-800 rounded-full overflow-hidden">
+              <div id="hull-bar" class="h-full bg-emerald-500 rounded-full transition-all" style="width: 100%"></div>
             </div>
           </div>
 
-          <!-- Targeting Laser Input (#laser-input) [5 Cols] -->
+          <!-- Targeting Laser Input -->
           <div class="md:col-span-5 relative">
             <label for="laser-input" class="sr-only">Targeting Input</label>
             <input 
@@ -787,23 +1345,23 @@
               id="laser-input" 
               autocomplete="off" 
               spellcheck="false" 
-              placeholder="[ENTER ROMAJI TO FIRE LASER]" 
-              class="w-full py-2.5 px-4 rounded-lg bg-slate-900 border-2 border-cyan-500/50 text-cyan-200 placeholder-slate-500 font-orbitron font-bold text-center tracking-widest text-sm uppercase transition-all"
+              placeholder="Enter Romaji to fire" 
+              class="w-full py-2 px-3.5 rounded-lg bg-[#141418] border border-zinc-700 text-white placeholder-zinc-500 text-sm font-semibold tracking-wider uppercase text-center focus:outline-none focus:border-blue-500 transition-all"
             >
-            <span class="absolute right-3 top-2.5 text-xs text-cyan-400/60 font-mono">⏎ ENTER</span>
+            <span class="absolute right-3 top-2.5 text-xs text-zinc-500">⏎</span>
           </div>
 
-          <!-- Shooter Score & Combo (#shooter-score) [3 Cols] -->
+          <!-- Score & Combo -->
           <div class="md:col-span-3 flex items-center justify-between md:justify-end gap-4 text-right">
             <div>
-              <div class="text-[10px] font-mono text-slate-400">SCORE:</div>
-              <div id="shooter-score" class="text-2xl font-orbitron font-extrabold text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
+              <div class="text-[10px] text-[#9ca3af] font-medium uppercase tracking-wider">Score</div>
+              <div id="shooter-score" class="text-xl font-bold font-mono text-amber-400">
                 00000
               </div>
             </div>
             <div>
-              <div class="text-[10px] font-mono text-slate-400">COMBO:</div>
-              <div id="shooter-combo" class="text-sm font-mono font-bold text-cyan-300">
+              <div class="text-[10px] text-[#9ca3af] font-medium uppercase tracking-wider">Combo</div>
+              <div id="shooter-combo" class="text-sm font-bold font-mono text-sky-400">
                 x1.0
               </div>
             </div>
@@ -817,27 +1375,27 @@
     <!-- ========================================================================
          SECTION 5: KAIWA COMMS (#view-kaiwa)
          ======================================================================== -->
-    <section id="view-kaiwa" class="hidden space-y-6">
+    <section id="view-kaiwa" class="hidden space-y-5">
       
       <!-- Kaiwa Header -->
-      <div class="cyber-panel p-5 rounded-xl border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-1">
-            <span class="w-2.5 h-2.5 rounded-full bg-purple-400 animate-pulse"></span>
-            SUB-SPACE VOICE SHADOWING & SOV THRUSTER TERMINAL
+          <div class="flex items-center gap-2 text-purple-400 text-xs font-medium mb-1">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+            Voice Shadowing & SOV Propulsion
           </div>
-          <h2 class="text-xl lg:text-2xl font-orbitron font-bold text-white">
-            KAIWA COMMS // N5 - N2 CONVERSATIONAL TRANSMISSIONS
+          <h2 class="text-xl lg:text-2xl font-bold text-white tracking-tight">
+            Kaiwa Comms // N5 - N2 Dialogue Transmissions
           </h2>
-          <p class="text-slate-400 text-xs mt-1 max-w-2xl leading-relaxed">
-            Master the SOV (Subject - Object - Verb) particle dynamics and natural intonation through tactical voice shadowing drills across Neo-Tokyo mission sectors.
+          <p class="text-[#9ca3af] text-xs mt-1 max-w-2xl leading-relaxed">
+            Master Subject - Object - Verb (SOV) particle clamping and natural intonation through tactical voice shadowing drills across Tokyo missions.
           </p>
         </div>
 
         <!-- Scenario Mission Selector -->
         <div class="flex items-center gap-2">
-          <label for="kaiwa-scenario" class="text-xs font-mono text-slate-400 whitespace-nowrap">MISSION SECTOR:</label>
-          <select id="kaiwa-scenario" onchange="changeKaiwaMission(this.value)" class="bg-slate-900 border border-cyan-500/40 text-cyan-300 font-mono text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-cyan-400">
+          <label for="kaiwa-scenario" class="text-xs text-[#9ca3af] whitespace-nowrap">Mission:</label>
+          <select id="kaiwa-scenario" onchange="changeKaiwaMission(this.value)" class="bg-[#18181b] border border-zinc-700 text-white text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500">
             <option value="akihabara">01. Akihabara Market [N5 Survival]</option>
             <option value="shinjuku">02. Shinjuku Spaceport [N4 Navigation]</option>
             <option value="shibuya">03. Shibuya AI Lab [N3 Business]</option>
@@ -847,105 +1405,113 @@
       </div>
 
       <!-- Kaiwa Terminal Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         
-        <!-- Left: SOV Particle Thruster Matrix [5 Cols] -->
-        <div class="lg:col-span-5 cyber-panel p-5 rounded-xl border-cyan-500/30 space-y-4">
+        <!-- Left: SOV Particle Thrusters [5 Cols] -->
+        <div class="lg:col-span-5 bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-4">
           <div class="flex items-center justify-between">
-            <h3 class="font-orbitron font-bold text-sm text-cyan-300 tracking-wider">
-              SOV PARTICLE THRUSTERS
+            <h3 class="font-semibold text-sm text-white">
+              SOV Particle Thrusters
             </h3>
-            <span class="text-[11px] font-mono text-slate-400">SYNTAX PROPULSION</span>
+            <span class="text-xs text-[#9ca3af]">Syntax Logic</span>
           </div>
 
-          <p class="text-xs text-slate-400 leading-relaxed font-rajdhani">
-            Japanese is an SOV language. Particles act as magnetic clamps specifying the function of each word block:
+          <p class="text-xs text-[#9ca3af] leading-relaxed">
+            Japanese follows Subject-Object-Verb syntax. Particles act as magnetic clamps specifying the function of each word block:
           </p>
 
-          <div class="space-y-2.5 font-mono text-xs">
+          <div class="card-list-group">
             <!-- Topic Wa -->
-            <div class="p-3 rounded-lg bg-slate-900/80 border border-cyan-500/30 flex items-start gap-3">
-              <span class="text-xl font-jp font-bold text-cyan-300 px-2 py-1 rounded bg-cyan-950 border border-cyan-400/40">は (wa)</span>
-              <div>
-                <div class="text-cyan-200 font-bold">TOPIC BEACON</div>
-                <div class="text-slate-400 text-[11px]">"Speaking of X..." Sets the cosmic stage for the conversation.</div>
+            <div class="list-item-row">
+              <div class="badge-icon-pill pill-blue">
+                <span class="text-base font-jp font-bold">は</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-semibold text-white">Topic Beacon (wa)</div>
+                <div class="text-xs text-[#9ca3af]">"Speaking of X..." Sets the conversational context.</div>
               </div>
             </div>
 
             <!-- Subject Ga -->
-            <div class="p-3 rounded-lg bg-slate-900/80 border border-emerald-500/30 flex items-start gap-3">
-              <span class="text-xl font-jp font-bold text-emerald-300 px-2 py-1 rounded bg-emerald-950 border border-emerald-400/40">が (ga)</span>
-              <div>
-                <div class="text-emerald-200 font-bold">SUBJECT CLAMP</div>
-                <div class="text-slate-400 text-[11px]">Identifies specific actor or highlights new target telemetry.</div>
+            <div class="list-item-row">
+              <div class="badge-icon-pill pill-emerald">
+                <span class="text-base font-jp font-bold">が</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-semibold text-white">Subject Clamp (ga)</div>
+                <div class="text-xs text-[#9ca3af]">Identifies the specific actor or highlights new information.</div>
               </div>
             </div>
 
             <!-- Object Wo -->
-            <div class="p-3 rounded-lg bg-slate-900/80 border border-amber-500/30 flex items-start gap-3">
-              <span class="text-xl font-jp font-bold text-amber-300 px-2 py-1 rounded bg-amber-950 border border-amber-400/40">を (wo)</span>
-              <div>
-                <div class="text-amber-200 font-bold">DIRECT OBJECT TARGET</div>
-                <div class="text-slate-400 text-[11px]">Marks what receives the verb's direct laser action.</div>
+            <div class="list-item-row">
+              <div class="badge-icon-pill pill-amber">
+                <span class="text-base font-jp font-bold">を</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-semibold text-white">Direct Object (wo)</div>
+                <div class="text-xs text-[#9ca3af]">Marks what receives the verb's direct action.</div>
               </div>
             </div>
 
             <!-- Direction/Time Ni/He -->
-            <div class="p-3 rounded-lg bg-slate-900/80 border border-purple-500/30 flex items-start gap-3">
-              <span class="text-xl font-jp font-bold text-purple-300 px-2 py-1 rounded bg-purple-950 border border-purple-400/40">に / へ</span>
-              <div>
-                <div class="text-purple-200 font-bold">VECTOR / DESTINATION</div>
-                <div class="text-slate-400 text-[11px]">Marks destination coordinates or exact time anchors.</div>
+            <div class="list-item-row">
+              <div class="badge-icon-pill pill-purple">
+                <span class="text-base font-jp font-bold">に</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-semibold text-white">Vector / Time (ni / e)</div>
+                <div class="text-xs text-[#9ca3af]">Marks destination coordinates or exact time anchors.</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Right: Interactive Conversation Terminal [7 Cols] -->
-        <div class="lg:col-span-7 cyber-panel p-5 rounded-xl border-cyan-500/30 space-y-5">
+        <div class="lg:col-span-7 bg-[#1e1e24] border border-[#2d2d35] p-5 rounded-xl shadow-sm space-y-4">
           
-          <div class="flex items-center justify-between pb-2 border-b border-slate-800 text-xs font-mono">
-            <span class="text-cyan-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-              AUDIO COMM CHANNEL: AKIHABARA_OUTPOST_01
+          <div class="flex items-center justify-between pb-2 border-b border-[#2a2a34] text-xs">
+            <span class="text-white font-medium flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+              Audio Comm: Akihabara Station
             </span>
-            <span class="text-slate-400">[SHADOWING MODE READY]</span>
+            <span class="text-[#9ca3af]">[Shadowing Mode Ready]</span>
           </div>
 
           <!-- Dialogue Transmission Box -->
-          <div id="kaiwa-dialogue-box" class="space-y-4 p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+          <div id="kaiwa-dialogue-box" class="space-y-4 p-4 rounded-xl bg-[#141418] border border-[#2d2d35]">
             
             <!-- Transmission Line 1 -->
             <div class="space-y-1">
-              <div class="flex items-center gap-2 text-xs font-mono text-cyan-400">
+              <div class="flex items-center gap-2 text-xs text-blue-400 font-medium">
                 <span>COMM OFFICER REN:</span>
-                <span class="text-[10px] text-slate-500">[NATIVE AUDIO STREAM]</span>
+                <span class="text-[10px] text-zinc-500">[NATIVE AUDIO]</span>
               </div>
               <div class="text-lg lg:text-xl font-jp font-bold text-white tracking-wide">
-                すみません、秋葉原駅<span class="text-cyan-400 font-black">は</span>どこです<span class="text-amber-400 font-black">か</span>？
+                すみません、秋葉原駅<span class="text-sky-400 font-black">は</span>どこです<span class="text-amber-400 font-black">か</span>？
               </div>
-              <div class="text-xs font-mono text-slate-400">
+              <div class="text-xs font-mono text-zinc-400">
                 Sumimasen, Akihabara-eki wa doko desu ka?
               </div>
-              <div class="text-xs text-slate-300 italic font-rajdhani">
+              <div class="text-xs text-[#9ca3af] italic">
                 "Excuse me, where is Akihabara Station?"
               </div>
             </div>
 
-            <div class="h-px bg-slate-800/80"></div>
+            <div class="h-px bg-[#262630]"></div>
 
             <!-- Transmission Line 2 (Response) -->
             <div class="space-y-1">
-              <div class="flex items-center gap-2 text-xs font-mono text-emerald-400">
-                <span>CYBER DROID RECEPTIONIST:</span>
+              <div class="flex items-center gap-2 text-xs text-emerald-400 font-medium">
+                <span>RECEPTIONIST:</span>
               </div>
               <div class="text-lg lg:text-xl font-jp font-bold text-slate-200 tracking-wide">
-                あそこ<span class="text-purple-400 font-black">に</span>大き<span class="text-cyan-400 font-black">な</span>タワー<span class="text-emerald-400 font-black">が</span>あります。
+                あそこ<span class="text-purple-400 font-black">に</span>大き<span class="text-sky-400 font-black">な</span>タワー<span class="text-emerald-400 font-black">が</span>あります。
               </div>
-              <div class="text-xs font-mono text-slate-400">
+              <div class="text-xs font-mono text-zinc-400">
                 Asoko ni ookina tawaa ga arimasu.
               </div>
-              <div class="text-xs text-slate-300 italic font-rajdhani">
+              <div class="text-xs text-[#9ca3af] italic">
                 "There is a huge tower over there."
               </div>
             </div>
@@ -953,22 +1519,22 @@
           </div>
 
           <!-- Voice Shadowing Audio Controls -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <button id="kaiwa-play-btn" onclick="playKaiwaDialogue()" class="cyber-btn py-3 px-4 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/50 text-xs font-orbitron font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <button id="kaiwa-play-btn" onclick="playKaiwaDialogue()" class="cyber-btn py-3 px-4 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-300 border border-blue-500/30 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
-              <span>LISTEN TO NATIVE AUDIO</span>
+              <span>Listen to Native Audio</span>
             </button>
 
-            <button id="kaiwa-mic-btn" onclick="toggleKaiwaShadowing()" class="cyber-btn py-3 px-4 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/50 text-xs font-orbitron font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+            <button id="kaiwa-mic-btn" onclick="toggleKaiwaShadowing()" class="cyber-btn py-3 px-4 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
-              <span>START VOICE SHADOWING</span>
+              <span>Start Voice Shadowing</span>
             </button>
           </div>
 
           <!-- Pronunciation & Pitch Waveform Readout -->
-          <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800 flex items-center justify-between text-xs font-mono">
-            <span class="text-slate-400">PITCH ACCENT WAVEFORM:</span>
-            <span id="kaiwa-status" class="text-emerald-400 font-bold">READY FOR TRANSMISSION</span>
+          <div class="p-3 rounded-lg bg-[#18181b] border border-[#2d2d35] flex items-center justify-between text-xs">
+            <span class="text-[#9ca3af]">Shadowing Status:</span>
+            <span id="kaiwa-status" class="text-emerald-400 font-medium">Ready for transmission</span>
           </div>
 
         </div>
@@ -981,20 +1547,19 @@
   <!-- ==========================================================================
        FOOTER & STATUS CONSOLE
        ========================================================================== -->
-  <footer class="mt-auto border-t border-slate-800 bg-slate-950/80 px-6 py-3 text-center text-xs font-mono text-slate-500">
+  <footer class="mt-auto border-t border-zinc-800 bg-[#18181b] px-6 py-3.5 text-center text-xs text-[#9ca3af]">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-      <div>PROJECT KIHON // NEO-TOKYO ODYSSEY • JWA FLIGHT ARCHITECTURE</div>
+      <div>PROJECT KIHON // JAPAN WITH ADI (JWA) CURRICULUM ARCHITECTURE</div>
       <div class="flex items-center gap-3">
-        <span class="text-cyan-400/80">NEURAL ENGINE: ACTIVE</span>
+        <span class="text-sky-400">SRS Engine: Active</span>
         <span>•</span>
-        <span class="text-emerald-400/80">SRS SYNC: LOCAL COCKPIT</span>
+        <span class="text-emerald-400">Local Telemetry Synced</span>
       </div>
     </div>
   </footer>
 
   <!-- ==========================================================================
        CORE ARCHITECTURE & FALLBACK SHELL CONTROLLER
-       Ensures tabs and card flips work immediately even before Task 2-5 modules
        ========================================================================== -->
   <script>
     // Tab Switching Architecture
@@ -1020,7 +1585,7 @@
       });
     }
 
-    // 3D Holo-Flashcard Flip
+    // 3D Flashcard Flip
     function flipCard() {
       const card = document.getElementById('flashcard');
       if (card) {
@@ -1035,18 +1600,16 @@
         const btn = document.getElementById(`cat-${c}`);
         if (btn) {
           if (c === category) {
-            btn.className = "category-btn active px-3.5 py-1.5 rounded-lg text-xs font-orbitron tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/60 shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-all";
+            btn.className = "category-btn active";
           } else {
-            btn.className = "category-btn px-3.5 py-1.5 rounded-lg text-xs font-orbitron tracking-wider bg-slate-900/80 text-slate-400 border border-slate-700 hover:text-cyan-300 hover:border-cyan-500/40 transition-all";
+            btn.className = "category-btn";
           }
         }
       });
-      // Will be extended in bootcamp.js
     }
 
     // Fallback SRS Rating
     function rateSRS(rating) {
-      console.log(`[SRS Protocol] Rated: ${rating}`);
       const xpEl = document.getElementById('hud-xp');
       const mobileXp = document.getElementById('mobile-xp');
       if (xpEl) {
@@ -1061,7 +1624,6 @@
     // Fallback Audio Trigger
     function playKanaAudio(event) {
       if (event) event.stopPropagation();
-      console.log('[Audio Protocol] Triggering TTS speech synthesis');
       if ('speechSynthesis' in window) {
         const glyphEl = document.getElementById('card-glyph');
         const text = glyphEl ? glyphEl.innerText.trim() : 'あ';
@@ -1072,9 +1634,8 @@
       }
     }
 
-    // Fallback Canvas Laser Guides
+    // Canvas Laser Guides
     function animateGuideStrokes() {
-      console.log('[Laser Guide] Pulse initiated');
       const line = document.getElementById('canvas-laser-line');
       if (line) {
         line.classList.remove('hidden');
@@ -1082,9 +1643,7 @@
       }
     }
 
-    function toggleGhostGuide() {
-      console.log('[Ghost Guide] Toggled');
-    }
+    function toggleGhostGuide() {}
 
     function clearEtcher() {
       const canvas = document.getElementById('stroke-canvas');
@@ -1156,7 +1715,6 @@
       const out = document.getElementById('forge-output');
       const txt = document.getElementById('forge-result-text');
       
-      // Sample fusion table (extended in forge.js)
       const recipes = {
         '日+月': { kanji: '明', meaning: 'Bright / Solar Laser', romaji: 'MEI / akarui', lore: 'Sun (日) + Moon (月) synthesize the brightest celestial radiance.' },
         '人+木': { kanji: '休', meaning: 'Rest / Cryo Chamber', romaji: 'KYUU / yasu', lore: 'A Person (人) resting alongside a Tree (木).' },
@@ -1172,7 +1730,7 @@
           out.classList.add('filled');
         }
         if (txt) {
-          txt.innerHTML = `<span class="text-emerald-400 font-bold font-jp text-base">${res.kanji}</span>: ${res.meaning} (${res.romaji}). <br><span class="text-slate-400">${res.lore}</span>`;
+          txt.innerHTML = `<span class="text-emerald-400 font-bold font-jp text-base">${res.kanji}</span>: ${res.meaning} (${res.romaji}). <br><span class="text-[#9ca3af]">${res.lore}</span>`;
         }
         const xpEl = document.getElementById('hud-xp');
         if (xpEl) {
@@ -1185,44 +1743,34 @@
       }
     }
 
-    function selectShooterDifficulty(diff) {
-      console.log(`[Shooter Protocol] Difficulty selected: ${diff}`);
-    }
-
+    function selectShooterDifficulty(diff) {}
     function startShooterGame() {
-      console.log('[Shooter Protocol] Sortie launched');
       const btn = document.getElementById('btn-launch-shooter');
-      if (btn) btn.innerText = 'SORTIE ENGAGED 🚀';
+      if (btn) btn.innerText = 'Sortie Active 🚀';
     }
-
-    function changeKaiwaMission(mission) {
-      console.log(`[Kaiwa Protocol] Mission changed: ${mission}`);
-    }
-
+    function changeKaiwaMission(mission) {}
     function playKaiwaDialogue() {
-      console.log('[Kaiwa Protocol] Playing dialogue stream');
       if ('speechSynthesis' in window) {
         const u = new SpeechSynthesisUtterance('すみません、秋葉原駅はどこですか？');
         u.lang = 'ja-JP';
         window.speechSynthesis.speak(u);
       }
     }
-
     function toggleKaiwaShadowing() {
       const status = document.getElementById('kaiwa-status');
       if (status) {
-        status.innerText = 'TRANSMITTING & RECORDING... (SHADOW NOW)';
-        status.className = 'text-amber-400 font-bold animate-pulse';
+        status.innerText = 'Recording voice shadowing...';
+        status.className = 'text-amber-400 font-medium';
         setTimeout(() => {
-          status.innerText = 'ACCURACY VERIFIED: 94% NATIVE MATCH';
-          status.className = 'text-emerald-400 font-bold';
+          status.innerText = 'Accuracy: 94% Native Match';
+          status.className = 'text-emerald-400 font-medium';
         }, 3000);
       }
     }
   </script>
 
   <!-- ==========================================================================
-       MODULAR ENGINE SCRIPT IMPORTS (TASK 2-5)
+       MODULAR ENGINE SCRIPT IMPORTS
        ========================================================================== -->
   <script src="data.js"></script>
   <script src="bootcamp.js"></script>

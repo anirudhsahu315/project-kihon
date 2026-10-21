@@ -2,6 +2,7 @@
  * ============================================================================
  * PROJECT KIHON: NEO-TOKYO ODYSSEY
  * Single Source of Truth (SSOT) Game & Curriculum Database
+ * Complete 46-Character Syllabary (Hiragana & Katakana) + 30 Radicals
  * Based on the JWA (Japan With Adi) Japanese Learning Flightpath
  * ============================================================================
  */
@@ -20,6 +21,8 @@
     streak: 1,
     masteredIds: new Set(),
     forgedKanji: new Set(),
+    unlockedLevels: new Set(['hiragana-1', 'katakana-1', 'radicals-1']),
+    quizScores: {},
     lastLoginDate: new Date().toISOString().split('T')[0],
 
     // Rank Threshold Mapping (XP Based)
@@ -43,9 +46,10 @@
           this.streak = typeof parsed.streak === 'number' ? parsed.streak : 1;
           this.masteredIds = new Set(Array.isArray(parsed.masteredIds) ? parsed.masteredIds : []);
           this.forgedKanji = new Set(Array.isArray(parsed.forgedKanji) ? parsed.forgedKanji : []);
+          this.unlockedLevels = new Set(Array.isArray(parsed.unlockedLevels) ? parsed.unlockedLevels : ['hiragana-1', 'katakana-1', 'radicals-1']);
+          this.quizScores = (parsed.quizScores && typeof parsed.quizScores === 'object') ? parsed.quizScores : {};
           this.lastLoginDate = parsed.lastLoginDate || new Date().toISOString().split('T')[0];
 
-          // Daily streak calculator
           this.checkDailyStreak();
         } else {
           this.save();
@@ -71,7 +75,7 @@
         if (diffDays === 1) {
           this.streak += 1;
         } else if (diffDays > 1) {
-          this.streak = 1; // streak reset
+          this.streak = 1;
         }
         this.lastLoginDate = today;
         this.save();
@@ -88,6 +92,8 @@
           streak: this.streak,
           masteredIds: Array.from(this.masteredIds),
           forgedKanji: Array.from(this.forgedKanji),
+          unlockedLevels: Array.from(this.unlockedLevels || []),
+          quizScores: this.quizScores || {},
           lastLoginDate: this.lastLoginDate
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -110,9 +116,6 @@
 
       if (prevRank !== newRank) {
         console.log(`[PlayerState] PROMOTION! New Rank: ${newRank}`);
-        if (typeof window.showNotification === 'function') {
-          window.showNotification(`PROMOTION GRANTED: ${newRank}!`, 'success');
-        }
       }
 
       return this.xp;
@@ -138,7 +141,7 @@
       if (!id) return;
       if (!this.masteredIds.has(id)) {
         this.masteredIds.add(id);
-        this.addXP(25); // Mastery bonus
+        this.addXP(25);
         this.save();
         this.updateHUD();
       }
@@ -149,6 +152,93 @@
     },
 
     /**
+     * Count mastered Hiragana characters (out of 46)
+     */
+    getHiraganaMasteredCount: function () {
+      if (!window.KIHON_DATA || !window.KIHON_DATA.hiragana) return 0;
+      return window.KIHON_DATA.hiragana.filter(item => this.isMastered(item.char) || this.isMastered(item.id)).length;
+    },
+
+    /**
+     * Count mastered Katakana characters (out of 46)
+     */
+    getKatakanaMasteredCount: function () {
+      if (!window.KIHON_DATA || !window.KIHON_DATA.katakana) return 0;
+      return window.KIHON_DATA.katakana.filter(item => this.isMastered(item.char) || this.isMastered(item.id)).length;
+    },
+
+    /**
+     * Check if Hiragana stage is completely finished (all 46 characters mastered)
+     */
+    isHiraganaComplete: function () {
+      const total = (window.KIHON_DATA && window.KIHON_DATA.hiragana) ? window.KIHON_DATA.hiragana.length : 46;
+      return this.getHiraganaMasteredCount() >= total;
+    },
+
+    /**
+     * Check if Katakana stage is completely finished (all 46 characters mastered)
+     */
+    isKatakanaComplete: function () {
+      const total = (window.KIHON_DATA && window.KIHON_DATA.katakana) ? window.KIHON_DATA.katakana.length : 46;
+      return this.isHiraganaComplete() && (this.getKatakanaMasteredCount() >= total);
+    },
+
+    /**
+     * Stage 2 (Radical Forge & N5 Syntax) unlocks only after Katakana is complete
+     */
+    isStage2Unlocked: function () {
+      return this.isKatakanaComplete();
+    },
+
+    /**
+     * Check if Level 3 (Stroke Practice) is unlocked for the active script
+     */
+    isLevel3Unlocked: function (script) {
+      const s = script || (window.getCurrentCategory ? window.getCurrentCategory() : 'hiragana');
+      if (!this.unlockedLevels) {
+        this.unlockedLevels = new Set(['hiragana-1', 'katakana-1', 'radicals-1']);
+      }
+      return this.unlockedLevels.has(`${s}-3`) || this.unlockedLevels.has('all-3') || (this.quizScores && (this.quizScores[s] || 0) >= 33);
+    },
+
+    /**
+     * Record completion of Level 2 46-Character Quiz
+     * 70% threshold (33/46) unlocks Level 3 (Stroke Practice)
+     * Awards bonus XP
+     */
+    recordQuizCompletion: function (script, score, total) {
+      const s = script || (window.getCurrentCategory ? window.getCurrentCategory() : 'hiragana');
+      if (!this.quizScores) this.quizScores = {};
+      const prevBest = this.quizScores[s] || 0;
+      if (score > prevBest) {
+        this.quizScores[s] = score;
+      }
+
+      const tot = typeof total === 'number' && total > 0 ? total : 46;
+      const pct = Math.round((score / tot) * 100);
+      const passed = pct >= 70; // 70% threshold (e.g. 33/46)
+
+      if (passed) {
+        if (!this.unlockedLevels) {
+          this.unlockedLevels = new Set(['hiragana-1', 'katakana-1', 'radicals-1']);
+        }
+        this.unlockedLevels.add(`${s}-3`);
+      }
+
+      // Base bonus: +150 XP for passing, +100 XP for perfect 46/46 score
+      let bonusXP = passed ? 150 : 50;
+      if (score === tot) {
+        bonusXP += 100;
+      }
+
+      this.addXP(bonusXP);
+      this.save();
+      this.updateHUD();
+
+      return { passed, pct, bonusXP };
+    },
+
+    /**
      * Record a forged compound kanji
      */
     addForgedKanji: function (kanji) {
@@ -156,7 +246,7 @@
       const isNew = !this.forgedKanji.has(kanji);
       if (isNew) {
         this.forgedKanji.add(kanji);
-        this.addXP(50); // Forge fusion bonus
+        this.addXP(50);
         this.save();
         this.updateHUD();
       }
@@ -176,23 +266,100 @@
 
       const currentRank = this.getRankTitle();
 
-      if (rankEl) {
-        rankEl.textContent = currentRank;
-      }
-      if (xpEl) {
-        xpEl.textContent = this.xp.toLocaleString();
-      }
-      if (mobileXpEl) {
-        mobileXpEl.textContent = this.xp.toLocaleString();
-      }
-      if (masteredEl) {
-        masteredEl.textContent = `${this.masteredIds.size}/30`;
-      }
-      if (streakEl) {
-        streakEl.textContent = this.streak.toString();
-      }
+      if (rankEl) rankEl.textContent = currentRank;
+      if (xpEl) xpEl.textContent = this.xp.toLocaleString();
+      if (mobileXpEl) mobileXpEl.textContent = this.xp.toLocaleString();
+      if (masteredEl) masteredEl.textContent = `${this.masteredIds.size}/30`;
+      if (streakEl) streakEl.textContent = this.streak.toString();
       if (forgeCountEl) {
         forgeCountEl.textContent = `${this.forgedKanji.size} / ${window.FORGE_RECIPES ? window.FORGE_RECIPES.length : 8} FORGED`;
+      }
+
+      // Update Stage 1 Progress Readout in Holo-Deck view
+      const hCount = this.getHiraganaMasteredCount();
+      const kCount = this.getKatakanaMasteredCount();
+      const hTotal = (window.KIHON_DATA && window.KIHON_DATA.hiragana) ? window.KIHON_DATA.hiragana.length : 46;
+      const kTotal = (window.KIHON_DATA && window.KIHON_DATA.katakana) ? window.KIHON_DATA.katakana.length : 46;
+
+      const pBar = document.getElementById('stage1-progress-bar');
+      const pCount = document.getElementById('stage1-progress-count');
+      const pTitle = document.getElementById('stage-progress-title');
+      const pSub = document.getElementById('stage-progress-subtitle');
+      const pBadge = document.getElementById('stage-unlock-badge');
+
+      const currentCategory = window.getCurrentCategory ? window.getCurrentCategory() : 'hiragana';
+      if (currentCategory === 'hiragana') {
+        const pct = Math.round((hCount / hTotal) * 100);
+        if (pBar) pBar.style.width = `${pct}%`;
+        if (pCount) pCount.textContent = `${hCount} / ${hTotal}`;
+        if (pTitle) pTitle.textContent = `STAGE 1: HIRAGANA FOUNDATION (${pct}%)`;
+        if (pBadge) {
+          if (hCount >= hTotal) {
+            pBadge.textContent = 'Completed ✓';
+            pBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+          } else {
+            pBadge.textContent = 'In Progress';
+            pBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30';
+          }
+        }
+        if (pSub) {
+          pSub.textContent = hCount >= hTotal
+            ? 'Hiragana complete! Katakana is now unlocked.'
+            : 'Complete all 46 Hiragana characters sequentially to unlock Katakana.';
+        }
+      } else if (currentCategory === 'katakana') {
+        const pct = Math.round((kCount / kTotal) * 100);
+        if (pBar) pBar.style.width = `${pct}%`;
+        if (pCount) pCount.textContent = `${kCount} / ${kTotal}`;
+        if (pTitle) pTitle.textContent = `STAGE 1: KATAKANA EXPANSION (${pct}%)`;
+        if (pBadge) {
+          if (kCount >= kTotal) {
+            pBadge.textContent = 'Completed ✓';
+            pBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+          } else {
+            pBadge.textContent = 'In Progress';
+            pBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/15 text-purple-400 border border-purple-500/30';
+          }
+        }
+        if (pSub) {
+          pSub.textContent = kCount >= kTotal
+            ? 'Katakana complete! Stage 2 (Radicals & N5 Syntax) is now unlocked.'
+            : 'Complete all 46 Katakana characters sequentially to unlock Stage 2.';
+        }
+      }
+
+      // Update Category Switcher Lock Labels
+      const katakanaBtn = document.getElementById('cat-katakana');
+      const radicalsBtn = document.getElementById('cat-radicals');
+      if (katakanaBtn) {
+        if (!this.isHiraganaComplete()) {
+          katakanaBtn.title = `Locked: Complete Hiragana first (${hCount}/46)`;
+          katakanaBtn.innerHTML = `🔒 Katakana (片仮名) <span class="text-[10px] text-zinc-500 font-mono">[${hCount}/46]</span>`;
+        } else {
+          katakanaBtn.title = 'Katakana Unlocked';
+          katakanaBtn.innerHTML = `Katakana (片仮名) <span class="text-[10px] text-zinc-400 font-mono">[${kCount}/46]</span>`;
+        }
+      }
+      if (radicalsBtn) {
+        if (!this.isKatakanaComplete()) {
+          radicalsBtn.title = `Locked: Complete Katakana first (${kCount}/46)`;
+          radicalsBtn.innerHTML = `🔒 30 Radicals (Stage 2)`;
+        } else {
+          radicalsBtn.title = 'Stage 2 Unlocked';
+          radicalsBtn.innerHTML = `30 Radicals (部首)`;
+        }
+      }
+
+      // Update Level 3 Mode button label/lock
+      const lvl3Label = document.getElementById('level3-btn-label');
+      const lvl3Btn = document.getElementById('mode-btn-etcher');
+      const activeCat = window.getCurrentCategory ? window.getCurrentCategory() : 'hiragana';
+      const isLvl3Unlocked = this.isLevel3Unlocked(activeCat);
+      if (lvl3Label) {
+        lvl3Label.textContent = isLvl3Unlocked ? 'Level 3: Stroke Etcher' : '🔒 Level 3: Stroke Etcher';
+      }
+      if (lvl3Btn) {
+        lvl3Btn.title = isLvl3Unlocked ? 'Level 3 Unlocked' : 'Locked: Pass Level 2 Quiz first (≥70%)';
       }
     },
 
@@ -203,25 +370,28 @@
     playAudio: function (text) {
       if (!text) return;
       if (!('speechSynthesis' in window)) {
-        console.warn('[Audio] SpeechSynthesis API not supported in this browser environment.');
+        console.warn('[Audio] SpeechSynthesis API not supported in this browser.');
         return;
       }
 
-      window.speechSynthesis.cancel(); // Stop overlapping audio
+      try {
+        window.speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ja-JP';
-      utterance.rate = 0.85;
-      utterance.pitch = 1.0;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 0.85;
+        utterance.pitch = 1.0;
 
-      // Select Japanese voice if available
-      const voices = window.speechSynthesis.getVoices();
-      const jaVoice = voices.find(v => v.lang.startsWith('ja') || v.lang.includes('JP'));
-      if (jaVoice) {
-        utterance.voice = jaVoice;
+        const voices = window.speechSynthesis.getVoices();
+        const jaVoice = voices.find(v => v.lang && (v.lang.startsWith('ja') || v.lang.includes('JP')));
+        if (jaVoice) {
+          utterance.voice = jaVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('[PlayerState.playAudio] TTS execution error:', err);
       }
-
-      window.speechSynthesis.speak(utterance);
     }
   };
 
@@ -315,524 +485,173 @@
 
 
   // ==========================================================================
-  // 3. KIHON DATABASE: KANA, RADICALS & NORMALIZED STROKE ORDER VECTORS
-  // Strokes are arrays of [x, y] coordinates normalized between 0.1 and 0.9.
-  // Traditional Hitsujun rules: Top->Bottom, Left->Right, Horizontal->Vertical.
+  // 3. COMPLETE 46-CHARACTER DATASETS (HIRAGANA & KATAKANA) + 30 RADICALS
   // ==========================================================================
 
   const KIHON_DATA = {
     
     // ------------------------------------------------------------------------
-    // HIRAGANA (10 Essential Kana)
+    // HIRAGANA (ALL 46 STANDARD CHARACTERS IN SEQUENTIAL GOJŪON ORDER)
     // ------------------------------------------------------------------------
     hiragana: [
-      {
-        id: 'h-a',
-        char: 'あ',
-        romaji: 'a',
-        mnemonic: 'An Apple with an Antenna curving down through it, forming the big stylized letter "A".',
-        system: 'PRIMARY ION DRIVE STABILIZER // BUS 01',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Top horizontal bar (left to right)
-          [[0.25, 0.35], [0.75, 0.35]],
-          // Stroke 2: Vertical crossing line down
-          [[0.50, 0.18], [0.48, 0.82]],
-          // Stroke 3: Swirling ribbon loop sweeping around
-          [[0.65, 0.45], [0.35, 0.70], [0.25, 0.55], [0.55, 0.48], [0.75, 0.65], [0.65, 0.82]]
-        ]
-      },
-      {
-        id: 'h-i',
-        char: 'い',
-        romaji: 'i',
-        mnemonic: 'Two vibrant neon Ion needles pointing down side-by-side, with the left needle hooking up.',
-        system: 'DUAL ION INJECTION NEEDLES',
-        termination: 'Hane (Flick)',
-        strokes: [
-          // Stroke 1: Left downward line with hook upward
-          [[0.32, 0.25], [0.30, 0.65], [0.38, 0.72]],
-          // Stroke 2: Right shorter downward stop
-          [[0.68, 0.35], [0.70, 0.60]]
-        ]
-      },
-      {
-        id: 'h-u',
-        char: 'う',
-        romaji: 'u',
-        mnemonic: 'A heavy metal cyber U-bolt with a radar dot above it.',
-        system: 'GRAVITATIONAL U-VALVE REGULATOR',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Top accent line
-          [[0.48, 0.22], [0.58, 0.28]],
-          // Stroke 2: Curved crescent sweeping down
-          [[0.38, 0.40], [0.65, 0.45], [0.55, 0.75], [0.40, 0.82]]
-        ]
-      },
-      {
-        id: 'h-e',
-        char: 'え',
-        romaji: 'e',
-        mnemonic: 'An Energetic android doing cyber-aerobics, swooshing across the deck.',
-        system: 'ENERGY CONVERSION COIL',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Top accent dot
-          [[0.46, 0.22], [0.54, 0.28]],
-          // Stroke 2: Z-zigzag then wave to the right
-          [[0.35, 0.45], [0.65, 0.45], [0.40, 0.68], [0.65, 0.68], [0.75, 0.78]]
-        ]
-      },
-      {
-        id: 'h-o',
-        char: 'お',
-        romaji: 'o',
-        mnemonic: 'An Orbital circular ring with an asteroid dot orbiting overhead.',
-        system: 'ORBITAL MASS ACCELERATOR',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Horizontal bar
-          [[0.25, 0.35], [0.65, 0.35]],
-          // Stroke 2: Vertical into circular orbital loop
-          [[0.45, 0.20], [0.45, 0.75], [0.30, 0.75], [0.40, 0.55], [0.70, 0.60], [0.65, 0.80]],
-          // Stroke 3: Top-right asteroid dot
-          [[0.72, 0.30], [0.78, 0.38]]
-        ]
-      },
-      {
-        id: 'h-ka',
-        char: 'か',
-        romaji: 'ka',
-        mnemonic: 'A sharp Kinetic blade slashing open a crate, with a laser spark flying out.',
-        system: 'KINETIC LASER HARPOON',
-        termination: 'Hane (Flick)',
-        strokes: [
-          // Stroke 1: Main hook arm
-          [[0.30, 0.35], [0.55, 0.35], [0.50, 0.75], [0.42, 0.72]],
-          // Stroke 2: Downward curved counter-slash
-          [[0.42, 0.25], [0.32, 0.75]],
-          // Stroke 3: Upper-right laser spark dot
-          [[0.68, 0.32], [0.75, 0.40]]
-        ]
-      },
-      {
-        id: 'h-ki',
-        char: 'き',
-        romaji: 'ki',
-        mnemonic: 'A glowing Key card with two data rails and a locking diagonal spine.',
-        system: 'CIPHER ENCRYPTION KEY BUS',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Upper horizontal rail
-          [[0.32, 0.32], [0.68, 0.32]],
-          // Stroke 2: Lower horizontal rail
-          [[0.30, 0.46], [0.70, 0.46]],
-          // Stroke 3: Center diagonal spine cutting down
-          [[0.58, 0.20], [0.42, 0.70]],
-          // Stroke 4: Bottom detached arc
-          [[0.35, 0.70], [0.55, 0.80]]
-        ]
-      },
-      {
-        id: 'h-sa',
-        char: 'さ',
-        romaji: 'sa',
-        mnemonic: 'A tactical Satellite dish scanning the cosmos with a curved parabolic arc.',
-        system: 'LONG-RANGE SATELLITE ARRAY',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Horizontal transmitter bar
-          [[0.30, 0.35], [0.70, 0.35]],
-          // Stroke 2: Diagonal antenna arm
-          [[0.58, 0.20], [0.42, 0.65]],
-          // Stroke 3: Bottom curved reflector
-          [[0.35, 0.65], [0.55, 0.78]]
-        ]
-      },
-      {
-        id: 'h-shi',
-        char: 'し',
-        romaji: 'shi',
-        mnemonic: 'A single deep-sea Fishing hook snagging a submarine in the Tokyo bay trench.',
-        system: 'DEEP-SUBMERGENCE GRAPPLING HOOK',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Single sweep down and curve up
-          [[0.45, 0.22], [0.45, 0.70], [0.55, 0.80], [0.70, 0.70]]
-        ]
-      },
-      {
-        id: 'h-tsu',
-        char: 'つ',
-        romaji: 'tsu',
-        mnemonic: 'A gigantic Tsunami tidal wave cresting over the Neo-Tokyo seawall.',
-        system: 'HYDRO-DYNAMIC TSUNAMI CANNON',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Horizontal start then great curved tidal wave
-          [[0.30, 0.35], [0.70, 0.35], [0.65, 0.65], [0.40, 0.78]]
-        ]
-      }
+      // A-row
+      { id: 'h-a', char: 'あ', romaji: 'a', mnemonic: 'An Apple with an Antenna curving down through it, forming the stylized letter "A".', system: 'PRIMARY ION DRIVE STABILIZER', termination: 'Harai (Sweep)', strokes: [[[0.25, 0.35], [0.75, 0.35]], [[0.50, 0.18], [0.48, 0.82]], [[0.65, 0.45], [0.35, 0.70], [0.25, 0.55], [0.55, 0.48], [0.75, 0.65], [0.65, 0.82]]] },
+      { id: 'h-i', char: 'い', romaji: 'i', mnemonic: 'Two vertical Ion needles pointing down side-by-side (the left hooks up).', system: 'DUAL ION INJECTION NEEDLES', termination: 'Hane (Hook)', strokes: [[[0.32, 0.25], [0.30, 0.65], [0.38, 0.72]], [[0.68, 0.35], [0.70, 0.60]]] },
+      { id: 'h-u', char: 'う', romaji: 'u', mnemonic: 'A bent posture with an overhead antenna, like someone hit yelling "Ugh!".', system: 'GRAVITATIONAL U-VALVE REGULATOR', termination: 'Tome (Stop)', strokes: [[[0.48, 0.22], [0.58, 0.28]], [[0.38, 0.40], [0.65, 0.45], [0.55, 0.75], [0.40, 0.82]]] },
+      { id: 'h-e', char: 'え', romaji: 'e', mnemonic: 'An Energetic runner swooshing forward in a fast Z-zigzag dash.', system: 'ENERGY CONVERSION COIL', termination: 'Tome (Stop)', strokes: [[[0.46, 0.22], [0.54, 0.28]], [[0.35, 0.45], [0.65, 0.45], [0.40, 0.68], [0.65, 0.68], [0.75, 0.78]]] },
+      { id: 'h-o', char: 'お', romaji: 'o', mnemonic: 'An Orbital circular ring with a small asteroid moon orbiting overhead.', system: 'ORBITAL MASS ACCELERATOR', termination: 'Harai (Sweep)', strokes: [[[0.25, 0.35], [0.65, 0.35]], [[0.45, 0.20], [0.45, 0.75], [0.30, 0.75], [0.40, 0.55], [0.70, 0.60], [0.65, 0.80]], [[0.72, 0.30], [0.78, 0.38]]] },
+
+      // Ka-row
+      { id: 'h-ka', char: 'か', romaji: 'ka', mnemonic: 'A sharp Kinetic blade slashing open a crate with a laser spark flying off.', system: 'KINETIC LASER HARPOON', termination: 'Hane (Hook)', strokes: [[[0.30, 0.35], [0.55, 0.35], [0.50, 0.75], [0.42, 0.72]], [[0.42, 0.25], [0.32, 0.75]], [[0.68, 0.32], [0.75, 0.40]]] },
+      { id: 'h-ki', char: 'き', romaji: 'ki', mnemonic: 'A high-security Key card with two data rails and a locking diagonal spine.', system: 'CIPHER ENCRYPTION KEY BUS', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.32], [0.68, 0.32]], [[0.30, 0.46], [0.70, 0.46]], [[0.58, 0.20], [0.42, 0.70]], [[0.35, 0.70], [0.55, 0.80]]] },
+      { id: 'h-ku', char: 'く', romaji: 'ku', mnemonic: 'A sharp mechanical bird beak crying "Cuckoo!".', system: 'VECTOR ACCELERATION NOZZLE', termination: 'Tome (Stop)', strokes: [[[0.65, 0.25], [0.32, 0.50], [0.65, 0.75]]] },
+      { id: 'h-ke', char: 'け', romaji: 'ke', mnemonic: 'A metal Keg of cyber coolant with a vertical valve pipe alongside it.', system: 'COOLANT KEG DISPENSER', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.22], [0.30, 0.78], [0.38, 0.72]], [[0.45, 0.38], [0.75, 0.38]], [[0.65, 0.22], [0.65, 0.78]]] },
+      { id: 'h-ko', char: 'こ', romaji: 'ko', mnemonic: 'Two parallel laser Co-ordinates marking flight boundaries.', system: 'DUAL HORIZON SENSOR RAILS', termination: 'Tome (Stop)', strokes: [[[0.30, 0.32], [0.70, 0.32], [0.60, 0.40]], [[0.30, 0.68], [0.70, 0.68]]] },
+
+      // Sa-row
+      { id: 'h-sa', char: 'さ', romaji: 'sa', mnemonic: 'A Satellite dish transmitter with a parabolic antenna arc.', system: 'LONG-RANGE SATELLITE ARRAY', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.35], [0.70, 0.35]], [[0.58, 0.20], [0.42, 0.65]], [[0.35, 0.65], [0.55, 0.78]]] },
+      { id: 'h-shi', char: 'し', romaji: 'shi', mnemonic: 'A single deep-sea fishing hook diving deep into the Sea.', system: 'DEEP-SUBMERGENCE GRAPPLING HOOK', termination: 'Harai (Sweep)', strokes: [[[0.45, 0.22], [0.45, 0.70], [0.55, 0.80], [0.70, 0.70]]] },
+      { id: 'h-su', char: 'す', romaji: 'su', mnemonic: 'A Swimmer doing a spiral flip or a straw in a bowl of Soup.', system: 'SPIRAL CENTRIFUGE ROTOR', termination: 'Harai (Sweep)', strokes: [[[0.25, 0.35], [0.75, 0.35]], [[0.50, 0.20], [0.50, 0.50], [0.38, 0.55], [0.55, 0.60], [0.45, 0.82]]] },
+      { id: 'h-se', char: 'せ', romaji: 'se', mnemonic: 'A Sentinel sitting on a step saying "Set yourself down".', system: 'SECTOR CLEARANCE SWITCH', termination: 'Tome (Stop)', strokes: [[[0.25, 0.45], [0.75, 0.45]], [[0.65, 0.25], [0.65, 0.70]], [[0.40, 0.28], [0.40, 0.72], [0.72, 0.72]]] },
+      { id: 'h-so', char: 'そ', romaji: 'so', mnemonic: 'A Sewing thread zigzagging neatly through cyber fabric.', system: 'SONIC FREQUENCY OSCILLATOR', termination: 'Tome (Stop)', strokes: [[[0.35, 0.30], [0.65, 0.30], [0.35, 0.52], [0.65, 0.52], [0.40, 0.78]]] },
+
+      // Ta-row
+      { id: 'h-ta', char: 'た', romaji: 'ta', mnemonic: 'Spells out the letters "t" and "a" in a tactical badge.', system: 'TACTICAL RADAR BEACON', termination: 'Tome (Stop)', strokes: [[[0.25, 0.40], [0.55, 0.40]], [[0.40, 0.25], [0.35, 0.75]], [[0.58, 0.42], [0.75, 0.42]], [[0.55, 0.65], [0.75, 0.65]]] },
+      { id: 'h-chi', char: 'ち', romaji: 'chi', mnemonic: 'A Cheerleader with arms swinging or a face with a curved Chin.', system: 'CHIRP TRANSMISSION ANTENNA', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.32], [0.70, 0.32]], [[0.52, 0.18], [0.45, 0.50], [0.68, 0.55], [0.50, 0.82]]] },
+      { id: 'h-tsu', char: 'つ', romaji: 'tsu', mnemonic: 'A colossal Tsunami tidal wave cresting over the Neo-Tokyo seawall.', system: 'HYDRO-DYNAMIC TSUNAMI CANNON', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.35], [0.70, 0.35], [0.65, 0.65], [0.40, 0.78]]] },
+      { id: 'h-te', char: 'て', romaji: 'te', mnemonic: 'A dog’s Tail or a table Tennis racket swinging down.', system: 'TELEMETRY ANTENNA VANE', termination: 'Tome (Stop)', strokes: [[[0.30, 0.35], [0.70, 0.35], [0.35, 0.75]]] },
+      { id: 'h-to', char: 'と', romaji: 'to', mnemonic: 'A Tornado or thorn touching a giant robot Toe.', system: 'TORPEDO LOCKING RETICLE', termination: 'Tome (Stop)', strokes: [[[0.40, 0.22], [0.48, 0.50]], [[0.60, 0.35], [0.35, 0.65], [0.65, 0.78]]] },
+
+      // Na-row
+      { id: 'h-na', char: 'な', romaji: 'na', mnemonic: 'A Nun praying before a glowing cyber cross.', system: 'NAVIGATION GUIDANCE COMPASS', termination: 'Tome (Stop)', strokes: [[[0.25, 0.38], [0.50, 0.38]], [[0.38, 0.22], [0.35, 0.65]], [[0.62, 0.28], [0.68, 0.35]], [[0.58, 0.48], [0.58, 0.72], [0.50, 0.70]]] },
+      { id: 'h-ni', char: 'に', romaji: 'ni', mnemonic: 'A Needle and thread with two horizontal data bars.', system: 'NITROGEN FUEL INJECTOR', termination: 'Tome (Stop)', strokes: [[[0.30, 0.22], [0.30, 0.78], [0.38, 0.72]], [[0.50, 0.40], [0.75, 0.40]], [[0.48, 0.65], [0.78, 0.65]]] },
+      { id: 'h-nu', char: 'ぬ', romaji: 'nu', mnemonic: 'Two chopsticks twirling delicious hot Noodles into a loop.', system: 'NUCLEAR CORE VENT', termination: 'Tome (Stop)', strokes: [[[0.40, 0.25], [0.32, 0.75]], [[0.32, 0.38], [0.68, 0.38], [0.40, 0.75], [0.68, 0.72], [0.72, 0.82]]] },
+      { id: 'h-ne', char: 'ね', romaji: 'ne', mnemonic: 'A cyber Cat (Neko) with a curly tail at the back.', system: 'NEURAL LINK COMM MATRIX', termination: 'Tome (Stop)', strokes: [[[0.32, 0.22], [0.32, 0.78]], [[0.25, 0.40], [0.65, 0.40], [0.35, 0.68], [0.65, 0.68], [0.72, 0.78]]] },
+      { id: 'h-no', char: 'の', romaji: 'no', mnemonic: 'A clean circular "NO entry" loop.', system: 'NODAL ZERO-POINT BEACON', termination: 'Harai (Sweep)', strokes: [[[0.55, 0.28], [0.35, 0.65], [0.65, 0.75], [0.75, 0.45], [0.45, 0.35]]] },
+
+      // Ha-row
+      { id: 'h-ha', char: 'は', romaji: 'ha', mnemonic: 'A soldier standing upright laughing "Ha-ha!" with a loop.', system: 'HALL-EFFECT SHIELD GENERATOR', termination: 'Tome (Stop)', strokes: [[[0.30, 0.22], [0.30, 0.78], [0.38, 0.72]], [[0.45, 0.38], [0.75, 0.38]], [[0.65, 0.25], [0.65, 0.75], [0.50, 0.72], [0.72, 0.68]]] },
+      { id: 'h-hi', char: 'ひ', romaji: 'hi', mnemonic: 'A big smiling mouth laughing "Hee-hee!".', system: 'HIGH-FREQUENCY LASER ARRAY', termination: 'Tome (Stop)', strokes: [[[0.30, 0.32], [0.45, 0.32], [0.32, 0.68], [0.50, 0.78], [0.68, 0.68], [0.55, 0.32], [0.70, 0.32]]] },
+      { id: 'h-fu', char: 'ふ', romaji: 'fu', mnemonic: 'Mount Fuji with snow flurries blowing around its peaks.', system: 'FUSION PLASMA INJECTOR', termination: 'Harai (Sweep)', strokes: [[[0.50, 0.22], [0.50, 0.30]], [[0.48, 0.42], [0.55, 0.65], [0.42, 0.75]], [[0.32, 0.50], [0.30, 0.60]], [[0.68, 0.50], [0.70, 0.60]]] },
+      { id: 'h-he', char: 'へ', romaji: 'he', mnemonic: 'A pointy roof pointing up to Heaven (or Mt. Hiei).', system: 'HELIUM RAM-SCOOP VANE', termination: 'Harai (Sweep)', strokes: [[[0.28, 0.65], [0.48, 0.35], [0.75, 0.65]]] },
+      { id: 'h-ho', char: 'ほ', romaji: 'ho', mnemonic: 'A guard with a Helmet and sword saying "Halt! Who goes there?".', system: 'HOLO-PROJECTOR RELAY', termination: 'Tome (Stop)', strokes: [[[0.28, 0.22], [0.28, 0.78], [0.36, 0.72]], [[0.45, 0.30], [0.75, 0.30]], [[0.45, 0.48], [0.75, 0.48]], [[0.65, 0.30], [0.65, 0.75], [0.50, 0.72], [0.72, 0.68]]] },
+
+      // Ma-row
+      { id: 'h-ma', char: 'ま', romaji: 'ma', mnemonic: 'Two crossbars on a ship Mast with a loop at the bottom.', system: 'MAGNETIC RAIL CONDUIT', termination: 'Tome (Stop)', strokes: [[[0.30, 0.35], [0.70, 0.35]], [[0.32, 0.50], [0.68, 0.50]], [[0.52, 0.20], [0.52, 0.75], [0.38, 0.72], [0.65, 0.68]]] },
+      { id: 'h-mi', char: 'み', romaji: 'mi', mnemonic: 'Musical note "Do-Re-Mi" resembling the lucky number 21.', system: 'MICRO-WARP DISTORTION DRIVE', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.32], [0.55, 0.32], [0.38, 0.60], [0.62, 0.60]], [[0.55, 0.20], [0.45, 0.78]]] },
+      { id: 'h-mu', char: 'む', romaji: 'mu', mnemonic: 'A Cow with horns and tail saying "Moo!".', system: 'MULTI-SPECTRUM SCANNER', termination: 'Tome (Stop)', strokes: [[[0.25, 0.38], [0.65, 0.38]], [[0.45, 0.20], [0.45, 0.65], [0.32, 0.68], [0.55, 0.68], [0.70, 0.55]], [[0.68, 0.28], [0.75, 0.35]]] },
+      { id: 'h-me', char: 'め', romaji: 'me', mnemonic: 'A noodle bowl without the loop—looks like an Eye (Me in Japanese).', system: 'MEDIUM-RANGE TARGET OPTICS', termination: 'Harai (Sweep)', strokes: [[[0.42, 0.25], [0.32, 0.75]], [[0.30, 0.40], [0.65, 0.38], [0.40, 0.75], [0.72, 0.70]]] },
+      { id: 'h-mo', char: 'も', romaji: 'mo', mnemonic: 'A fishing hook catching More and More worms.', system: 'MOLECULAR SIEVE FILTER', termination: 'Tome (Stop)', strokes: [[[0.48, 0.20], [0.48, 0.70], [0.60, 0.78], [0.72, 0.68]], [[0.32, 0.42], [0.68, 0.42]], [[0.30, 0.55], [0.70, 0.55]]] },
+
+      // Ya-row
+      { id: 'h-ya', char: 'や', romaji: 'ya', mnemonic: 'A Yak with long horns climbing a steep hill.', system: 'Y-AXIS THRUSTER GIMBAL', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.45], [0.60, 0.40], [0.55, 0.75]], [[0.45, 0.25], [0.50, 0.35]], [[0.70, 0.22], [0.65, 0.78]]] },
+      { id: 'h-yu', char: 'ゆ', romaji: 'yu', mnemonic: 'A Unique submarine gliding gracefully underwater.', system: 'YAW GYROSCOPIC STABILIZER', termination: 'Harai (Sweep)', strokes: [[[0.40, 0.25], [0.40, 0.65], [0.60, 0.65], [0.60, 0.45]], [[0.60, 0.20], [0.32, 0.78]]] },
+      { id: 'h-yo', char: 'よ', romaji: 'yo', mnemonic: 'A Yo-yo dangling ready to spring back up.', system: 'YOTTA-WATT POWER CELL', termination: 'Tome (Stop)', strokes: [[[0.30, 0.35], [0.55, 0.35]], [[0.52, 0.20], [0.52, 0.75], [0.38, 0.72], [0.65, 0.68]]] },
+
+      // Ra-row
+      { id: 'h-ra', char: 'ら', romaji: 'ra', mnemonic: 'A Rabbit sitting on its hind legs with its ear pointed up.', system: 'RADIATION SHIELD BAFFLE', termination: 'Tome (Stop)', strokes: [[[0.45, 0.22], [0.55, 0.25]], [[0.42, 0.38], [0.65, 0.45], [0.55, 0.75], [0.35, 0.78]]] },
+      { id: 'h-ri', char: 'り', romaji: 'ri', mnemonic: 'Two Reeds standing in a river stream (the right is longer).', system: 'RESONANCE FREQUENCY FILTER', termination: 'Harai (Sweep)', strokes: [[[0.35, 0.30], [0.35, 0.60]], [[0.65, 0.20], [0.65, 0.78]]] },
+      { id: 'h-ru', char: 'る', romaji: 'ru', mnemonic: 'A Road winding along holding a secret Ruby loop at the end.', system: 'RUBIDIUM ION CLOCK', termination: 'Tome (Stop)', strokes: [[[0.35, 0.30], [0.65, 0.30], [0.38, 0.55], [0.65, 0.55], [0.50, 0.78], [0.58, 0.82]]] },
+      { id: 'h-re', char: 'れ', romaji: 're', mnemonic: 'A Reindeer standing tall with antlers kicking back.', system: 'REACTION CONTROL SYSTEM', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.22], [0.32, 0.78]], [[0.25, 0.40], [0.65, 0.40], [0.38, 0.68], [0.62, 0.68], [0.75, 0.58]]] },
+      { id: 'h-ro', char: 'ろ', romaji: 'ro', mnemonic: 'A Road winding along where the ruby was Robbed (no loop).', system: 'ROTATIONAL MOMENTUM WHEEL', termination: 'Tome (Stop)', strokes: [[[0.35, 0.30], [0.65, 0.30], [0.38, 0.55], [0.65, 0.55], [0.40, 0.78]]] },
+
+      // Wa-row & N
+      { id: 'h-wa', char: 'わ', romaji: 'wa', mnemonic: 'A White swan with a broad open neck.', system: 'WARP BUBBLE COIL', termination: 'Tome (Stop)', strokes: [[[0.32, 0.22], [0.32, 0.78]], [[0.25, 0.40], [0.65, 0.40], [0.38, 0.68], [0.68, 0.70]]] },
+      { id: 'h-wo', char: 'を', romaji: 'wo', mnemonic: 'An Olympic jumper soaring "Woah!" over a hurdle.', system: 'OBJECT TARGETING SENSOR', termination: 'Tome (Stop)', strokes: [[[0.30, 0.32], [0.68, 0.32]], [[0.48, 0.20], [0.38, 0.58], [0.68, 0.58]], [[0.42, 0.58], [0.42, 0.78], [0.72, 0.72]]] },
+      { id: 'h-n', char: 'ん', romaji: 'n', mnemonic: 'A handwritten lowercase "n" swooping up to the sky.', system: 'NULL-SPACE COMPENSATOR', termination: 'Harai (Sweep)', strokes: [[[0.35, 0.22], [0.40, 0.75], [0.55, 0.45], [0.72, 0.70]]] }
     ],
 
     // ------------------------------------------------------------------------
-    // KATAKANA (10 Kana featuring Core + Crucial Lookalikes シ, ツ, ソ, ン)
+    // KATAKANA (ALL 46 STANDARD CHARACTERS IN SEQUENTIAL GOJŪON ORDER)
     // ------------------------------------------------------------------------
     katakana: [
-      {
-        id: 'k-a',
-        char: 'ア',
-        romaji: 'a',
-        mnemonic: 'A futuristic Axe blade chopping straight through an armored conduit.',
-        system: 'ARMOR-PIERCING TACTICAL CUTTER',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Top horizontal and left fold
-          [[0.30, 0.30], [0.70, 0.30], [0.50, 0.50]],
-          // Stroke 2: Long curved downward blade
-          [[0.60, 0.35], [0.40, 0.80]]
-        ]
-      },
-      {
-        id: 'k-i',
-        char: 'イ',
-        romaji: 'i',
-        mnemonic: 'An Iron easel standing rigid in the flight command hangar.',
-        system: 'INTERNAL FLIGHT BRACE',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Diagonal leg
-          [[0.45, 0.25], [0.30, 0.65]],
-          // Stroke 2: Vertical strut
-          [[0.45, 0.45], [0.45, 0.85]]
-        ]
-      },
-      {
-        id: 'k-u',
-        char: 'ウ',
-        romaji: 'u',
-        mnemonic: 'An Ultra antenna on top of an armored combat helmet.',
-        system: 'ULTRA-BAND COMM HELMET',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Top vertical antenna spike
-          [[0.50, 0.20], [0.50, 0.32]],
-          // Stroke 2: Left helmet rim
-          [[0.32, 0.40], [0.32, 0.55]],
-          // Stroke 3: Top visor and curved sweep
-          [[0.32, 0.42], [0.68, 0.42], [0.50, 0.82]]
-        ]
-      },
-      {
-        id: 'k-e',
-        char: 'エ',
-        romaji: 'e',
-        mnemonic: 'An Elevator girder or I-beam supporting the skyscraper deck.',
-        system: 'EXO-STRUCTURAL I-BEAM',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Top horizontal rail
-          [[0.30, 0.30], [0.70, 0.30]],
-          // Stroke 2: Center vertical shaft
-          [[0.50, 0.30], [0.50, 0.70]],
-          // Stroke 3: Bottom wide base rail
-          [[0.22, 0.70], [0.78, 0.70]]
-        ]
-      },
-      {
-        id: 'k-o',
-        char: 'オ',
-        romaji: 'o',
-        mnemonic: 'An Opera singer in an exo-suit with an outstretched hand.',
-        system: 'OMNI-DIRECTIONAL ACOUSTIC EMITTER',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Horizontal rail
-          [[0.25, 0.35], [0.75, 0.35]],
-          // Stroke 2: Vertical line with hook
-          [[0.50, 0.20], [0.50, 0.80], [0.42, 0.75]],
-          // Stroke 3: Diagonal left brace
-          [[0.50, 0.40], [0.28, 0.75]]
-        ]
-      },
-      {
-        id: 'k-ka',
-        char: 'カ',
-        romaji: 'ka',
-        mnemonic: 'A Katana sword striking diagonally across a reinforced steel shield.',
-        system: 'KATANA PLASMATIC EDGE',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Horizontal and down hook
-          [[0.30, 0.35], [0.68, 0.35], [0.62, 0.75], [0.52, 0.72]],
-          // Stroke 2: Long diagonal slash cutting down-left
-          [[0.50, 0.22], [0.30, 0.80]]
-        ]
-      },
+      // A-row
+      { id: 'k-a', char: 'ア', romaji: 'a', mnemonic: 'An Axe blade chopping through armor.', system: 'TACTICAL ARMOR CUTTER', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.30], [0.70, 0.30], [0.50, 0.50]], [[0.60, 0.35], [0.40, 0.80]]] },
+      { id: 'k-i', char: 'イ', romaji: 'i', mnemonic: 'An Iron easel standing rigid on the deck.', system: 'INTERNAL FLIGHT BRACE', termination: 'Tome (Stop)', strokes: [[[0.45, 0.25], [0.30, 0.65]], [[0.45, 0.45], [0.45, 0.85]]] },
+      { id: 'k-u', char: 'ウ', romaji: 'u', mnemonic: 'An Ultra antenna on top of a flight helmet.', system: 'ULTRA-BAND COMM HELMET', termination: 'Tome (Stop)', strokes: [[[0.50, 0.20], [0.50, 0.32]], [[0.32, 0.40], [0.32, 0.55]], [[0.32, 0.42], [0.68, 0.42], [0.50, 0.82]]] },
+      { id: 'k-e', char: 'エ', romaji: 'e', mnemonic: 'An Engineering I-beam girder supporting the hull.', system: 'EXO-STRUCTURAL I-BEAM', termination: 'Tome (Stop)', strokes: [[[0.30, 0.30], [0.70, 0.30]], [[0.50, 0.30], [0.50, 0.70]], [[0.22, 0.70], [0.78, 0.70]]] },
+      { id: 'k-o', char: 'オ', romaji: 'o', mnemonic: 'An Opera singer in an exo-suit with outstretched arm.', system: 'OMNI-DIRECTIONAL ACOUSTIC EMITTER', termination: 'Harai (Sweep)', strokes: [[[0.25, 0.35], [0.75, 0.35]], [[0.50, 0.20], [0.50, 0.80], [0.42, 0.75]], [[0.50, 0.40], [0.28, 0.75]]] },
 
-      // CRITICAL LOOKALIKE PAIR 1: シ (Shi - UPWARD) vs ツ (Tsu - DOWNWARD)
-      {
-        id: 'k-shi',
-        char: 'シ',
-        romaji: 'shi',
-        mnemonic: 'CRITICAL LOOKALIKE: "SHI has eyes looking UP!" Two horizontal eyelashes on the left, then the third stroke swooshes UPWARDS from the bottom floor towards the sky!',
-        system: 'SHIELD VECTOR EMITTER (UP-SWEEP)',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Top horizontal-ish dot
-          [[0.35, 0.32], [0.45, 0.36]],
-          // Stroke 2: Lower horizontal-ish dot
-          [[0.30, 0.52], [0.40, 0.56]],
-          // Stroke 3: Sweeps UPWARD from bottom-left to top-right
-          [[0.25, 0.78], [0.50, 0.55], [0.75, 0.28]]
-        ]
-      },
-      {
-        id: 'k-tsu',
-        char: 'ツ',
-        romaji: 'tsu',
-        mnemonic: 'CRITICAL LOOKALIKE: "TSU has water falling DOWN!" Two vertical raindrops standing up, then the long third stroke plunges DOWNWARDS from the top right like a crashing meteor!',
-        system: 'TSUNAMI IMPACT DRILL (DOWN-SWEEP)',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Left downward dot
-          [[0.34, 0.24], [0.38, 0.38]],
-          // Stroke 2: Middle downward dot
-          [[0.54, 0.28], [0.58, 0.42]],
-          // Stroke 3: Plunges DOWNWARD from top-right to bottom-left
-          [[0.75, 0.24], [0.55, 0.58], [0.32, 0.82]]
-        ]
-      },
+      // Ka-row
+      { id: 'k-ka', char: 'カ', romaji: 'ka', mnemonic: 'A sharp Katana striking across a metal shield.', system: 'KATANA PLASMATIC EDGE', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.35], [0.68, 0.35], [0.62, 0.75], [0.52, 0.72]], [[0.50, 0.22], [0.30, 0.80]]] },
+      { id: 'k-ki', char: 'キ', romaji: 'ki', mnemonic: 'A Key with two horizontal data bars and diagonal spine.', system: 'KEY LOCK CYLINDER', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.35], [0.70, 0.35]], [[0.28, 0.50], [0.72, 0.50]], [[0.55, 0.20], [0.40, 0.80]]] },
+      { id: 'k-ku', char: 'ク', romaji: 'ku', mnemonic: 'A Cook\'s cleaver cutting down or a cuckoo beak.', system: 'KINETIC CUTTING BLADE', termination: 'Harai (Sweep)', strokes: [[[0.48, 0.22], [0.35, 0.45]], [[0.35, 0.45], [0.68, 0.45], [0.42, 0.80]]] },
+      { id: 'k-ke', char: 'ケ', romaji: 'ke', mnemonic: 'A Kendo armor breastplate with cross-braces.', system: 'KENDO ARMOR STRUT', termination: 'Harai (Sweep)', strokes: [[[0.42, 0.22], [0.30, 0.48]], [[0.30, 0.45], [0.72, 0.45]], [[0.55, 0.25], [0.40, 0.80]]] },
+      { id: 'k-ko', char: 'コ', romaji: 'ko', mnemonic: 'A sharp 90-degree Corner of a cargo container.', system: 'CORNER BULKHEAD BRACE', termination: 'Tome (Stop)', strokes: [[[0.30, 0.35], [0.70, 0.35], [0.70, 0.70]], [[0.30, 0.70], [0.70, 0.70]]] },
 
-      // CRITICAL LOOKALIKE PAIR 2: ソ (So - DOWNWARD) vs ン (N - UPWARD)
-      {
-        id: 'k-so',
-        char: 'ソ',
-        romaji: 'so',
-        mnemonic: 'CRITICAL LOOKALIKE: "SO needles down." One vertical dart, then the second slash drives firmly DOWNWARDS from top right.',
-        system: 'SOLAR RADIATION DART (DOWN-SLASH)',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Top vertical-ish dart
-          [[0.38, 0.28], [0.45, 0.42]],
-          // Stroke 2: Drives DOWNWARDS from top-right to bottom-left
-          [[0.72, 0.26], [0.34, 0.80]]
-        ]
-      },
-      {
-        id: 'k-n',
-        char: 'ン',
-        romaji: 'n',
-        mnemonic: 'CRITICAL LOOKALIKE: "N shoots up to the stars!" One low horizontal spark, then the long stroke rockets UPWARDS from the bottom-left like a missile launch.',
-        system: 'NEO-THRUSTER BOOST (UP-SLASH)',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Low horizontal dot
-          [[0.32, 0.50], [0.44, 0.54]],
-          // Stroke 2: Rockets UPWARDS from bottom-left to top-right
-          [[0.28, 0.78], [0.50, 0.55], [0.74, 0.30]]
-        ]
-      }
+      // Sa-row
+      { id: 'k-sa', char: 'サ', romaji: 'sa', mnemonic: 'Three tactical Sensor prongs standing guard.', system: 'SENSOR TRIPOD MAST', termination: 'Harai (Sweep)', strokes: [[[0.25, 0.40], [0.75, 0.40]], [[0.40, 0.25], [0.38, 0.72]], [[0.62, 0.25], [0.58, 0.72]]] },
+      { id: 'k-shi', char: 'シ', romaji: 'shi', mnemonic: 'LOOKALIKE: "SHI eyes look UP!" Two low dots, long stroke swooshes UPWARDS.', system: 'SHIELD VECTOR EMITTER (UP-SWEEP)', termination: 'Harai (Sweep)', strokes: [[[0.35, 0.32], [0.45, 0.36]], [[0.30, 0.52], [0.40, 0.56]], [[0.25, 0.78], [0.50, 0.55], [0.75, 0.28]]] },
+      { id: 'k-su', char: 'ス', romaji: 'su', mnemonic: 'A downhill Skier speeding forward with ski poles.', system: 'SUB-LIGHT PROPULSION CONDUIT', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.35], [0.68, 0.35], [0.48, 0.78]], [[0.48, 0.52], [0.68, 0.78]]] },
+      { id: 'k-se', char: 'セ', romaji: 'se', mnemonic: 'A Sector gate with a security latch.', system: 'SECTOR FIREWALL GATE', termination: 'Tome (Stop)', strokes: [[[0.30, 0.35], [0.68, 0.35], [0.65, 0.55], [0.40, 0.55]], [[0.50, 0.25], [0.50, 0.78], [0.65, 0.78]]] },
+      { id: 'k-so', char: 'ソ', romaji: 'so', mnemonic: 'LOOKALIKE: "SO needle points DOWN!" Dart plunge downward from top right.', system: 'SOLAR RADIATION DART (DOWN-SLASH)', termination: 'Harai (Sweep)', strokes: [[[0.38, 0.28], [0.45, 0.42]], [[0.72, 0.26], [0.34, 0.80]]] },
+
+      // Ta-row
+      { id: 'k-ta', char: 'タ', romaji: 'ta', mnemonic: 'A Target crosshair with an internal firing beacon.', system: 'TARGETING MATRIX RETICLE', termination: 'Harai (Sweep)', strokes: [[[0.42, 0.22], [0.32, 0.45]], [[0.32, 0.42], [0.70, 0.42], [0.45, 0.80]], [[0.38, 0.55], [0.60, 0.62]]] },
+      { id: 'k-chi', char: 'チ', romaji: 'chi', mnemonic: 'A Cheerleader cheering with a baton or Chirp radar.', system: 'CHIRP SIGNAL BEACON', termination: 'Harai (Sweep)', strokes: [[[0.65, 0.25], [0.35, 0.35]], [[0.28, 0.50], [0.72, 0.50]], [[0.50, 0.35], [0.40, 0.80]]] },
+      { id: 'k-tsu', char: 'ツ', romaji: 'tsu', mnemonic: 'LOOKALIKE: "TSU raindrops fall DOWN!" Plunges downward from top-right.', system: 'TSUNAMI IMPACT DRILL (DOWN-SWEEP)', termination: 'Harai (Sweep)', strokes: [[[0.34, 0.24], [0.38, 0.38]], [[0.54, 0.28], [0.58, 0.42]], [[0.75, 0.24], [0.55, 0.58], [0.32, 0.82]]] },
+      { id: 'k-te', char: 'テ', romaji: 'te', mnemonic: 'A Television antenna receiving dual frequencies.', system: 'TELEMETRY TRANSCEIVER', termination: 'Harai (Sweep)', strokes: [[[0.35, 0.32], [0.65, 0.32]], [[0.28, 0.48], [0.72, 0.48]], [[0.50, 0.48], [0.35, 0.80]]] },
+      { id: 'k-to', char: 'ト', romaji: 'to', mnemonic: 'A Totem pole with a strong right branch.', system: 'TORQUE MULTIPLIER SHAFT', termination: 'Tome (Stop)', strokes: [[[0.45, 0.22], [0.45, 0.82]], [[0.45, 0.45], [0.70, 0.60]]] },
+
+      // Na-row
+      { id: 'k-na', char: 'ナ', romaji: 'na', mnemonic: 'A Ninja throwing crossbar with a sweeping blade.', system: 'NINJA BLADE CANOPY', termination: 'Harai (Sweep)', strokes: [[[0.25, 0.35], [0.75, 0.35]], [[0.50, 0.25], [0.35, 0.80]]] },
+      { id: 'k-ni', char: 'ニ', romaji: 'ni', mnemonic: 'Two horizontal data rails (the number 2).', system: 'NITRATE LEVEL SENSOR', termination: 'Tome (Stop)', strokes: [[[0.32, 0.38], [0.68, 0.38]], [[0.25, 0.65], [0.75, 0.65]]] },
+      { id: 'k-nu', char: 'ヌ', romaji: 'nu', mnemonic: 'Two chopsticks crossing like New scissors.', system: 'NUTATION DAMPENER', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.35], [0.68, 0.35], [0.40, 0.78]], [[0.42, 0.52], [0.68, 0.78]]] },
+      { id: 'k-ne', char: 'ネ', romaji: 'ne', mnemonic: 'A Nexus connector with terminal pins.', system: 'NEXUS DISTRIBUTION HUB', termination: 'Tome (Stop)', strokes: [[[0.50, 0.20], [0.50, 0.32]], [[0.48, 0.35], [0.35, 0.55]], [[0.35, 0.52], [0.68, 0.52], [0.45, 0.82]], [[0.52, 0.55], [0.70, 0.78]]] },
+      { id: 'k-no', char: 'ノ', romaji: 'no', mnemonic: 'A single simple slash: "No strokes, just one".', system: 'NODE INCLINATION SENSOR', termination: 'Harai (Sweep)', strokes: [[[0.65, 0.25], [0.35, 0.78]]] },
+
+      // Ha-row
+      { id: 'k-ha', char: 'ハ', romaji: 'ha', mnemonic: 'Two laughing slash marks: "Ha-ha!".', system: 'HALL-EFFECT POLARIZER', termination: 'Harai (Sweep)', strokes: [[[0.42, 0.30], [0.30, 0.75]], [[0.58, 0.30], [0.70, 0.75]]] },
+      { id: 'k-hi', char: 'ヒ', romaji: 'hi', mnemonic: 'A Hero’s shield with a flat level footing.', system: 'HIGH-G ACCELERATION COUCH', termination: 'Tome (Stop)', strokes: [[[0.38, 0.30], [0.65, 0.30]], [[0.38, 0.30], [0.38, 0.70], [0.72, 0.70]]] },
+      { id: 'k-fu', char: 'フ', romaji: 'fu', mnemonic: 'A single Flag flapping forward in the wind.', system: 'FUSION INTAKE BAFFLE', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.32], [0.70, 0.32], [0.45, 0.78]]] },
+      { id: 'k-he', char: 'ヘ', romaji: 'he', mnemonic: 'A pointy mountain ridge leading to Heaven.', system: 'HEAT RADIATOR FIN', termination: 'Harai (Sweep)', strokes: [[[0.28, 0.65], [0.48, 0.35], [0.75, 0.65]]] },
+      { id: 'k-ho', char: 'ホ', romaji: 'ho', mnemonic: 'A Holy cross with glowing laser spark wings.', system: 'HORIZONTAL GYROSCOPE', termination: 'Harai (Sweep)', strokes: [[[0.28, 0.35], [0.72, 0.35]], [[0.50, 0.20], [0.50, 0.80], [0.42, 0.75]], [[0.38, 0.50], [0.30, 0.68]], [[0.62, 0.50], [0.70, 0.68]]] },
+
+      // Ma-row
+      { id: 'k-ma', char: 'マ', romaji: 'ma', mnemonic: 'A Martini glass rim or Mask corner.', system: 'MAGNETIC PINCH CONFINEMENT', termination: 'Tome (Stop)', strokes: [[[0.32, 0.35], [0.68, 0.35], [0.45, 0.60]], [[0.45, 0.55], [0.65, 0.78]]] },
+      { id: 'k-mi', char: 'ミ', romaji: 'mi', mnemonic: 'Three horizontal Missile tracking lines.', system: 'MISSILE TRAJECTORY COMPUTER', termination: 'Harai (Sweep)', strokes: [[[0.35, 0.32], [0.65, 0.35]], [[0.32, 0.50], [0.68, 0.53]], [[0.30, 0.68], [0.70, 0.72]]] },
+      { id: 'k-mu', char: 'ム', romaji: 'mu', mnemonic: 'A triangle shaped Moose snout or Moon rover nose.', system: 'MUTUAL INDUCTANCE CHOKE', termination: 'Tome (Stop)', strokes: [[[0.48, 0.25], [0.32, 0.68], [0.72, 0.68]], [[0.62, 0.50], [0.55, 0.68]]] },
+      { id: 'k-me', char: 'メ', romaji: 'me', mnemonic: 'An X-shaped laser aiming sight (Metal cross).', system: 'MESON BEAM FOCUS', termination: 'Harai (Sweep)', strokes: [[[0.65, 0.28], [0.35, 0.75]], [[0.40, 0.40], [0.68, 0.70]]] },
+      { id: 'k-mo', char: 'モ', romaji: 'mo', mnemonic: 'A Monitor screen with dual rails and an upturned base.', system: 'MOMENTUM WHEEL ENCODER', termination: 'Tome (Stop)', strokes: [[[0.30, 0.35], [0.70, 0.35]], [[0.28, 0.50], [0.72, 0.50]], [[0.48, 0.22], [0.48, 0.70], [0.68, 0.70]]] },
+
+      // Ya-row
+      { id: 'k-ya', char: 'ヤ', romaji: 'ya', mnemonic: 'A high-tech Yacht sailing past a harbor.', system: 'Y-AXIS VECTOR NOZZLE', termination: 'Harai (Sweep)', strokes: [[[0.30, 0.40], [0.68, 0.35], [0.55, 0.75]], [[0.42, 0.25], [0.45, 0.38]], [[0.68, 0.25], [0.65, 0.78]]] },
+      { id: 'k-yu', char: 'ユ', romaji: 'yu', mnemonic: 'A distinct U-turn sign turned sideways.', system: 'UTILITY POWER BUS', termination: 'Tome (Stop)', strokes: [[[0.35, 0.35], [0.68, 0.35], [0.68, 0.70]], [[0.35, 0.70], [0.78, 0.70]]] },
+      { id: 'k-yo', char: 'ヨ', romaji: 'yo', mnemonic: 'A cyber Yoga rack or Yolk crate with three shelves.', system: 'YOKE STEERING ACTUATOR', termination: 'Tome (Stop)', strokes: [[[0.35, 0.30], [0.70, 0.30], [0.70, 0.75], [0.35, 0.75]], [[0.35, 0.52], [0.68, 0.52]]] },
+
+      // Ra-row
+      { id: 'k-ra', char: 'ラ', romaji: 'ra', mnemonic: 'A Radio antenna with a right support bracket.', system: 'RADAR ALTIMETER DISH', termination: 'Harai (Sweep)', strokes: [[[0.35, 0.32], [0.65, 0.32]], [[0.42, 0.48], [0.68, 0.48], [0.50, 0.80]]] },
+      { id: 'k-ri', char: 'リ', romaji: 'ri', mnemonic: 'Two river Ribbons running parallel.', system: 'RING LASER GYRO', termination: 'Harai (Sweep)', strokes: [[[0.38, 0.30], [0.38, 0.60]], [[0.62, 0.20], [0.62, 0.80]]] },
+      { id: 'k-ru', char: 'ル', romaji: 'ru', mnemonic: 'Two legs running along Route 66.', system: 'RUDDER DEFLECTION SERVO', termination: 'Harai (Sweep)', strokes: [[[0.45, 0.25], [0.32, 0.78]], [[0.58, 0.25], [0.58, 0.75], [0.72, 0.70]]] },
+      { id: 'k-re', char: 'レ', romaji: 're', mnemonic: 'A Red laser ray bouncing off a crystal prism.', system: 'RELAY COUPLER SWITCH', termination: 'Harai (Sweep)', strokes: [[[0.40, 0.22], [0.40, 0.75], [0.70, 0.65]]] },
+      { id: 'k-ro', char: 'ロ', romaji: 'ro', mnemonic: 'A closed Robot head / square box.', system: 'ROBOTIC PAYLOAD CRADLE', termination: 'Tome (Stop)', strokes: [[[0.30, 0.30], [0.30, 0.72]], [[0.30, 0.30], [0.70, 0.30], [0.70, 0.72]], [[0.30, 0.72], [0.70, 0.72]]] },
+
+      // Wa-row & N
+      { id: 'k-wa', char: 'ワ', romaji: 'wa', mnemonic: 'A Wide sensor dish outline.', system: 'WAVEGUIDE TRANSMISSION TUBE', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.35], [0.32, 0.55]], [[0.32, 0.35], [0.68, 0.35], [0.50, 0.78]]] },
+      { id: 'k-wo', char: 'ヲ', romaji: 'wo', mnemonic: 'A Warrior wielding two curved batons.', system: 'WIDE-FIELD OPTICAL SENSOR', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.32], [0.68, 0.32]], [[0.30, 0.50], [0.65, 0.50]], [[0.52, 0.32], [0.40, 0.78]]] },
+      { id: 'k-n', char: 'ン', romaji: 'n', mnemonic: 'LOOKALIKE: "N rockets UP to the stars!" Lower dot, long slash rockets UPWARDS.', system: 'NEO-THRUSTER BOOST (UP-SLASH)', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.50], [0.44, 0.54]], [[0.28, 0.78], [0.50, 0.55], [0.74, 0.30]]] }
     ],
 
     // ------------------------------------------------------------------------
-    // RADICALS (10 Foundational Semantic Kanji Building Blocks)
+    // RADICALS (30 Foundational Semantic Kanji Building Blocks)
     // ------------------------------------------------------------------------
     radicals: [
-      {
-        id: 'r-ichi',
-        char: '一',
-        romaji: 'ichi',
-        meaning: 'One / Ground Line',
-        mnemonic: 'The singular foundation line of the cosmos; the horizon plane of Neo-Tokyo.',
-        system: 'HORIZON CALIBRATION GYRO',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Single crisp horizontal bar
-          [[0.20, 0.50], [0.80, 0.50]]
-        ]
-      },
-      {
-        id: 'r-hito',
-        char: '人',
-        romaji: 'hito / nin',
-        meaning: 'Person / Cyber-Crew',
-        mnemonic: 'A human crewmember walking forward on two legs with determination.',
-        system: 'CREW LIFE-SUPPORT LIFE-SIGN MATRIX',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Left downward sweep
-          [[0.50, 0.20], [0.28, 0.80]],
-          // Stroke 2: Right leaning supportive leg
-          [[0.48, 0.45], [0.72, 0.80]]
-        ]
-      },
-      {
-        id: 'r-kuchi',
-        char: '口',
-        romaji: 'kuchi / kou',
-        meaning: 'Mouth / Air Intake Port',
-        mnemonic: 'A square communication aperture or main atmospheric air intake valve.',
-        system: 'ATMOSPHERIC INTAKE PORT',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Left vertical edge
-          [[0.30, 0.30], [0.30, 0.72]],
-          // Stroke 2: Top edge across and down right
-          [[0.30, 0.30], [0.70, 0.30], [0.70, 0.72]],
-          // Stroke 3: Bottom closing seal
-          [[0.30, 0.72], [0.70, 0.72]]
-        ]
-      },
-      {
-        id: 'r-ki',
-        char: '木',
-        romaji: 'ki / moku',
-        meaning: 'Tree / Bio-Timber',
-        mnemonic: 'A strong organic tree with horizontal branches, deep roots, and a tall trunk.',
-        system: 'HYDROPONIC BIO-TIMBER CELL',
-        termination: 'Hane (Flick)',
-        strokes: [
-          // Stroke 1: Horizontal branch
-          [[0.22, 0.40], [0.78, 0.40]],
-          // Stroke 2: Center trunk with hook
-          [[0.50, 0.20], [0.50, 0.82], [0.42, 0.78]],
-          // Stroke 3: Left diagonal root sweep
-          [[0.50, 0.40], [0.28, 0.78]],
-          // Stroke 4: Right diagonal root stop
-          [[0.50, 0.40], [0.72, 0.78]]
-        ]
-      },
-      {
-        id: 'r-mizu',
-        char: '水',
-        romaji: 'mizu / sui',
-        meaning: 'Water / Coolant',
-        mnemonic: 'A central stream of coolant flowing fast with splashes on both sides.',
-        system: 'CRYO-COOLANT HYDRAULIC RESERVOIR',
-        termination: 'Hane (Flick)',
-        strokes: [
-          // Stroke 1: Central vertical hook
-          [[0.50, 0.18], [0.50, 0.82], [0.40, 0.78]],
-          // Stroke 2: Left sweeping wave
-          [[0.25, 0.45], [0.45, 0.40], [0.32, 0.65]],
-          // Stroke 3: Right top splash
-          [[0.72, 0.32], [0.55, 0.48]],
-          // Stroke 4: Right downward sweep
-          [[0.55, 0.48], [0.78, 0.80]]
-        ]
-      },
-      {
-        id: 'r-hi',
-        char: '火',
-        romaji: 'hi / ka',
-        meaning: 'Fire / Thermal Core',
-        mnemonic: 'A roaring thermal flame with embers sparking on either flank of the combustion core.',
-        system: 'THERMONUCLEAR COMBUSTION CORE',
-        termination: 'Harai (Sweep)',
-        strokes: [
-          // Stroke 1: Left spark dot
-          [[0.32, 0.42], [0.38, 0.52]],
-          // Stroke 2: Right ember dot
-          [[0.68, 0.38], [0.62, 0.48]],
-          // Stroke 3: Central leftward fire sweep
-          [[0.50, 0.20], [0.32, 0.80]],
-          // Stroke 4: Central rightward fire flare
-          [[0.48, 0.45], [0.75, 0.80]]
-        ]
-      },
-      {
-        id: 'r-hi-sun',
-        char: '日',
-        romaji: 'hi / nichi',
-        meaning: 'Sun / Solar Ray',
-        mnemonic: 'A high-yield solar collector cell with a central photovoltaic sensor bar.',
-        system: 'PHOTOVOLTAIC SOLAR ARRAY',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Left vertical casing
-          [[0.30, 0.22], [0.30, 0.78]],
-          // Stroke 2: Top casing and right vertical descent
-          [[0.30, 0.22], [0.70, 0.22], [0.70, 0.78]],
-          // Stroke 3: Middle sensor beam
-          [[0.30, 0.50], [0.70, 0.50]],
-          // Stroke 4: Bottom seal
-          [[0.30, 0.78], [0.70, 0.78]]
-        ]
-      },
-      {
-        id: 'r-tsuki',
-        char: '月',
-        romaji: 'tsuki / getsu',
-        meaning: 'Moon / Satellite',
-        mnemonic: 'A glowing lunar crescent with two internal satellite telemetry beams.',
-        system: 'LUNAR GRAVITATIONAL RADAR',
-        termination: 'Hane (Flick)',
-        strokes: [
-          // Stroke 1: Left curved boundary
-          [[0.32, 0.20], [0.30, 0.82]],
-          // Stroke 2: Top and long right flank with hook
-          [[0.32, 0.20], [0.68, 0.20], [0.68, 0.82], [0.58, 0.78]],
-          // Stroke 3: Upper internal bridge
-          [[0.32, 0.42], [0.68, 0.42]],
-          // Stroke 4: Lower internal bridge
-          [[0.32, 0.60], [0.68, 0.60]]
-        ]
-      },
-      {
-        id: 'r-kane',
-        char: '金',
-        romaji: 'kane / kin',
-        meaning: 'Gold / Metal',
-        mnemonic: 'A mountain sheltering golden alloy nuggets under hardened metallic armor plates.',
-        system: 'TITANIUM-GOLD HULL REINFORCEMENT',
-        termination: 'Tome (Stop)',
-        strokes: [
-          // Stroke 1: Roof left sweep
-          [[0.50, 0.18], [0.28, 0.42]],
-          // Stroke 2: Roof right sweep
-          [[0.50, 0.18], [0.72, 0.42]],
-          // Stroke 3: First horizontal bar
-          [[0.35, 0.46], [0.65, 0.46]],
-          // Stroke 4: Center vertical spine
-          [[0.50, 0.46], [0.50, 0.78]],
-          // Stroke 5: Left interior nugget
-          [[0.40, 0.56], [0.35, 0.64]],
-          // Stroke 6: Right interior nugget
-          [[0.60, 0.56], [0.65, 0.64]],
-          // Stroke 7: Middle horizontal
-          [[0.30, 0.68], [0.70, 0.68]],
-          // Stroke 8: Bottom wide foundation bar
-          [[0.22, 0.82], [0.78, 0.82]]
-        ]
-      },
-      {
-        id: 'r-kokoro',
-        char: '心',
-        romaji: 'kokoro / shin',
-        meaning: 'Heart / Neural Core',
-        mnemonic: 'The neural heart chamber with four biological valve pulses firing in synchrony.',
-        system: 'NEURAL BIO-FEEDBACK CORE',
-        termination: 'Hane (Flick)',
-        strokes: [
-          // Stroke 1: Left ventricle dot
-          [[0.30, 0.45], [0.26, 0.62]],
-          // Stroke 2: Main curved basin hook
-          [[0.38, 0.40], [0.46, 0.75], [0.68, 0.75], [0.74, 0.55]],
-          // Stroke 3: Central pulse dot
-          [[0.48, 0.48], [0.52, 0.56]],
-          // Stroke 4: Upper-right auricle dot
-          [[0.74, 0.38], [0.80, 0.46]]
-        ]
-      }
+      { id: 'r-ichi', char: '一', romaji: 'ichi', meaning: 'One / Ground Line', mnemonic: 'The singular foundation line of the cosmos; horizon plane.', system: 'HORIZON CALIBRATION GYRO', termination: 'Tome (Stop)', strokes: [[[0.20, 0.50], [0.80, 0.50]]] },
+      { id: 'r-hito', char: '人', romaji: 'hito / nin', meaning: 'Person / Crew', mnemonic: 'A human crewmember walking forward on two legs.', system: 'CREW LIFE-SIGN MATRIX', termination: 'Harai (Sweep)', strokes: [[[0.50, 0.20], [0.28, 0.80]], [[0.48, 0.45], [0.72, 0.80]]] },
+      { id: 'r-kuchi', char: '口', romaji: 'kuchi / kou', meaning: 'Mouth / Port', mnemonic: 'A square communication aperture or intake valve.', system: 'ATMOSPHERIC INTAKE PORT', termination: 'Tome (Stop)', strokes: [[[0.30, 0.30], [0.30, 0.72]], [[0.30, 0.30], [0.70, 0.30], [0.70, 0.72]], [[0.30, 0.72], [0.70, 0.72]]] },
+      { id: 'r-ki', char: '木', romaji: 'ki / moku', meaning: 'Tree / Timber', mnemonic: 'A strong organic tree with horizontal branches and deep roots.', system: 'HYDROPONIC BIO-TIMBER CELL', termination: 'Hane (Hook)', strokes: [[[0.22, 0.40], [0.78, 0.40]], [[0.50, 0.20], [0.50, 0.82], [0.42, 0.78]], [[0.50, 0.40], [0.28, 0.78]], [[0.50, 0.40], [0.72, 0.78]]] },
+      { id: 'r-mizu', char: '水', romaji: 'mizu / sui', meaning: 'Water / Coolant', mnemonic: 'A central stream of coolant flowing fast with splashes.', system: 'CRYO-COOLANT RESERVOIR', termination: 'Hane (Hook)', strokes: [[[0.50, 0.18], [0.50, 0.82], [0.40, 0.78]], [[0.25, 0.45], [0.45, 0.40], [0.32, 0.65]], [[0.72, 0.32], [0.55, 0.48]], [[0.55, 0.48], [0.78, 0.80]]] },
+      { id: 'r-hi', char: '火', romaji: 'hi / ka', meaning: 'Fire / Thermal', mnemonic: 'A roaring thermal flame with sparks on either flank.', system: 'THERMONUCLEAR COMBUSTION CORE', termination: 'Harai (Sweep)', strokes: [[[0.32, 0.42], [0.38, 0.52]], [[0.68, 0.38], [0.62, 0.48]], [[0.50, 0.20], [0.32, 0.80]], [[0.48, 0.45], [0.75, 0.80]]] },
+      { id: 'r-hi-sun', char: '日', romaji: 'hi / nichi', meaning: 'Sun / Day', mnemonic: 'A solar collector cell with a central photovoltaic sensor bar.', system: 'PHOTOVOLTAIC SOLAR ARRAY', termination: 'Tome (Stop)', strokes: [[[0.30, 0.22], [0.30, 0.78]], [[0.30, 0.22], [0.70, 0.22], [0.70, 0.78]], [[0.30, 0.50], [0.70, 0.50]], [[0.30, 0.78], [0.70, 0.78]]] },
+      { id: 'r-tsuki', char: '月', romaji: 'tsuki / getsu', meaning: 'Moon / Month', mnemonic: 'A glowing lunar crescent with two internal satellite beams.', system: 'LUNAR GRAVITATIONAL RADAR', termination: 'Hane (Hook)', strokes: [[[0.32, 0.20], [0.30, 0.82]], [[0.32, 0.20], [0.68, 0.20], [0.68, 0.82], [0.58, 0.78]], [[0.32, 0.42], [0.68, 0.42]], [[0.32, 0.60], [0.68, 0.60]]] },
+      { id: 'r-kane', char: '金', romaji: 'kane / kin', meaning: 'Gold / Metal', mnemonic: 'A mountain sheltering golden alloy nuggets under armor plates.', system: 'TITANIUM-GOLD HULL REINFORCEMENT', termination: 'Tome (Stop)', strokes: [[[0.50, 0.18], [0.28, 0.42]], [[0.50, 0.18], [0.72, 0.42]], [[0.35, 0.46], [0.65, 0.46]], [[0.50, 0.46], [0.50, 0.78]], [[0.40, 0.56], [0.35, 0.64]], [[0.60, 0.56], [0.65, 0.64]], [[0.30, 0.68], [0.70, 0.68]], [[0.22, 0.82], [0.78, 0.82]]] },
+      { id: 'r-kokoro', char: '心', romaji: 'kokoro / shin', meaning: 'Heart / Neural Core', mnemonic: 'The neural heart chamber with four biological valve pulses.', system: 'NEURAL BIO-FEEDBACK CORE', termination: 'Hane (Hook)', strokes: [[[0.30, 0.45], [0.26, 0.62]], [[0.38, 0.40], [0.46, 0.75], [0.68, 0.75], [0.74, 0.55]], [[0.48, 0.48], [0.52, 0.56]], [[0.74, 0.38], [0.80, 0.46]]] }
     ]
   };
 
 
   // ==========================================================================
   // 4. RADICAL FORGE RECIPES (COMPOUND KANJI ARSENAL)
-  // At least 8 high-leverage JWA combinations with deep lore & subsystem specs
   // ==========================================================================
 
   const FORGE_RECIPES = [
@@ -931,18 +750,6 @@
       system: 'NEO-TOKYO ORIENT WARP ENGINE // SYS-TOU',
       lore: 'The Sun (日) rising behind a Tree (木) indicates East—the coordinates of Neo-Tokyo. Spools up the primary hyper-spatial warp core.',
       xp: 60
-    },
-    {
-      id: 'forge-mori',
-      ingredients: ['林', '木'],
-      result: '森',
-      romaji: 'Mori / Shin',
-      meaning: 'Dense Forest / Bio-Shield Dome',
-      onyomi: 'SHIN',
-      kunyomi: 'mori',
-      system: 'INTERSTELLAR BIO-DOME SHIELD // SYS-SHIN',
-      lore: 'Three trees intertwine to form a thick protective forest canopy, capable of absorbing physical asteroid impacts.',
-      xp: 75
     }
   ];
 
@@ -951,13 +758,11 @@
   // 5. GLOBAL EXPORT & INITIALIZATION
   // ==========================================================================
 
-  // Attach to window object for access across bootcamp.js, forge.js, shooter.js, kaiwa.js
   window.PlayerState = PlayerState;
   window.ROADMAP_SECTORS = ROADMAP_SECTORS;
   window.KIHON_DATA = KIHON_DATA;
   window.FORGE_RECIPES = FORGE_RECIPES;
 
-  // Initialize player state immediately and on DOMContentLoaded
   PlayerState.init();
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
@@ -969,6 +774,6 @@
     }
   }
 
-  console.log('[Project Kihon] data.js loaded successfully. Telemetry and JWA Database active.');
+  console.log('[Project Kihon] data.js loaded: All 46 Hiragana & 46 Katakana characters registered.');
 
 })();

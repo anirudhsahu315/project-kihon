@@ -1,46 +1,68 @@
 /* ==========================================================================
-   PROJECT KIHON: NEO-TOKYO ODYSSEY
-   Cyberpunk Cockpit & Tactical HUD Design System
+   PROJECT KIHON: JAPANESE STUDY ODYSSEY
+   Clean, Organized Card-List Theme & Dark Minimalist Design System
    Color Palette:
-     - Void / Deep Space: #020617
-     - Cockpit Panel:      #0b1329 / rgba(11, 19, 41, 0.85)
-     - Neon Cyan:          #06b6d4 (rgb(6, 182, 212))
-     - Neon Emerald:       #10b981 (rgb(16, 185, 129))
-     - Warning Amber:      #f59e0b (rgb(245, 158, 11))
-     - Cyber Pink:         #ec4899 (rgb(236, 72, 153))
-     - Plasma Purple:      #8b5cf6 (rgb(139, 92, 246))
+     - Background: Deep Charcoal / Matte Black (#121212)
+     - Surface Cards & Rows: Dark Surface Gray (#1e1e24 / #27272a)
+     - Subtle Borders & Dividers: #2d2d35 / rgba(255, 255, 255, 0.08)
+     - Text Primary (Titles): Pure High-Contrast White (#ffffff)
+     - Text Secondary (Subtitles & Counts): Muted Gray (#9ca3af)
+     - Accent Badge Pills: Soft Blue, Purple, Olive Green, Amber, Rose, Cyan
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Sans+JP:wght@400;500;700;900&family=Orbitron:wght@400;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&family=Orbitron:wght@600;700;800&family=Share+Tech+Mono&display=swap');
 
 :root {
-  --bg-space: #020617;
-  --bg-panel: rgba(11, 19, 41, 0.85);
-  --bg-panel-solid: #091124;
-  --bg-panel-light: rgba(18, 29, 61, 0.65);
+  /* Surface & Background */
+  --bg-main: #121212;
+  --bg-surface: #1e1e24;
+  --bg-surface-elevated: #272730;
+  --bg-surface-hover: #26262e;
+  --border-subtle: #2d2d35;
+  --border-divider: #262630;
   
-  --neon-cyan: #06b6d4;
-  --neon-cyan-glow: rgba(6, 182, 212, 0.45);
-  --neon-cyan-dim: rgba(6, 182, 212, 0.15);
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
   
+  /* Distinct Colorful Circular Pill Badges */
+  --pill-blue-bg: rgba(59, 130, 246, 0.15);
+  --pill-blue-text: #60a5fa;
+  --pill-blue-border: rgba(59, 130, 246, 0.3);
+
+  --pill-purple-bg: rgba(139, 92, 246, 0.15);
+  --pill-purple-text: #a78bfa;
+  --pill-purple-border: rgba(139, 92, 246, 0.3);
+
+  --pill-emerald-bg: rgba(16, 185, 129, 0.15);
+  --pill-emerald-text: #34d399;
+  --pill-emerald-border: rgba(16, 185, 129, 0.3);
+
+  --pill-amber-bg: rgba(245, 158, 11, 0.15);
+  --pill-amber-text: #fbbf24;
+  --pill-amber-border: rgba(245, 158, 11, 0.3);
+
+  --pill-rose-bg: rgba(244, 63, 94, 0.15);
+  --pill-rose-text: #fb7185;
+  --pill-rose-border: rgba(244, 63, 94, 0.3);
+
+  --pill-cyan-bg: rgba(6, 182, 212, 0.15);
+  --pill-cyan-text: #38bdf8;
+  --pill-cyan-border: rgba(6, 182, 212, 0.3);
+
+  /* Legacy color aliases mapped to clean palette */
+  --neon-cyan: #38bdf8;
+  --neon-cyan-glow: rgba(56, 189, 248, 0.25);
+  --neon-cyan-dim: rgba(56, 189, 248, 0.1);
   --neon-amber: #f59e0b;
-  --neon-amber-glow: rgba(245, 158, 11, 0.45);
-  --neon-amber-dim: rgba(245, 158, 11, 0.15);
-  
   --neon-emerald: #10b981;
-  --neon-emerald-glow: rgba(16, 185, 129, 0.45);
-  --neon-emerald-dim: rgba(16, 185, 129, 0.15);
-
   --neon-pink: #ec4899;
-  --neon-pink-glow: rgba(236, 72, 153, 0.45);
-  --neon-pink-dim: rgba(236, 72, 153, 0.15);
-
   --neon-purple: #8b5cf6;
-  --neon-purple-glow: rgba(139, 92, 246, 0.45);
 
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-orbitron: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-rajdhani: 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-chakra: 'Chakra Petch', monospace;
   --font-mono: 'Share Tech Mono', monospace;
   --font-japanese: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
 }
@@ -54,154 +76,309 @@
 }
 
 html, body {
-  background-color: var(--bg-space);
-  color: #e2e8f0;
-  font-family: var(--font-rajdhani);
-  letter-spacing: 0.025em;
+  background-color: var(--bg-main) !important;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
   overflow-x: hidden;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Sci-fi Cockpit Grid Background & Vignette */
+/* Clean, subtle ambient dark background without CRT scanlines */
 body {
   background-image: 
-    radial-gradient(ellipse at 50% 0%, rgba(6, 182, 212, 0.12) 0%, transparent 60%),
-    radial-gradient(circle at 10% 90%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-    linear-gradient(to right, rgba(6, 182, 212, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 85% 100%, rgba(139, 92, 246, 0.03) 0%, transparent 40%);
   background-attachment: fixed;
-}
-
-/* Subtle CRT Scanline overlay */
-body::before {
-  content: " ";
-  position: fixed;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-  background-size: 100% 4px;
-  z-index: 999;
-  pointer-events: none;
-  opacity: 0.6;
 }
 
 /* ==========================================================================
    TYPOGRAPHY UTILITIES
    ========================================================================== */
 
+.font-sans-ui { font-family: var(--font-sans); }
 .font-orbitron { font-family: var(--font-orbitron); }
-.font-rajdhani { font-family: var(--font-rajdhani); }
-.font-chakra { font-family: var(--font-chakra); }
 .font-mono-tech { font-family: var(--font-mono); }
 .font-jp { font-family: var(--font-japanese); }
 
-/* Glow Text Effects */
-.glow-cyan-text {
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan-glow), 0 0 20px rgba(6, 182, 212, 0.2);
-}
-
-.glow-emerald-text {
-  color: var(--neon-emerald);
-  text-shadow: 0 0 10px var(--neon-emerald-glow), 0 0 20px rgba(16, 185, 129, 0.2);
-}
-
-.glow-amber-text {
-  color: var(--neon-amber);
-  text-shadow: 0 0 10px var(--neon-amber-glow), 0 0 20px rgba(245, 158, 11, 0.2);
-}
-
-.glow-pink-text {
-  color: var(--neon-pink);
-  text-shadow: 0 0 10px var(--neon-pink-glow), 0 0 20px rgba(236, 72, 153, 0.2);
-}
-
 /* ==========================================================================
-   CANVAS MANDATORY SPECIFICATION (TOUCH-ACTION: NONE)
-   Ensures stylus, Apple Pencil, and touch drag do not scroll viewport
+   GROUPED LIST LAYOUT & CARD DESIGN SYSTEM
    ========================================================================== */
 
-canvas,
-#stroke-canvas,
-#shooter-canvas {
-  touch-action: none !important;
-  -webkit-touch-callout: none !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
+.card-list-group {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem; /* rounded-xl */
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
-/* Canvas Styling */
-#stroke-canvas {
-  background-color: rgba(3, 7, 18, 0.95);
-  background-image: 
-    linear-gradient(rgba(6, 182, 212, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6, 182, 212, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(6, 182, 212, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6, 182, 212, 0.15) 1px, transparent 1px);
-  background-size: 20px 20px, 20px 20px, 160px 160px, 160px 160px;
-  background-position: center center;
-  border: 1px solid rgba(6, 182, 212, 0.4);
-  box-shadow: 0 0 25px rgba(6, 182, 212, 0.15) inset, 0 0 15px rgba(6, 182, 212, 0.2);
-  border-radius: 8px;
+.card-list-group > *:not(:last-child),
+.divide-subtle > *:not(:last-child) {
+  border-bottom: 1px solid var(--border-divider);
 }
 
-#shooter-canvas {
-  background-color: #01040f;
-  background-image: radial-gradient(circle at center, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
-  border: 1px solid rgba(6, 182, 212, 0.5);
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.2) inset, 0 0 20px rgba(6, 182, 212, 0.25);
-  border-radius: 12px;
-  max-width: 100%;
-  height: auto;
-  display: block;
+/* Interactive list row item */
+.list-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background-color: transparent;
+  transition: background-color 0.18s ease, transform 0.18s ease;
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+}
+
+.list-item-row:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+.list-item-row:active {
+  background-color: #2b2b35;
+}
+
+/* Circular colorful icon pill on the left of each item */
+.badge-icon-pill {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.list-item-row:hover .badge-icon-pill {
+  transform: scale(1.06);
+}
+
+/* Icon pill color themes */
+.pill-blue {
+  background-color: var(--pill-blue-bg);
+  color: var(--pill-blue-text);
+  border: 1px solid var(--pill-blue-border);
+}
+
+.pill-purple {
+  background-color: var(--pill-purple-bg);
+  color: var(--pill-purple-text);
+  border: 1px solid var(--pill-purple-border);
+}
+
+.pill-emerald {
+  background-color: var(--pill-emerald-bg);
+  color: var(--pill-emerald-text);
+  border: 1px solid var(--pill-emerald-border);
+}
+
+.pill-amber {
+  background-color: var(--pill-amber-bg);
+  color: var(--pill-amber-text);
+  border: 1px solid var(--pill-amber-border);
+}
+
+.pill-rose {
+  background-color: var(--pill-rose-bg);
+  color: var(--pill-rose-text);
+  border: 1px solid var(--pill-rose-border);
+}
+
+.pill-cyan {
+  background-color: var(--pill-cyan-bg);
+  color: var(--pill-cyan-text);
+  border: 1px solid var(--pill-cyan-border);
+}
+
+/* Titles and subtitles */
+.list-row-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.list-row-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  margin-top: 0.25rem;
+}
+
+.list-row-badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: #272730;
+  border: 1px solid #363642;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.list-row-badge.active-badge {
+  color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.list-row-badge.cleared-badge {
+  color: #34d399;
+  background-color: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.list-row-badge.locked-badge {
+  color: #6b7280;
+  background-color: #17171d;
+  border-color: #2a2a32;
 }
 
 /* ==========================================================================
-   NAVIGATION BAR & GLOWING ACTIVE TAB
+   NAVIGATION BAR & SEGMENTED CONTROLS
    ========================================================================== */
 
 .nav-tab-btn {
   position: relative;
-  transition: all 0.25s ease-in-out;
-  border-bottom: 2px solid transparent;
-  color: #94a3b8;
-  font-family: var(--font-orbitron);
-  letter-spacing: 0.08em;
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(51, 65, 85, 0.4);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .nav-tab-btn:hover {
-  color: #38bdf8;
-  border-color: rgba(6, 182, 212, 0.4);
-  background: rgba(6, 182, 212, 0.1);
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Glowing active tab requirement */
 .nav-tab-btn.active-tab {
   color: #ffffff;
-  background: linear-gradient(180deg, rgba(6, 182, 212, 0.2) 0%, rgba(6, 182, 212, 0.05) 100%);
-  border: 1px solid var(--neon-cyan);
-  border-bottom: 3px solid var(--neon-cyan);
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4), inset 0 0 12px rgba(6, 182, 212, 0.25);
-  text-shadow: 0 0 8px rgba(6, 182, 212, 0.8);
+  background-color: #272730;
+  border: 1px solid #3f3f4c;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
-.nav-tab-btn.active-tab::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: 20%;
-  right: 20%;
-  height: 2px;
-  background: var(--neon-cyan);
-  box-shadow: 0 0 8px var(--neon-cyan);
+/* Category Switcher Pills */
+.category-btn {
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: #18181b;
+  border: 1px solid #2d2d35;
+}
+
+.category-btn:hover {
+  color: var(--text-primary);
+  background-color: #26262e;
+  border-color: #3f3f4c;
+}
+
+.category-btn.active {
+  color: #ffffff !important;
+  background-color: #2b2b35 !important;
+  border-color: #4a4a58 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Level Mode Switcher Pills */
+.level-mode-btn {
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: #17171d;
+  border: 1px solid #2d2d35;
+  cursor: pointer;
+}
+
+.level-mode-btn:hover {
+  color: var(--text-primary);
+  background-color: #24242e;
+  border-color: #3f3f4e;
+}
+
+.level-mode-btn.active {
+  color: #ffffff !important;
+  background-color: #272733 !important;
+  border-color: #4f4f65 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Quiz Option Buttons */
+.quiz-option-btn {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.quiz-option-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.quiz-option-btn.correct-choice {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.quiz-option-btn.wrong-choice {
+  background-color: rgba(244, 63, 94, 0.2) !important;
+  border-color: #f43f5e !important;
+  color: #fb7185 !important;
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
 }
 
 /* ==========================================================================
-   3D HOLO-FLASHCARD SYSTEM
-   Smooth perspective flip with front and back face visibility
+   PANEL CONTAINERS & SECTOR CARDS
+   ========================================================================== */
+
+.cyber-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.sector-card {
+  transition: all 0.2s ease;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+}
+
+.sector-card:hover {
+  border-color: #3f3f4e;
+  background-color: #23232b;
+}
+
+.sector-card.active-sector {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2);
+}
+
+/* ==========================================================================
+   3D FLASHCARD SYSTEM
    ========================================================================== */
 
 .flashcard-perspective-container {
@@ -213,7 +390,7 @@ canvas,
   width: 100%;
   height: 380px;
   transform-style: preserve-3d;
-  transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
 }
 
@@ -229,322 +406,248 @@ canvas,
   height: 100%;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  border-radius: 16px;
+  border-radius: 1rem;
   overflow: hidden;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
 }
 
-/* Card Front Face */
 #card-front {
   transform: rotateY(0deg);
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 18, 40, 0.95) 100%);
-  border: 1px solid rgba(6, 182, 212, 0.4);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(6, 182, 212, 0.2);
 }
 
-/* Card Back Face */
 #card-back {
   transform: rotateY(180deg);
-  background: linear-gradient(135deg, rgba(17, 24, 39, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border: 1px solid rgba(16, 185, 129, 0.5);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(16, 185, 129, 0.25);
 }
 
-/* Hologram foil shimmer on hover */
 #card-front::after,
 #card-back::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    115deg,
-    transparent 20%,
-    rgba(6, 182, 212, 0.08) 40%,
-    rgba(236, 72, 153, 0.08) 50%,
-    rgba(16, 185, 129, 0.08) 60%,
-    transparent 80%
-  );
-  opacity: 0.5;
-  transition: opacity 0.3s;
+  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
   pointer-events: none;
 }
 
-#flashcard:hover #card-front::after,
-#flashcard:hover #card-back::after {
-  opacity: 0.9;
+/* Character chip in #char-selector */
+.char-pill {
+  transition: all 0.18s ease;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  background-color: #24242c;
+  border: 1px solid #33333e;
+  color: var(--text-primary);
+}
+
+.char-pill:hover {
+  background-color: #2d2d38;
+  border-color: #4a4a58;
+}
+
+.char-pill.selected {
+  background-color: rgba(56, 189, 248, 0.15) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }
 
 /* ==========================================================================
-   CYBERPUNK SCI-FI PANELS & BORDERS
+   CANVAS SYSTEM (TOUCH-ACTION: NONE)
    ========================================================================== */
 
-.cyber-panel {
-  background: var(--bg-panel);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(6, 182, 212, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  position: relative;
+canvas,
+#stroke-canvas,
+#shooter-canvas {
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
-.cyber-panel-amber {
-  border-color: rgba(245, 158, 11, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(245, 158, 11, 0.08);
+#stroke-canvas {
+  background-color: #141418;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px, 20px 20px, 160px 160px, 160px 160px;
+  background-position: center center;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  cursor: crosshair;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.cyber-panel-emerald {
-  border-color: rgba(16, 185, 129, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(16, 185, 129, 0.08);
+#stroke-canvas.drawing {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.25) inset, 0 0 15px rgba(6, 182, 212, 0.2) !important;
 }
 
-/* Cyber cut-corner accents */
-.cyber-cut-tr {
-  clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    0 100%
-  );
-}
-
-.cyber-cut-corners {
-  clip-path: polygon(
-    12px 0,
-    calc(100% - 12px) 0,
-    100% 12px,
-    100% calc(100% - 12px),
-    calc(100% - 12px) 100%,
-    12px 100%,
-    0 calc(100% - 12px),
-    0 12px
-  );
-}
-
-/* Corner bracket tech accents */
-.cyber-bracket {
-  position: relative;
-}
-
-.cyber-bracket::before {
-  content: '';
-  position: absolute;
-  top: -1px; left: -1px;
-  width: 10px; height: 10px;
-  border-top: 2px solid var(--neon-cyan);
-  border-left: 2px solid var(--neon-cyan);
-  pointer-events: none;
-}
-
-.cyber-bracket::after {
-  content: '';
-  position: absolute;
-  bottom: -1px; right: -1px;
-  width: 10px; height: 10px;
-  border-bottom: 2px solid var(--neon-cyan);
-  border-right: 2px solid var(--neon-cyan);
-  pointer-events: none;
+#shooter-canvas {
+  background-color: #141418;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* ==========================================================================
-   ANIMATIONS & KEYFRAMES
-   ========================================================================== */
-
-/* Blinking Status LED */
-@keyframes blink-led {
-  0%, 100% {
-    opacity: 1;
-    box-shadow: 0 0 12px #10b981, 0 0 24px #10b981;
-  }
-  50% {
-    opacity: 0.35;
-    box-shadow: 0 0 2px #10b981;
-  }
-}
-
-.status-led-blink {
-  animation: blink-led 1.6s infinite ease-in-out;
-}
-
-/* Pulsing Cyan Beacon */
-@keyframes beacon-pulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.6), 0 0 20px rgba(6, 182, 212, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 4px rgba(6, 182, 212, 0.2);
-  }
-}
-
-.beacon-pulse {
-  animation: beacon-pulse 2.2s infinite ease-in-out;
-}
-
-/* Laser sweep bar */
-@keyframes laser-sweep {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(320px); }
-}
-
-.laser-sweep-line {
-  position: absolute;
-  left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-  box-shadow: 0 0 8px var(--neon-cyan);
-  animation: laser-sweep 2.4s linear infinite;
-  pointer-events: none;
-}
-
-/* Radar scan */
-@keyframes radar-sweep {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.radar-spinner {
-  animation: radar-sweep 4s linear infinite;
-}
-
-/* ==========================================================================
-   CUSTOM SCI-FI SCROLLBARS
-   ========================================================================== */
-
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(2, 6, 23, 0.9);
-  border: 1px solid rgba(30, 41, 59, 0.5);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(6, 182, 212, 0.6) 0%, rgba(14, 116, 144, 0.8) 100%);
-  border-radius: 3px;
-  border: 1px solid rgba(6, 182, 212, 0.8);
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-cyan);
-  box-shadow: 0 0 14px var(--neon-cyan);
-}
-
-/* Character Selector Strip smooth horizontal scroll */
-#char-selector {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(6, 182, 212, 0.5) rgba(2, 6, 23, 0.8);
-}
-
-/* ==========================================================================
-   FORGE REACTION CHAMBER & ARSENAL
+   RADICAL FORGE REACTION CHAMBER
    ========================================================================== */
 
 .forge-slot {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(15, 23, 42, 0.7);
-  border: 2px dashed rgba(6, 182, 212, 0.4);
+  transition: all 0.2s ease;
+  background-color: #18181c;
+  border: 2px dashed #33333e;
 }
 
 .forge-slot.filled {
-  border: 2px solid var(--neon-cyan);
-  background: rgba(6, 182, 212, 0.12);
-  box-shadow: 0 0 18px rgba(6, 182, 212, 0.35) inset;
+  border: 2px solid #38bdf8;
+  background-color: rgba(56, 189, 248, 0.08);
 }
 
-.forge-slot:hover {
-  border-color: var(--neon-cyan);
-}
-
-/* Radical Card Draggable/Clickable */
 .radical-card {
-  transition: all 0.2s ease-in-out;
+  transition: all 0.18s ease;
   cursor: pointer;
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  background-color: #24242c;
+  border: 1px solid #33333e;
 }
 
 .radical-card:hover {
   transform: translateY(-2px);
-  border-color: var(--neon-cyan);
-  background: rgba(6, 182, 212, 0.15);
-  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.25);
+  background-color: #2d2d38;
+  border-color: #4a4a58;
 }
 
 .radical-card.selected {
-  border-color: var(--neon-emerald);
-  background: rgba(16, 185, 129, 0.2);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+  border-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.15);
 }
 
 /* ==========================================================================
-   KANA BLASTER SHOOTER HUD
-   ========================================================================== */
-
-#hull-bar {
-  transition: width 0.3s ease-out, background-color 0.3s ease;
-}
-
-#laser-input:focus {
-  outline: none;
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
-}
-
-/* ==========================================================================
-   ROADMAP SECTORS INTERACTION
-   ========================================================================== */
-
-.sector-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(10, 18, 38, 0.9) 100%);
-  border: 1px solid rgba(51, 65, 85, 0.5);
-}
-
-.sector-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(6, 182, 212, 0.6);
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.2);
-}
-
-.sector-card.active-sector {
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
-}
-
-/* ==========================================================================
-   BUTTON & INTERACTION SOUND/TOUCH FEEDBACK STYLING
+   CLEAN BUTTONS & CONTROLS
    ========================================================================== */
 
 .cyber-btn {
-  position: relative;
-  overflow: hidden;
-  font-family: var(--font-orbitron);
-  letter-spacing: 0.05em;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all 0.18s ease;
+  cursor: pointer;
 }
 
 .cyber-btn:hover {
-  filter: brightness(1.15);
-  box-shadow: 0 0 15px currentColor;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .cyber-btn:active {
-  transform: scale(0.97);
+  transform: translateY(0);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141417;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2e2e38;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444452;
+}
+
+#char-selector {
+  scrollbar-width: thin;
+  scrollbar-color: #2e2e38 #141417;
 }
 
 /* Responsive adjustments */
-@media (max-width: 1024px) {
-  #flashcard {
-    height: 340px;
-  }
-}
-
 @media (max-width: 768px) {
   #flashcard {
     height: 320px;
   }
-  .hud-telemetry-item {
-    font-size: 0.75rem;
+  .list-item-row {
+    padding: 0.875rem 1rem;
   }
 }
+
+/* ==========================================================================
+   LEVEL 2 & 3 QUIZ AND MODE STYLES
+   ========================================================================== */
+
+.level-mode-btn {
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.625rem;
+  background-color: #141418;
+  border: 1px solid #2d2d35;
+  color: #9ca3af;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.level-mode-btn:hover {
+  background-color: #202028;
+  border-color: #3f3f4c;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.level-mode-btn.active {
+  background-color: #242430;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+}
+
+.quiz-option-btn {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quiz-option-btn:hover:not(:disabled) {
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+.quiz-option-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.quiz-option-btn.correct-choice {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.45) !important;
+}
+
+.quiz-option-btn.wrong-choice {
+  background-color: rgba(244, 63, 94, 0.2) !important;
+  border-color: #f43f5e !important;
+  color: #fb7185 !important;
+  box-shadow: 0 0 25px rgba(244, 63, 94, 0.45) !important;
+  animation: quizBuzzShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes quizBuzzShake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
